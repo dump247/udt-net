@@ -75,13 +75,55 @@ namespace Udt
 		/// <b>- or -</b><br/>
 		/// <paramref name="type"/> is not either <c>Dgram</c> or <c>Stream</c>
 		/// </exception>
+		/// <exception cref="UdtException">If an error occurs creating the socket.</exception>
 		Socket(System::Net::Sockets::AddressFamily family, System::Net::Sockets::SocketType type);
 		~Socket(void);
 
+		/// <summary>
+		/// Close the socket and release any associated resources.
+		/// </summary>
 		void Close(void);
+
+		/// <summary>
+		/// Associate the socket with a local end point.
+		/// </summary>
+		/// <exception cref="System::ArgumentNullException">
+		/// If <paramref name="address"/> is a null reference
+		/// </exception>
+		/// <exception cref="System::ArgumentOutOfRangeException">
+		/// If <paramref name="port"/> is less than <see cref="System::Net::IPEndPoint::MinPort"/>
+		/// or greater than <see cref="System::Net::IPEndPoint::MaxPort"/>.
+		/// </exception>
+		/// <exception cref="UdtException">If an error occurs binding the socket.</exception>
 		void Bind(System::Net::IPAddress^ address, int port);
+
+		/// <summary>
+		/// Associate the socket with a local end point.
+		/// </summary>
+		/// <exception cref="System::ArgumentNullException">
+		/// If <paramref name="endPoint"/> is a null reference
+		/// </exception>
+		/// <exception cref="UdtException">If an error occurs binding the socket.</exception>
 		void Bind(System::Net::IPEndPoint^ endPoint);
+
+		/// <summary>
+		/// Places the socket in a listening state.
+		/// </summary>
+		/// <exception cref="System::ArgumentOutOfRangeException">
+		/// If <paramref name="backlog"/> is less than 0.
+		/// </exception>
+		/// <exception cref="UdtException">If an error occurs.</exception>
 		void Listen(int backlog);
+
+		/// <summary>
+		/// Creates a <see cref="Socket"/> for a newly created connection.
+		/// </summary>
+		/// <remarks>
+		/// <b>Accept</b> synchronously extracts the first pending connection
+		/// request from the connection request queue of the listening socket,
+		/// and then creates and returns a new <see cref="Socket"/>.
+		/// </remarks>
+		/// <exception cref="UdtException">If an error occurs.</exception>
 		Socket^ Accept();
 
 		void Connect(System::String^ host, int port);
