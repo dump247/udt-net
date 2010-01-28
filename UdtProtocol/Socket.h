@@ -133,7 +133,7 @@ namespace Udt
 		/// <summary>
 		/// Establishes a connection to a remote host.
 		/// </summary>
-		/// <param name="address">Address of the host to connect to.</param>
+		/// <param name="host">Name of the host to connect to.</param>
 		/// <param name="port">Port to connect to.</param>
 		/// <exception cref="System::ArgumentNullException">
 		/// If <paramref name="host"/> is a null reference
