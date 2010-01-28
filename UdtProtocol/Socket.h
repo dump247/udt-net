@@ -126,9 +126,62 @@ namespace Udt
 		/// <exception cref="UdtException">If an error occurs.</exception>
 		Socket^ Accept();
 
+		/// <summary>
+		/// Establishes a connection to a remote host.
+		/// </summary>
+		/// <param name="address">Address of the host to connect to.</param>
+		/// <param name="port">Port to connect to.</param>
+		/// <exception cref="System::ArgumentNullException">
+		/// If <paramref name="host"/> is a null reference
+		/// </exception>
+		/// <exception cref="System::ArgumentOutOfRangeException">
+		/// If <paramref name="port"/> is less than <see cref="System::Net::IPEndPoint::MinPort"/>
+		/// or greater than <see cref="System::Net::IPEndPoint::MaxPort"/>.
+		/// </exception>
+		/// <exception cref="UdtException">If an error occurs.</exception>
 		void Connect(System::String^ host, int port);
+
+		/// <summary>
+		/// Establishes a connection to a remote host.
+		/// </summary>
+		/// <param name="address">Address of the host to connect to.</param>
+		/// <param name="port">Port to connect to.</param>
+		/// <exception cref="System::ArgumentNullException">
+		/// If <paramref name="address"/> is a null reference
+		/// </exception>
+		/// <exception cref="System::ArgumentOutOfRangeException">
+		/// If <paramref name="port"/> is less than <see cref="System::Net::IPEndPoint::MinPort"/>
+		/// or greater than <see cref="System::Net::IPEndPoint::MaxPort"/>.
+		/// </exception>
+		/// <exception cref="UdtException">If an error occurs.</exception>
 		void Connect(System::Net::IPAddress^ address, int port);
+
+		/// <summary>
+		/// Establishes a connection to a remote host.
+		/// </summary>
+		/// <param name="addresses">Addresses of the host to connect to.</param>
+		/// <param name="port">Port to connect to.</param>
+		/// <exception cref="System::ArgumentNullException">
+		/// If <paramref name="addresses"/> is a null reference
+		/// </exception>
+		/// <exception cref="System::ArgumentNullException">
+		/// If <paramref name="addresses"/> is empty
+		/// </exception>
+		/// <exception cref="System::ArgumentOutOfRangeException">
+		/// If <paramref name="port"/> is less than <see cref="System::Net::IPEndPoint::MinPort"/>
+		/// or greater than <see cref="System::Net::IPEndPoint::MaxPort"/>.
+		/// </exception>
+		/// <exception cref="UdtException">If an error occurs.</exception>
 		void Connect(cli::array<System::Net::IPAddress^>^ addresses, int port);
+
+		/// <summary>
+		/// Establishes a connection to a remote host.
+		/// </summary>
+		/// <param name="endPoint">Remote end point to connect to.</param>
+		/// <exception cref="System::ArgumentNullException">
+		/// If <paramref name="endPoint"/> is a null reference
+		/// </exception>
+		/// <exception cref="UdtException">If an error occurs.</exception>
 		void Connect(System::Net::IPEndPoint^ endPoint);
 
 		int Receive(cli::array<System::Byte>^ buffer);
