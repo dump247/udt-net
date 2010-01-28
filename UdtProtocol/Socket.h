@@ -77,6 +77,10 @@ namespace Udt
 		/// </exception>
 		/// <exception cref="UdtException">If an error occurs creating the socket.</exception>
 		Socket(System::Net::Sockets::AddressFamily family, System::Net::Sockets::SocketType type);
+
+		/// <summary>
+		/// Closes the socket.
+		/// </summary>
 		~Socket(void);
 
 		/// <summary>
