@@ -139,9 +139,11 @@ Udt::Socket::Socket(AddressFamily family, SocketType type)
 	{
 	case AddressFamily::InterNetwork:
 		socketFamily = AF_INET;
+		break;
 
 	case AddressFamily::InterNetworkV6:
 		socketFamily = AF_INET6;
+		break;
 
 	default:
 		throw gcnew ArgumentException(String::Concat("Unsupported address family: ", family.ToString()), "family");
@@ -151,9 +153,11 @@ Udt::Socket::Socket(AddressFamily family, SocketType type)
 	{
 	case SocketType::Dgram:
 		socketType = SOCK_DGRAM;
+		break;
 
 	case SocketType::Stream:
 		socketType = SOCK_STREAM;
+		break;
 
 	default:
 		throw gcnew ArgumentException(String::Concat("Unsupported socket type: ", type.ToString()), "type");
@@ -180,13 +184,16 @@ Udt::Socket::~Socket(void)
 
 void Udt::Socket::Close(void)
 {
-	if (UDT::ERROR == UDT::close(_socket))
+	if (_socket != UDT::INVALID_SOCK)
 	{
-		_socket = UDT::INVALID_SOCK;
-		throw UdtException::GetLastError("Error closing socket");
-	}
+		if (UDT::ERROR == UDT::close(_socket))
+		{
+			_socket = UDT::INVALID_SOCK;
+			throw UdtException::GetLastError("Error closing socket");
+		}
 
-	_socket = UDT::INVALID_SOCK;
+		_socket = UDT::INVALID_SOCK;
+	}
 }
 
 void Udt::Socket::Bind(IPAddress^ address, int port)
