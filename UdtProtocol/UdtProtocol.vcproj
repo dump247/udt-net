@@ -274,6 +274,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\resource.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Socket.h"
 				>
 			</File>
@@ -301,6 +305,10 @@
 			>
 			<File
 				RelativePath=".\KeyFile.snk"
+				>
+			</File>
+			<File
+				RelativePath=".\UdtProtocol.rc"
 				>
 			</File>
 		</Filter>
