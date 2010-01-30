@@ -193,7 +193,24 @@ namespace Udt
 		int Send(cli::array<System::Byte>^ buffer);
 		int Send(cli::array<System::Byte>^ buffer, int offset, int size);
 
+		/// <summary>
+		/// Send the contents of a file on this socket.
+		/// </summary>
+		/// <remarks>
+		/// Does not send a file size.
+		/// </remarks>
+		/// <param name="fileName">Name of the local file to send.</param>
+		/// <returns>The total number of bytes sent.</returns>
+		/// <exception cref="UdtException">If an error occurs accessing the socket or the file.</exception>
 		__int64 SendFile(System::String^ fileName);
+
+		/// <summary>
+		/// Receive data on this socket and store it in a local file.
+		/// </summary>
+		/// <param name="fileName">Name of the local file to write the data to.</param>
+		/// <param name="length">Number of bytes to read from the socket into <paramref name="fileName"/></param>
+		/// <returns>The total number of bytes received.</returns>
+		/// <exception cref="UdtException">If an error occurs accessing the socket or the file.</exception>
 		__int64 ReceiveFile(System::String^ fileName, __int64 length);
 
 		int SendMessage(cli::array<System::Byte>^ buffer);
