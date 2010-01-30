@@ -213,6 +213,13 @@ namespace Udt
 
 		System::Object^ GetSocketOption(SocketOptionName name);
 
+		/// <summary>
+		/// Gets the local end point.
+		/// </summary>
+		/// <value>
+		/// The local end point that the socket is using for communications.
+		/// </value>
+		/// <exception cref="UdtException">If an error occurs accessing the socket.</exception>
 		[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
 			"Microsoft.Naming",
 			"CA1702:CompoundWordsShouldBeCasedCorrectly",
@@ -222,6 +229,13 @@ namespace Udt
 			System::Net::IPEndPoint^ get(void);
 		}
 
+		/// <summary>
+		/// Gets the remote end point.
+		/// </summary>
+		/// <value>
+		/// The remote end point that the socket is using for communications.
+		/// </value>
+		/// <exception cref="UdtException">If an error occurs accessing the socket.</exception>
 		[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
 			"Microsoft.Naming",
 			"CA1702:CompoundWordsShouldBeCasedCorrectly",
