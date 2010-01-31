@@ -32,25 +32,27 @@
 
 #pragma once
 
+#include "SocketError.h"
+
 namespace Udt
 {
 	[System::Serializable]
-	public ref class UdtException : System::Exception
+	public ref class SocketException : System::Exception
 	{
 	private:
-		int _errorCode;
+		Udt::SocketError _socketErrorCode;
 
 	internal:
-		static UdtException^ GetLastError(System::String^ message);
+		static SocketException^ GetLastError(System::String^ message);
 
 	protected:
-		UdtException(System::Runtime::Serialization::SerializationInfo^ info, System::Runtime::Serialization::StreamingContext context);
+		SocketException(System::Runtime::Serialization::SerializationInfo^ info, System::Runtime::Serialization::StreamingContext context);
 
 	public:
-		UdtException(void);
-		UdtException(System::String^ message);
-		UdtException(System::String^ message, System::Exception^ inner);
-		UdtException(System::String^ message, int errorCode);
+		SocketException(void);
+		SocketException(System::String^ message);
+		SocketException(System::String^ message, System::Exception^ inner);
+		SocketException(System::String^ message, Udt::SocketError errorCode);
 
 		[System::Security::Permissions::SecurityPermission(
 			System::Security::Permissions::SecurityAction::LinkDemand,
@@ -58,12 +60,12 @@ namespace Udt
 		virtual void GetObjectData(System::Runtime::Serialization::SerializationInfo^ info, System::Runtime::Serialization::StreamingContext context) override
 		{
 			this->System::Exception::GetObjectData(info, context);
-			info->AddValue("ErrorCode", _errorCode);
+			info->AddValue("ErrorCode", _socketErrorCode);
 		}
 
-		property int ErrorCode
+		property Udt::SocketError SocketErrorCode
 		{
-			int get() { return _errorCode; }
+			Udt::SocketError get() { return _socketErrorCode; }
 		}
 	};
 }

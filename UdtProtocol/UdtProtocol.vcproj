@@ -220,6 +220,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SocketException.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Stdafx.cpp"
 				>
 				<FileConfiguration
@@ -241,10 +245,6 @@
 			</File>
 			<File
 				RelativePath=".\TraceInfo.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\UdtException.cpp"
 				>
 			</File>
 		</Filter>
@@ -282,6 +282,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SocketError.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SocketException.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SocketOptionName.h"
 				>
 			</File>
@@ -291,10 +299,6 @@
 			</File>
 			<File
 				RelativePath=".\TraceInfo.h"
-				>
-			</File>
-			<File
-				RelativePath=".\UdtException.h"
 				>
 			</File>
 		</Filter>

@@ -30,54 +30,31 @@
  * POSSIBILITY OF SUCH DAMAGE.
  ****************************************************************/
 
-#include "StdAfx.h"
-#include "UdtException.h"
+#pragma once
 
 #include <udt.h>
 
-using namespace System;
-using namespace Udt;
-
-UdtException::UdtException(System::Runtime::Serialization::SerializationInfo^ info, System::Runtime::Serialization::StreamingContext context)
-	: System::Exception(info, context)
+namespace Udt
 {
-	_errorCode = info->GetInt32("ErrorCode");
-}
+	/// <summary>
+	/// UDT socket error codes.
+	/// </summary>
+	[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
+			"Microsoft.Design",
+			"CA1027:MarkEnumsWithFlags",
+			Justification = "This is a set of discrete values, not a set of flags.")]
+	public enum class SocketError
+	{
+		/// <summary>
+		/// Unspecified socket error.
+		/// </summary>
+		Error = -1,
 
-UdtException::UdtException(void)
-{
-	_errorCode = UDT::ERROR;
-}
+		/// <summary>
+		/// The operation succeeded.
+		/// </summary>
+		Success = 0,
 
-UdtException::UdtException(System::String^ message)
-	: System::Exception(message)
-{
-	_errorCode = UDT::ERROR;
-}
-
-UdtException::UdtException(System::String^ message, System::Exception^ inner)
-	: System::Exception(message, inner)
-{
-	_errorCode = UDT::ERROR;
-}
-
-UdtException::UdtException(System::String^ message, int errorCode)
-	: System::Exception(message)
-{
-	_errorCode = errorCode;
-}
-
-UdtException^ UdtException::GetLastError(String^ message)
-{
-	UDT::ERRORINFO& lastError = UDT::getlasterror();
-	int errorCode = lastError.getErrorCode();
-	String^ udtMessage = (gcnew String(lastError.getErrorMessage()))->TrimEnd();
-	String^ exMessage;
-
-	if (String::IsNullOrEmpty(message))
-		exMessage = String::Concat(udtMessage, Environment::NewLine, "UDT Error Code: ", (Object^)errorCode);
-	else
-		exMessage = String::Concat(message, Environment::NewLine, udtMessage, Environment::NewLine, "UDT Error Code: ", (Object^)errorCode);
-
-	return gcnew UdtException(exMessage, errorCode);
+//		ConnectionSetup = ECONNSETUP
+	};
 }

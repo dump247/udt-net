@@ -36,7 +36,7 @@
 #include "TraceInfo.h"
 #include "SocketOptionName.h"
 #include "CongestionControl.h"
-#include "UdtException.h"
+#include "SocketException.h"
 #include <udt.h>
 
 namespace Udt
@@ -55,7 +55,7 @@ namespace Udt
 		static Socket(void)
 		{
 			if (UDT::ERROR == UDT::startup())
-				throw UdtException::GetLastError("Error in UDT initialization");
+				throw SocketException::GetLastError("Error in UDT initialization");
 		}
 
 		int GetSocketOptionInt32(SocketOptionName name);
@@ -75,7 +75,7 @@ namespace Udt
 		/// <b>- or -</b><br/>
 		/// <paramref name="type"/> is not either <c>Dgram</c> or <c>Stream</c>
 		/// </exception>
-		/// <exception cref="UdtException">If an error occurs creating the socket.</exception>
+		/// <exception cref="Udt::SocketException">If an error occurs creating the socket.</exception>
 		Socket(System::Net::Sockets::AddressFamily family, System::Net::Sockets::SocketType type);
 
 		/// <summary>
@@ -98,7 +98,7 @@ namespace Udt
 		/// If <paramref name="port"/> is less than <see cref="System::Net::IPEndPoint::MinPort"/>
 		/// or greater than <see cref="System::Net::IPEndPoint::MaxPort"/>.
 		/// </exception>
-		/// <exception cref="UdtException">If an error occurs binding the socket.</exception>
+		/// <exception cref="Udt::SocketException">If an error occurs binding the socket.</exception>
 		void Bind(System::Net::IPAddress^ address, int port);
 
 		/// <summary>
@@ -107,7 +107,7 @@ namespace Udt
 		/// <exception cref="System::ArgumentNullException">
 		/// If <paramref name="endPoint"/> is a null reference
 		/// </exception>
-		/// <exception cref="UdtException">If an error occurs binding the socket.</exception>
+		/// <exception cref="Udt::SocketException">If an error occurs binding the socket.</exception>
 		void Bind(System::Net::IPEndPoint^ endPoint);
 
 		/// <summary>
@@ -116,7 +116,7 @@ namespace Udt
 		/// <exception cref="System::ArgumentOutOfRangeException">
 		/// If <paramref name="backlog"/> is less than 0.
 		/// </exception>
-		/// <exception cref="UdtException">If an error occurs.</exception>
+		/// <exception cref="Udt::SocketException">If an error occurs.</exception>
 		void Listen(int backlog);
 
 		/// <summary>
@@ -127,7 +127,7 @@ namespace Udt
 		/// request from the connection request queue of the listening socket,
 		/// and then creates and returns a new <see cref="Socket"/>.
 		/// </remarks>
-		/// <exception cref="UdtException">If an error occurs.</exception>
+		/// <exception cref="Udt::SocketException">If an error occurs.</exception>
 		Socket^ Accept();
 
 		/// <summary>
@@ -142,7 +142,7 @@ namespace Udt
 		/// If <paramref name="port"/> is less than <see cref="System::Net::IPEndPoint::MinPort"/>
 		/// or greater than <see cref="System::Net::IPEndPoint::MaxPort"/>.
 		/// </exception>
-		/// <exception cref="UdtException">If an error occurs.</exception>
+		/// <exception cref="Udt::SocketException">If an error occurs.</exception>
 		void Connect(System::String^ host, int port);
 
 		/// <summary>
@@ -157,7 +157,7 @@ namespace Udt
 		/// If <paramref name="port"/> is less than <see cref="System::Net::IPEndPoint::MinPort"/>
 		/// or greater than <see cref="System::Net::IPEndPoint::MaxPort"/>.
 		/// </exception>
-		/// <exception cref="UdtException">If an error occurs.</exception>
+		/// <exception cref="Udt::SocketException">If an error occurs.</exception>
 		void Connect(System::Net::IPAddress^ address, int port);
 
 		/// <summary>
@@ -175,7 +175,7 @@ namespace Udt
 		/// If <paramref name="port"/> is less than <see cref="System::Net::IPEndPoint::MinPort"/>
 		/// or greater than <see cref="System::Net::IPEndPoint::MaxPort"/>.
 		/// </exception>
-		/// <exception cref="UdtException">If an error occurs.</exception>
+		/// <exception cref="Udt::SocketException">If an error occurs.</exception>
 		void Connect(cli::array<System::Net::IPAddress^>^ addresses, int port);
 
 		/// <summary>
@@ -185,7 +185,7 @@ namespace Udt
 		/// <exception cref="System::ArgumentNullException">
 		/// If <paramref name="endPoint"/> is a null reference
 		/// </exception>
-		/// <exception cref="UdtException">If an error occurs.</exception>
+		/// <exception cref="Udt::SocketException">If an error occurs.</exception>
 		void Connect(System::Net::IPEndPoint^ endPoint);
 
 		int Receive(cli::array<System::Byte>^ buffer);
@@ -201,7 +201,7 @@ namespace Udt
 		/// </remarks>
 		/// <param name="fileName">Name of the local file to send.</param>
 		/// <returns>The total number of bytes sent.</returns>
-		/// <exception cref="UdtException">If an error occurs accessing the socket or the file.</exception>
+		/// <exception cref="Udt::SocketException">If an error occurs accessing the socket or the file.</exception>
 		__int64 SendFile(System::String^ fileName);
 
 		/// <summary>
@@ -210,7 +210,7 @@ namespace Udt
 		/// <param name="fileName">Name of the local file to write the data to.</param>
 		/// <param name="length">Number of bytes to read from the socket into <paramref name="fileName"/></param>
 		/// <returns>The total number of bytes received.</returns>
-		/// <exception cref="UdtException">If an error occurs accessing the socket or the file.</exception>
+		/// <exception cref="Udt::SocketException">If an error occurs accessing the socket or the file.</exception>
 		__int64 ReceiveFile(System::String^ fileName, __int64 length);
 
 		int SendMessage(cli::array<System::Byte>^ buffer);
@@ -236,7 +236,7 @@ namespace Udt
 		/// <value>
 		/// The local end point that the socket is using for communications.
 		/// </value>
-		/// <exception cref="UdtException">If an error occurs accessing the socket.</exception>
+		/// <exception cref="Udt::SocketException">If an error occurs accessing the socket.</exception>
 		[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
 			"Microsoft.Naming",
 			"CA1702:CompoundWordsShouldBeCasedCorrectly",
@@ -252,7 +252,7 @@ namespace Udt
 		/// <value>
 		/// The remote end point that the socket is using for communications.
 		/// </value>
-		/// <exception cref="UdtException">If an error occurs accessing the socket.</exception>
+		/// <exception cref="Udt::SocketException">If an error occurs accessing the socket.</exception>
 		[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
 			"Microsoft.Naming",
 			"CA1702:CompoundWordsShouldBeCasedCorrectly",

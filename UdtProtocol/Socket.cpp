@@ -36,7 +36,7 @@
 #include <ws2tcpip.h>
 
 #include "Socket.h"
-#include "UdtException.h"
+#include "SocketException.h"
 #include "CCCWrapperFactory.h"
 
 #include <fstream>
@@ -65,7 +65,7 @@ int UdtSendMessage(UDTSOCKET socket, cli::array<System::Byte>^ buffer, int offse
 
 	if (UDT::ERROR == result)
 	{
-		throw UdtException::GetLastError("Error sending message.");
+		throw Udt::SocketException::GetLastError("Error sending message.");
 	}
 
 	return result;
@@ -166,14 +166,14 @@ Udt::Socket::Socket(AddressFamily family, SocketType type)
 	_socket = UDT::socket(socketFamily, socketType, 0);
 
 	if (_socket == UDT::INVALID_SOCK)
-		throw UdtException::GetLastError(String::Concat("Error creating ", family.ToString(), "/", type.ToString(), " UDT socket"));
+		throw Udt::SocketException::GetLastError(String::Concat("Error creating ", family.ToString(), "/", type.ToString(), " UDT socket"));
 	
 	// Windows UDP issue
 	// For better performance, modify HKLM\System\CurrentControlSet\Services\Afd\Parameters\FastSendDatagramThreshold
 	int mss = 1052;
 	if (UDT::ERROR == UDT::setsockopt(_socket, 0, UDT_MSS, &mss, sizeof(int)))
 	{
-		throw UdtException::GetLastError("Error setting UDT_MSS socket option");
+		throw Udt::SocketException::GetLastError("Error setting UDT_MSS socket option");
 	}
 }
 
@@ -189,7 +189,7 @@ void Udt::Socket::Close(void)
 		if (UDT::ERROR == UDT::close(_socket))
 		{
 			_socket = UDT::INVALID_SOCK;
-			throw UdtException::GetLastError("Error closing socket");
+			throw Udt::SocketException::GetLastError("Error closing socket");
 		}
 
 		_socket = UDT::INVALID_SOCK;
@@ -212,9 +212,9 @@ void Udt::Socket::Bind(IPAddress^ address, int port)
 	if (UDT::ERROR == UDT::bind(_socket, (sockaddr*)&bind_addr, size))
 	{
 		if (address->AddressFamily == AddressFamily::InterNetworkV6)
-			throw UdtException::GetLastError(String::Concat("Error binding to [", address, "]:", (Object^)port));
+			throw Udt::SocketException::GetLastError(String::Concat("Error binding to [", address, "]:", (Object^)port));
 		else
-			throw UdtException::GetLastError(String::Concat("Error binding to ", address, ":", (Object^)port));
+			throw Udt::SocketException::GetLastError(String::Concat("Error binding to ", address, ":", (Object^)port));
 	}
 }
 
@@ -234,7 +234,7 @@ void Udt::Socket::Listen(int backlog)
 {
 	if (UDT::ERROR == UDT::listen(_socket, backlog))
 	{
-		throw UdtException::GetLastError("Error entering listening state");
+		throw Udt::SocketException::GetLastError("Error entering listening state");
 	}
 }
 
@@ -245,7 +245,7 @@ Udt::Socket^ Udt::Socket::Accept()
 	UDTSOCKET client = UDT::accept(_socket, (sockaddr*)&client_addr, &client_addr_len);
 
 	if (client == UDT::INVALID_SOCK)
-		throw UdtException::GetLastError("Error accepting new connection.");
+		throw Udt::SocketException::GetLastError("Error accepting new connection.");
 
 	return gcnew Socket(client);
 }
@@ -274,9 +274,9 @@ void Udt::Socket::Connect(System::Net::IPAddress^ address, int port)
 	if (UDT::ERROR == UDT::connect(_socket, (sockaddr*)&connect_addr, size))
 	{
 		if (address->AddressFamily == AddressFamily::InterNetworkV6)
-			throw UdtException::GetLastError(String::Concat("Error connecting to [", address, "]:", (Object^)port));
+			throw Udt::SocketException::GetLastError(String::Concat("Error connecting to [", address, "]:", (Object^)port));
 		else
-			throw UdtException::GetLastError(String::Concat("Error connecting to ", address, ":", (Object^)port));
+			throw Udt::SocketException::GetLastError(String::Concat("Error connecting to ", address, ":", (Object^)port));
 	}
 }
 
@@ -332,7 +332,7 @@ int Udt::Socket::Receive(cli::array<System::Byte>^ buffer, int offset, int size)
 
 	if (UDT::ERROR == received)
 	{
-		throw UdtException::GetLastError("Error receiving data.");
+		throw Udt::SocketException::GetLastError("Error receiving data.");
 	}
 
 	return received;
@@ -367,7 +367,7 @@ int Udt::Socket::Send(cli::array<System::Byte>^ buffer, int offset, int size)
 
 	if (UDT::ERROR == sent)
 	{
-		throw UdtException::GetLastError("Error sending data.");
+		throw Udt::SocketException::GetLastError("Error sending data.");
 	}
 
 	return sent;
@@ -390,7 +390,7 @@ __int64 Udt::Socket::SendFile(System::String^ fileName)
 
 	if (UDT::ERROR == sent)
 	{
-		throw UdtException::GetLastError(String::Concat("Error sending file ", fileName));
+		throw Udt::SocketException::GetLastError(String::Concat("Error sending file ", fileName));
 	}
 
 	return sent;
@@ -412,7 +412,7 @@ __int64 Udt::Socket::ReceiveFile(System::String^ fileName, __int64 length)
 
 	if (received == UDT::ERROR)
 	{
-		throw UdtException::GetLastError(String::Concat("Error receiving file ", fileName));
+		throw Udt::SocketException::GetLastError(String::Concat("Error receiving file ", fileName));
 	}
 
 	return received;
@@ -429,7 +429,7 @@ TraceInfo^ Udt::Socket::GetPerformanceInfo(bool clear)
 
 	if (UDT::ERROR == UDT::perfmon(_socket, &trace_info, clear))
 	{
-		throw UdtException::GetLastError("Error getting socket performance information.");
+		throw Udt::SocketException::GetLastError("Error getting socket performance information.");
 	}
 
 	return gcnew TraceInfo(trace_info);
@@ -442,7 +442,7 @@ System::Net::IPEndPoint^ Udt::Socket::LocalEndPoint::get(void)
 
 	if (UDT::ERROR == UDT::getsockname(_socket, (sockaddr*)&local_addr, &local_addr_len))
 	{
-		throw UdtException::GetLastError("Error getting local end point.");
+		throw Udt::SocketException::GetLastError("Error getting local end point.");
 	}
 
 	return ToEndPoint(&local_addr);
@@ -455,7 +455,7 @@ System::Net::IPEndPoint^ Udt::Socket::RemoteEndPoint::get(void)
 
 	if (UDT::ERROR == UDT::getpeername(_socket, (sockaddr*)&remote_addr, &remote_addr_len))
 	{
-		throw UdtException::GetLastError("Error getting remote end point.");
+		throw Udt::SocketException::GetLastError("Error getting remote end point.");
 	}
 
 	return ToEndPoint(&remote_addr);
@@ -525,7 +525,7 @@ int Udt::Socket::ReceiveMessage(cli::array<System::Byte>^ buffer, int offset, in
 
 	if (UDT::ERROR == result)
 	{
-		throw UdtException::GetLastError("Error receiving message.");
+		throw Udt::SocketException::GetLastError("Error receiving message.");
 	}
 
 	return result;
@@ -535,7 +535,7 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, int value)
 {
 	if (UDT::ERROR == UDT::setsockopt(_socket, 0, (UDT::SOCKOPT)name, &value, sizeof(int)))
 	{
-		throw UdtException::GetLastError(String::Concat("Error setting socket option ", name.ToString(), " to ", (Object^)value, "."));
+		throw Udt::SocketException::GetLastError(String::Concat("Error setting socket option ", name.ToString(), " to ", (Object^)value, "."));
 	}
 }
 
@@ -543,7 +543,7 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, __int64 value)
 {
 	if (UDT::ERROR == UDT::setsockopt(_socket, 0, (UDT::SOCKOPT)name, &value, sizeof(__int64)))
 	{
-		throw UdtException::GetLastError(String::Concat("Error setting socket option ", name.ToString(), " to ", (Object^)value, "."));
+		throw Udt::SocketException::GetLastError(String::Concat("Error setting socket option ", name.ToString(), " to ", (Object^)value, "."));
 	}
 }
 
@@ -551,7 +551,7 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, bool value)
 {
 	if (UDT::ERROR == UDT::setsockopt(_socket, 0, (UDT::SOCKOPT)name, &value, sizeof(bool)))
 	{
-		throw UdtException::GetLastError(String::Concat("Error setting socket option ", name.ToString(), " to ", (Object^)value, "."));
+		throw Udt::SocketException::GetLastError(String::Concat("Error setting socket option ", name.ToString(), " to ", (Object^)value, "."));
 	}
 }
 
@@ -572,7 +572,7 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, System::Object^ va
 
 			if (UDT::ERROR == UDT::setsockopt(_socket, 0, (UDT::SOCKOPT)name, &lingerValue, sizeof(linger)))
 			{
-				throw UdtException::GetLastError(String::Concat("Error setting socket option ", name.ToString(), " to ", value->ToString(), "."));
+				throw Udt::SocketException::GetLastError(String::Concat("Error setting socket option ", name.ToString(), " to ", value->ToString(), "."));
 			}
 		}
 		else
@@ -594,7 +594,7 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, System::Object^ va
 
 				if (UDT::ERROR == UDT::setsockopt(_socket, 0, (UDT::SOCKOPT)name, factory.get(), sizeof(CCCWrapperFactory)))
 				{
-					throw UdtException::GetLastError(String::Concat("Error setting socket option ", name.ToString(), " to ", value->ToString(), "."));
+					throw Udt::SocketException::GetLastError(String::Concat("Error setting socket option ", name.ToString(), " to ", value->ToString(), "."));
 				}
 
 				_congestionControl = ccValue;
@@ -653,7 +653,7 @@ System::Object^ Udt::Socket::GetSocketOption(Udt::SocketOptionName name)
 
 			if (UDT::ERROR == UDT::getsockopt(_socket, 0, (UDT::SOCKOPT)name, &value, &valueLen))
 			{
-				throw UdtException::GetLastError(String::Concat("Error getting socket option ", name.ToString(), "."));
+				throw Udt::SocketException::GetLastError(String::Concat("Error getting socket option ", name.ToString(), "."));
 			}
 
 			return gcnew System::Net::Sockets::LingerOption(value.l_onoff != 0, value.l_linger);
@@ -674,7 +674,7 @@ int Udt::Socket::GetSocketOptionInt32(Udt::SocketOptionName name)
 
 	if (UDT::ERROR == UDT::getsockopt(_socket, 0, (UDT::SOCKOPT)name, &value, &valueLen))
 	{
-		throw UdtException::GetLastError(String::Concat("Error getting socket option ", name.ToString(), "."));
+		throw Udt::SocketException::GetLastError(String::Concat("Error getting socket option ", name.ToString(), "."));
 	}
 
 	return value;
@@ -687,7 +687,7 @@ __int64 Udt::Socket::GetSocketOptionInt64(Udt::SocketOptionName name)
 
 	if (UDT::ERROR == UDT::getsockopt(_socket, 0, (UDT::SOCKOPT)name, &value, &valueLen))
 	{
-		throw UdtException::GetLastError(String::Concat("Error getting socket option ", name.ToString(), "."));
+		throw Udt::SocketException::GetLastError(String::Concat("Error getting socket option ", name.ToString(), "."));
 	}
 
 	return value;
@@ -700,7 +700,7 @@ bool Udt::Socket::GetSocketOptionBoolean(Udt::SocketOptionName name)
 
 	if (UDT::ERROR == UDT::getsockopt(_socket, 0, (UDT::SOCKOPT)name, &value, &valueLen))
 	{
-		throw UdtException::GetLastError(String::Concat("Error getting socket option ", name.ToString(), "."));
+		throw Udt::SocketException::GetLastError(String::Concat("Error getting socket option ", name.ToString(), "."));
 	}
 
 	return value;
