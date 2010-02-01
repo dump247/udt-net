@@ -70,7 +70,7 @@ SocketException::SocketException(System::String^ message, Udt::SocketError error
 SocketException^ SocketException::GetLastError(String^ message)
 {
 	UDT::ERRORINFO& lastError = UDT::getlasterror();
-	Udt::SocketError errorCode = (Udt::SocketError)lastError.getErrorCode();
+	int errorCode = lastError.getErrorCode();
 	String^ udtMessage = (gcnew String(lastError.getErrorMessage()))->TrimEnd();
 	String^ exMessage;
 
@@ -79,5 +79,5 @@ SocketException^ SocketException::GetLastError(String^ message)
 	else
 		exMessage = String::Concat(message, Environment::NewLine, udtMessage, Environment::NewLine, "UDT Error Code: ", (Object^)errorCode);
 
-	return gcnew SocketException(exMessage, errorCode);
+	return gcnew SocketException(exMessage, (Udt::SocketError)errorCode);
 }
