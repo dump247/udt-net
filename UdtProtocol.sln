@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SendFile", "SendFile\SendFi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReceiveFile", "ReceiveFile\ReceiveFile.csproj", "{DAC18D1F-F3F2-454A-B386-365D9CF53470}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UdtProtocol-Test", "UdtProtocol-Test\UdtProtocol-Test.csproj", "{CF9918BA-989A-463B-BC64-02593041C9DD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,16 @@ Global
 		{DAC18D1F-F3F2-454A-B386-365D9CF53470}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{DAC18D1F-F3F2-454A-B386-365D9CF53470}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{DAC18D1F-F3F2-454A-B386-365D9CF53470}.Release|Win32.ActiveCfg = Release|Any CPU
+		{CF9918BA-989A-463B-BC64-02593041C9DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF9918BA-989A-463B-BC64-02593041C9DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF9918BA-989A-463B-BC64-02593041C9DD}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{CF9918BA-989A-463B-BC64-02593041C9DD}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{CF9918BA-989A-463B-BC64-02593041C9DD}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{CF9918BA-989A-463B-BC64-02593041C9DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF9918BA-989A-463B-BC64-02593041C9DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF9918BA-989A-463B-BC64-02593041C9DD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{CF9918BA-989A-463B-BC64-02593041C9DD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{CF9918BA-989A-463B-BC64-02593041C9DD}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
