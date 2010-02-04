@@ -54,11 +54,21 @@ namespace UdtProtocol_Test
         {
             // InterNetwork
             Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Dgram);
+            Assert.AreEqual(AddressFamily.InterNetwork, socket.AddressFamily);
+            Assert.AreEqual(SocketType.Dgram, socket.SocketType);
+
             socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream);
+            Assert.AreEqual(AddressFamily.InterNetwork, socket.AddressFamily);
+            Assert.AreEqual(SocketType.Stream, socket.SocketType);
 
             // InterNetworkV6
             socket = new Udt.Socket(AddressFamily.InterNetworkV6, SocketType.Dgram);
+            Assert.AreEqual(AddressFamily.InterNetworkV6, socket.AddressFamily);
+            Assert.AreEqual(SocketType.Dgram, socket.SocketType);
+
             socket = new Udt.Socket(AddressFamily.InterNetworkV6, SocketType.Stream);
+            Assert.AreEqual(AddressFamily.InterNetworkV6, socket.AddressFamily);
+            Assert.AreEqual(SocketType.Stream, socket.SocketType);
         }
 
         /// <summary>
