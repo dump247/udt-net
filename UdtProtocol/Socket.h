@@ -48,9 +48,11 @@ namespace Udt
 	{
 	private:
 		UDTSOCKET _socket;
+		System::Net::Sockets::AddressFamily _addressFamily;
+		System::Net::Sockets::SocketType _socketType;
 		CongestionControl^ _congestionControl;
 
-		Socket(UDTSOCKET socket);
+		Socket(UDTSOCKET socket, System::Net::Sockets::AddressFamily family, System::Net::Sockets::SocketType type);
 
 		static Socket(void)
 		{
@@ -94,11 +96,18 @@ namespace Udt
 		/// <exception cref="System::ArgumentNullException">
 		/// If <paramref name="address"/> is a null reference
 		/// </exception>
+		/// <exception cref="System::ArgumentException">
+		/// If the type of <paramref name="address"/> is not compatible with the
+		/// <b>AddressFamily</b> passed to the <b>Socket(AddressFamily,SocketType)</b>
+		/// constructor.
+		/// </exception>
 		/// <exception cref="System::ArgumentOutOfRangeException">
 		/// If <paramref name="port"/> is less than <see cref="System::Net::IPEndPoint::MinPort"/>
 		/// or greater than <see cref="System::Net::IPEndPoint::MaxPort"/>.
 		/// </exception>
-		/// <exception cref="Udt::SocketException">If an error occurs binding the socket.</exception>
+		/// <exception cref="Udt::SocketException">
+		/// If an error occurs binding the socket (i.e. the socket is already bound, etc).
+		/// </exception>
 		void Bind(System::Net::IPAddress^ address, int port);
 
 		/// <summary>
@@ -107,7 +116,14 @@ namespace Udt
 		/// <exception cref="System::ArgumentNullException">
 		/// If <paramref name="endPoint"/> is a null reference
 		/// </exception>
-		/// <exception cref="Udt::SocketException">If an error occurs binding the socket.</exception>
+		/// <exception cref="System::ArgumentException">
+		/// If the type of address in <paramref name="endPoint"/> is not compatible with the
+		/// <b>AddressFamily</b> passed to the <b>Socket(AddressFamily,SocketType)</b>
+		/// constructor.
+		/// </exception>
+		/// <exception cref="Udt::SocketException">
+		/// If an error occurs binding the socket (i.e. the socket is already bound, etc).
+		/// </exception>
 		void Bind(System::Net::IPEndPoint^ endPoint);
 
 		/// <summary>
@@ -244,6 +260,22 @@ namespace Udt
 		property System::Net::IPEndPoint^ LocalEndPoint
 		{
 			System::Net::IPEndPoint^ get(void);
+		}
+
+		/// <summary>
+		/// Gets the address family of the socket.
+		/// </summary>
+		property System::Net::Sockets::AddressFamily AddressFamily
+		{
+			System::Net::Sockets::AddressFamily get(void);
+		}
+
+		/// <summary>
+		/// Gets the type of the socket.
+		/// </summary>
+		property System::Net::Sockets::SocketType SocketType
+		{
+			System::Net::Sockets::SocketType get(void);
 		}
 
 		/// <summary>

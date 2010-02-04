@@ -125,23 +125,28 @@ void ToSockAddr(System::Net::IPAddress^ address, int port, sockaddr_storage& soc
 	}
 }
 
-Udt::Socket::Socket(UDTSOCKET socket)
+Udt::Socket::Socket(UDTSOCKET socket, System::Net::Sockets::AddressFamily family, System::Net::Sockets::SocketType type)
 {
 	_socket = socket;
+	_addressFamily = family;
+	_socketType = type;
 }
 
-Udt::Socket::Socket(AddressFamily family, SocketType type)
+Udt::Socket::Socket(System::Net::Sockets::AddressFamily family, System::Net::Sockets::SocketType type)
 {
+	_addressFamily = family;
+	_socketType = type;
+
 	int socketFamily;
 	int socketType;
 
 	switch (family)
 	{
-	case AddressFamily::InterNetwork:
+	case System::Net::Sockets::AddressFamily::InterNetwork:
 		socketFamily = AF_INET;
 		break;
 
-	case AddressFamily::InterNetworkV6:
+	case System::Net::Sockets::AddressFamily::InterNetworkV6:
 		socketFamily = AF_INET6;
 		break;
 
@@ -151,11 +156,11 @@ Udt::Socket::Socket(AddressFamily family, SocketType type)
 
 	switch (type)
 	{
-	case SocketType::Dgram:
+	case System::Net::Sockets::SocketType::Dgram:
 		socketType = SOCK_DGRAM;
 		break;
 
-	case SocketType::Stream:
+	case System::Net::Sockets::SocketType::Stream:
 		socketType = SOCK_STREAM;
 		break;
 
@@ -201,6 +206,9 @@ void Udt::Socket::Bind(IPAddress^ address, int port)
 	if (address == nullptr)
 		throw gcnew ArgumentNullException("address");
 
+	if (address->AddressFamily != _addressFamily)
+		throw gcnew ArgumentException(String::Concat("Value must be same as socket address family (", _addressFamily, ")."), "address");
+
 	if (port < IPEndPoint::MinPort || port > IPEndPoint::MaxPort)
 		throw gcnew ArgumentOutOfRangeException("port", port, String::Concat("Value must be between ", (Object^)IPEndPoint::MinPort, " and ", (Object^)IPEndPoint::MaxPort, "."));
 
@@ -211,7 +219,7 @@ void Udt::Socket::Bind(IPAddress^ address, int port)
 
 	if (UDT::ERROR == UDT::bind(_socket, (sockaddr*)&bind_addr, size))
 	{
-		if (address->AddressFamily == AddressFamily::InterNetworkV6)
+		if (address->AddressFamily == System::Net::Sockets::AddressFamily::InterNetworkV6)
 			throw Udt::SocketException::GetLastError(String::Concat("Error binding to [", address, "]:", (Object^)port));
 		else
 			throw Udt::SocketException::GetLastError(String::Concat("Error binding to ", address, ":", (Object^)port));
@@ -226,6 +234,9 @@ void Udt::Socket::Bind(IPEndPoint^ endPoint)
 {
 	if (endPoint == nullptr)
 		throw gcnew ArgumentNullException("endPoint");
+
+	if (endPoint->AddressFamily != _addressFamily)
+		throw gcnew ArgumentException(String::Concat("Address must be same as socket address family (", _addressFamily, ")."), "endPoint");
 
 	Bind(endPoint->Address, endPoint->Port);
 }
@@ -247,7 +258,7 @@ Udt::Socket^ Udt::Socket::Accept()
 	if (client == UDT::INVALID_SOCK)
 		throw Udt::SocketException::GetLastError("Error accepting new connection.");
 
-	return gcnew Socket(client);
+	return gcnew Socket(client, _addressFamily, _socketType);
 }
 
 void Udt::Socket::Connect(System::String^ host, int port)
@@ -273,7 +284,7 @@ void Udt::Socket::Connect(System::Net::IPAddress^ address, int port)
 
 	if (UDT::ERROR == UDT::connect(_socket, (sockaddr*)&connect_addr, size))
 	{
-		if (address->AddressFamily == AddressFamily::InterNetworkV6)
+		if (address->AddressFamily == System::Net::Sockets::AddressFamily::InterNetworkV6)
 			throw Udt::SocketException::GetLastError(String::Concat("Error connecting to [", address, "]:", (Object^)port));
 		else
 			throw Udt::SocketException::GetLastError(String::Concat("Error connecting to ", address, ":", (Object^)port));
@@ -433,6 +444,16 @@ TraceInfo^ Udt::Socket::GetPerformanceInfo(bool clear)
 	}
 
 	return gcnew TraceInfo(trace_info);
+}
+
+System::Net::Sockets::AddressFamily Udt::Socket::AddressFamily::get(void)
+{
+	return _addressFamily;
+}
+
+System::Net::Sockets::SocketType Udt::Socket::SocketType::get(void)
+{
+	return _socketType;
 }
 
 System::Net::IPEndPoint^ Udt::Socket::LocalEndPoint::get(void)
