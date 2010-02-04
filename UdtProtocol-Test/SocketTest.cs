@@ -105,6 +105,35 @@ namespace UdtProtocol_Test
         [Test]
         public void Bind_IPAddress_int()
         {
+            using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+            {
+                socket.Bind(IPAddress.Any, 10000);
+
+                IPEndPoint localEP = socket.LocalEndPoint;
+                Assert.AreEqual(IPAddress.Any, localEP.Address);
+                Assert.AreEqual(10000, localEP.Port);
+            }
+        }
+
+        /// <summary>
+        /// Test for <see cref="Udt.Socket.Bind(IPAddress,int)"/> with IPv6 address.
+        /// </summary>
+        [Test]
+        public void Bind_IPAddress_int__IPV6()
+        {
+            if (!Socket.OSSupportsIPv6)
+            {
+                Assert.Ignore("OS does not support IPv6");
+            }
+
+            using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetworkV6, SocketType.Stream))
+            {
+                socket.Bind(IPAddress.IPv6Any, 10000);
+
+                IPEndPoint localEP = socket.LocalEndPoint;
+                Assert.AreEqual(IPAddress.IPv6Any, localEP.Address);
+                Assert.AreEqual(10000, localEP.Port);
+            }
         }
 
         /// <summary>
