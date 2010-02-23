@@ -169,6 +169,26 @@ namespace UdtProtocol_Test
         [Test]
         public void Bind_IPEndPoint()
         {
+            using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+            {
+                socket.Bind(new IPEndPoint(IPAddress.Any, 10000));
+
+                IPEndPoint localEP = socket.LocalEndPoint;
+                Assert.AreEqual(IPAddress.Any, localEP.Address);
+                Assert.AreEqual(10000, localEP.Port);
+            }
+
+            if (!Socket.OSSupportsIPv6)
+            {
+                using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetworkV6, SocketType.Stream))
+                {
+                    socket.Bind(new IPEndPoint(IPAddress.IPv6Any, 10000));
+
+                    IPEndPoint localEP = socket.LocalEndPoint;
+                    Assert.AreEqual(IPAddress.IPv6Any, localEP.Address);
+                    Assert.AreEqual(10000, localEP.Port);
+                }
+            }
         }
 
         /// <summary>
