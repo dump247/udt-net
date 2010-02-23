@@ -137,6 +137,57 @@ namespace UdtProtocol_Test
         }
 
         /// <summary>
+        /// Test for multiple calls to <see cref="Udt.Socket.Bind(IPAddress,int)"/>.
+        /// </summary>
+        [Test]
+        public void Bind_IPAddress_int__BindTwice()
+        {
+            using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+            {
+                socket.Bind(IPAddress.Any, 10000);
+
+                Udt.SocketException error = Assert.Throws<Udt.SocketException>(() =>
+                {
+                    socket.Bind(IPAddress.Any, 10000);
+                });
+
+                Assert.AreEqual(Udt.SocketError.InvalidOperation, error.SocketErrorCode);
+            }
+
+            if (Socket.OSSupportsIPv6)
+            {
+                using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetworkV6, SocketType.Stream))
+                {
+                    socket.Bind(IPAddress.IPv6Any, 10000);
+
+                    Udt.SocketException error = Assert.Throws<Udt.SocketException>(() =>
+                    {
+                        socket.Bind(IPAddress.IPv6Any, 10000);
+                    });
+
+                    Assert.AreEqual(Udt.SocketError.InvalidOperation, error.SocketErrorCode);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Test for <see cref="Udt.Socket.Bind(IPAddress,int)"/> after the
+        /// socket has been closed.
+        /// </summary>
+        [Test]
+        public void Bind_IPAddress_int__AfterClosed()
+        {
+            Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream);
+            socket.Dispose();
+
+            Udt.SocketException error = Assert.Throws<Udt.SocketException>(() =>
+            {
+                socket.Bind(IPAddress.Any, 10000);
+            });
+            Assert.AreEqual(Udt.SocketError.InvalidSocket, error.SocketErrorCode);
+        }
+
+        /// <summary>
         /// Test for <see cref="Udt.Socket.Bind(IPAddress,int)"/> with invalid
         /// argument values.
         /// </summary>
@@ -207,6 +258,55 @@ namespace UdtProtocol_Test
             // address type different from family passed to constructor
             ex = Assert.Throws<ArgumentException>(() => socket.Bind(new IPEndPoint(IPAddress.IPv6Any, 10000)));
             Assert.AreEqual("endPoint", ex.ParamName);
+        }
+
+        /// <summary>
+        /// Test for <see cref="Udt.Socket.Listen(int)"/>.
+        /// </summary>
+        [Test]
+        public void Listen()
+        {
+            using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+            {
+                socket.Bind(IPAddress.Any, 10000);
+                socket.Listen(1);
+                // What condition to assert here?
+            }
+        }
+
+        /// <summary>
+        /// Test for <see cref="Udt.Socket.Listen(int)"/> with invalid argument values.
+        /// </summary>
+        [Test]
+        public void Listen__InvalidArgs()
+        {
+            using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+            {
+                ArgumentOutOfRangeException error = Assert.Throws<ArgumentOutOfRangeException>(() =>
+                {
+                    socket.Listen(0);
+                });
+
+                Assert.AreEqual("backlog", error.ParamName);
+                Assert.AreEqual(0, error.ActualValue);
+            }
+        }
+
+        /// <summary>
+        /// Test for <see cref="Udt.Socket.Listen(int)"/> when the socket is not bound.
+        /// </summary>
+        [Test]
+        public void Listen__NotBound()
+        {
+            using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+            {
+                Udt.SocketException error = Assert.Throws<Udt.SocketException>(() =>
+                {
+                    socket.Listen(1);
+                });
+
+                Assert.AreEqual(Udt.SocketError.UnboundSocket, error.SocketErrorCode);
+            }
         }
     }
 }
