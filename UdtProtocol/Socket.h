@@ -130,7 +130,7 @@ namespace Udt
 		/// Places the socket in a listening state.
 		/// </summary>
 		/// <exception cref="System::ArgumentOutOfRangeException">
-		/// If <paramref name="backlog"/> is less than 0.
+		/// If <paramref name="backlog"/> is less than 1.
 		/// </exception>
 		/// <exception cref="Udt::SocketException">If an error occurs.</exception>
 		void Listen(int backlog);

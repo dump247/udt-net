@@ -243,6 +243,9 @@ void Udt::Socket::Bind(IPEndPoint^ endPoint)
 
 void Udt::Socket::Listen(int backlog)
 {
+	if (backlog < 1)
+		throw gcnew ArgumentOutOfRangeException("backlog", backlog, "Value must be greater than 0.");
+
 	if (UDT::ERROR == UDT::listen(_socket, backlog))
 	{
 		throw Udt::SocketException::GetLastError("Error entering listening state");
