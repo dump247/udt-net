@@ -229,7 +229,7 @@ namespace UdtProtocol_Test
                 Assert.AreEqual(10000, localEP.Port);
             }
 
-            if (!Socket.OSSupportsIPv6)
+            if (Socket.OSSupportsIPv6)
             {
                 using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetworkV6, SocketType.Stream))
                 {
