@@ -301,67 +301,67 @@ namespace Udt
 		property int SendBufferSize
 		{
 			int get(void) { return GetSocketOptionInt32(Udt::SocketOptionName::SendBuffer); }
-			void set(int value) { SetSocketOption(Udt::SocketOptionName::SendBuffer, value); }
+			void set(int value) { SetSocketOptionInt32(Udt::SocketOptionName::SendBuffer, value); }
 		}
 
 		property int UdpSendBufferSize
 		{
 			int get(void) { return GetSocketOptionInt32(Udt::SocketOptionName::UdpSendBuffer); }
-			void set(int value) { SetSocketOption(Udt::SocketOptionName::UdpSendBuffer, value); }
+			void set(int value) { SetSocketOptionInt32(Udt::SocketOptionName::UdpSendBuffer, value); }
 		}
 
 		property int SendTimeout
 		{
 			int get(void) { return GetSocketOptionInt32(Udt::SocketOptionName::SendTimeout); }
-			void set(int value) { SetSocketOption(Udt::SocketOptionName::SendTimeout, value); }
+			void set(int value) { SetSocketOptionInt32(Udt::SocketOptionName::SendTimeout, value); }
 		}
 
 		property bool BlockingSend
 		{
 			bool get(void) { return GetSocketOptionBoolean(Udt::SocketOptionName::BlockingSend); }
-			void set(bool value) { SetSocketOption(Udt::SocketOptionName::BlockingSend, value); }
+			void set(bool value) { SetSocketOptionBoolean(Udt::SocketOptionName::BlockingSend, value); }
 		}
 
 		property int ReceiveBufferSize
 		{
 			int get(void) { return GetSocketOptionInt32(Udt::SocketOptionName::ReceiveBuffer); }
-			void set(int value) { SetSocketOption(Udt::SocketOptionName::ReceiveBuffer, value); }
+			void set(int value) { SetSocketOptionInt32(Udt::SocketOptionName::ReceiveBuffer, value); }
 		}
 
 		property int UdpReceiveBufferSize
 		{
 			int get(void) { return GetSocketOptionInt32(Udt::SocketOptionName::UdpReceiveBuffer); }
-			void set(int value) { SetSocketOption(Udt::SocketOptionName::UdpReceiveBuffer, value); }
+			void set(int value) { SetSocketOptionInt32(Udt::SocketOptionName::UdpReceiveBuffer, value); }
 		}
 
 		property int ReceiveTimeout
 		{
 			int get(void) { return GetSocketOptionInt32(Udt::SocketOptionName::ReceiveTimeout); }
-			void set(int value) { SetSocketOption(Udt::SocketOptionName::ReceiveTimeout, value); }
+			void set(int value) { SetSocketOptionInt32(Udt::SocketOptionName::ReceiveTimeout, value); }
 		}
 
 		property bool BlockingReceive
 		{
 			bool get(void) { return GetSocketOptionBoolean(Udt::SocketOptionName::BlockingReceive); }
-			void set(bool value) { SetSocketOption(Udt::SocketOptionName::BlockingReceive, value); }
+			void set(bool value) { SetSocketOptionBoolean(Udt::SocketOptionName::BlockingReceive, value); }
 		}
 
 		property bool Rendezvous
 		{
 			bool get(void) { return GetSocketOptionBoolean(Udt::SocketOptionName::Rendezvous); }
-			void set(bool value) { SetSocketOption(Udt::SocketOptionName::Rendezvous, value); }
+			void set(bool value) { SetSocketOptionBoolean(Udt::SocketOptionName::Rendezvous, value); }
 		}
 
 		property bool ReuseAddress
 		{
 			bool get(void) { return GetSocketOptionBoolean(Udt::SocketOptionName::ReuseAddress); }
-			void set(bool value) { SetSocketOption(Udt::SocketOptionName::ReuseAddress, value); }
+			void set(bool value) { SetSocketOptionBoolean(Udt::SocketOptionName::ReuseAddress, value); }
 		}
 
 		property __int64 MaxBandwidth
 		{
 			__int64 get(void) { return GetSocketOptionInt64(Udt::SocketOptionName::MaxBandwidth); }
-			void set(__int64 value) { SetSocketOption(Udt::SocketOptionName::MaxBandwidth, value); }
+			void set(__int64 value) { SetSocketOptionInt64(Udt::SocketOptionName::MaxBandwidth, value); }
 		}
 
 		property System::Net::Sockets::LingerOption^ LingerState
@@ -380,13 +380,13 @@ namespace Udt
 		property int MaxPacketSize
 		{
 			int get(void) { return GetSocketOptionInt32(Udt::SocketOptionName::MaxPacketSize); }
-			void set(int value) { SetSocketOption(Udt::SocketOptionName::MaxPacketSize, value); }
+			void set(int value) { SetSocketOptionInt32(Udt::SocketOptionName::MaxPacketSize, value); }
 		}
 
 		property int MaxWindowSize
 		{
 			int get(void) { return GetSocketOptionInt32(Udt::SocketOptionName::MaxWindowSize); }
-			void set(int value) { SetSocketOption(Udt::SocketOptionName::MaxWindowSize, value); }
+			void set(int value) { SetSocketOptionInt32(Udt::SocketOptionName::MaxWindowSize, value); }
 		}
 
 		property Udt::CongestionControl^ CongestionControl
