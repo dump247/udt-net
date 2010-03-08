@@ -64,6 +64,10 @@ namespace Udt
 		__int64 GetSocketOptionInt64(SocketOptionName name);
 		bool GetSocketOptionBoolean(SocketOptionName name);
 
+		void SetSocketOptionInt32(SocketOptionName name, int value);
+		void SetSocketOptionInt64(SocketOptionName name, __int64 value);
+		void SetSocketOptionBoolean(SocketOptionName name, bool value);
+
 	public:
 
 		/// <summary>

@@ -555,7 +555,7 @@ int Udt::Socket::ReceiveMessage(cli::array<System::Byte>^ buffer, int offset, in
 	return result;
 }
 
-void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, int value)
+void Udt::Socket::SetSocketOptionInt32(Udt::SocketOptionName name, int value)
 {
 	if (UDT::ERROR == UDT::setsockopt(_socket, 0, (UDT::SOCKOPT)name, &value, sizeof(int)))
 	{
@@ -563,7 +563,7 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, int value)
 	}
 }
 
-void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, __int64 value)
+void Udt::Socket::SetSocketOptionInt64(Udt::SocketOptionName name, __int64 value)
 {
 	if (UDT::ERROR == UDT::setsockopt(_socket, 0, (UDT::SOCKOPT)name, &value, sizeof(__int64)))
 	{
@@ -571,11 +571,116 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, __int64 value)
 	}
 }
 
-void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, bool value)
+void Udt::Socket::SetSocketOptionBoolean(Udt::SocketOptionName name, bool value)
 {
 	if (UDT::ERROR == UDT::setsockopt(_socket, 0, (UDT::SOCKOPT)name, &value, sizeof(bool)))
 	{
 		throw Udt::SocketException::GetLastError(String::Concat("Error setting socket option ", name.ToString(), " to ", (Object^)value, "."));
+	}
+}
+
+void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, int value)
+{
+	switch (name)
+	{
+	case Udt::SocketOptionName::BlockingReceive:
+	case Udt::SocketOptionName::BlockingSend:
+	case Udt::SocketOptionName::Rendezvous:
+	case Udt::SocketOptionName::ReuseAddress:
+		SetSocketOptionBoolean(name, System::Convert::ToBoolean(value));
+		break;
+
+	case Udt::SocketOptionName::MaxPacketSize:
+	case Udt::SocketOptionName::MaxWindowSize:
+	case Udt::SocketOptionName::SendBuffer:
+	case Udt::SocketOptionName::ReceiveBuffer:
+	case Udt::SocketOptionName::UdpReceiveBuffer:
+	case Udt::SocketOptionName::UdpSendBuffer:
+	case Udt::SocketOptionName::SendTimeout:
+	case Udt::SocketOptionName::ReceiveTimeout:
+		SetSocketOptionInt32(name, value);
+		break;
+
+	case Udt::SocketOptionName::MaxBandwidth:
+		SetSocketOptionInt64(name, System::Convert::ToInt64(value));
+		break;
+
+	case Udt::SocketOptionName::Linger:
+	case Udt::SocketOptionName::CongestionControl:
+		throw gcnew ArgumentException(System::String::Concat("Invalid Int32 socket option: ", name), "name");
+
+	default:
+		throw gcnew ArgumentException("Unhandled socket option name.", "name");
+	}
+}
+
+void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, __int64 value)
+{
+	switch (name)
+	{
+	case Udt::SocketOptionName::BlockingReceive:
+	case Udt::SocketOptionName::BlockingSend:
+	case Udt::SocketOptionName::Rendezvous:
+	case Udt::SocketOptionName::ReuseAddress:
+		SetSocketOptionBoolean(name, System::Convert::ToBoolean(value));
+		break;
+
+	case Udt::SocketOptionName::MaxPacketSize:
+	case Udt::SocketOptionName::MaxWindowSize:
+	case Udt::SocketOptionName::SendBuffer:
+	case Udt::SocketOptionName::ReceiveBuffer:
+	case Udt::SocketOptionName::UdpReceiveBuffer:
+	case Udt::SocketOptionName::UdpSendBuffer:
+	case Udt::SocketOptionName::SendTimeout:
+	case Udt::SocketOptionName::ReceiveTimeout:
+		SetSocketOptionInt32(name, System::Convert::ToInt32(value));
+		break;
+
+	case Udt::SocketOptionName::MaxBandwidth:
+		SetSocketOptionInt64(name, value);
+		break;
+
+	case Udt::SocketOptionName::Linger:
+	case Udt::SocketOptionName::CongestionControl:
+		throw gcnew ArgumentException(System::String::Concat("Invalid Int64 socket option: ", name), "name");
+
+	default:
+		throw gcnew ArgumentException("Unhandled socket option name.", "name");
+	}
+}
+
+void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, bool value)
+{
+	switch (name)
+	{
+	case Udt::SocketOptionName::BlockingReceive:
+	case Udt::SocketOptionName::BlockingSend:
+	case Udt::SocketOptionName::Rendezvous:
+	case Udt::SocketOptionName::ReuseAddress:
+		SetSocketOptionBoolean(name, value);
+		break;
+
+	case Udt::SocketOptionName::MaxPacketSize:
+	case Udt::SocketOptionName::MaxWindowSize:
+	case Udt::SocketOptionName::SendBuffer:
+	case Udt::SocketOptionName::ReceiveBuffer:
+	case Udt::SocketOptionName::UdpReceiveBuffer:
+	case Udt::SocketOptionName::UdpSendBuffer:
+	case Udt::SocketOptionName::SendTimeout:
+	case Udt::SocketOptionName::ReceiveTimeout:
+		SetSocketOptionInt32(name, System::Convert::ToInt32(value));
+		break;
+
+	case Udt::SocketOptionName::MaxBandwidth:
+		SetSocketOptionInt64(name, System::Convert::ToInt64(value));
+		break;
+
+	case Udt::SocketOptionName::Linger:
+	case Udt::SocketOptionName::CongestionControl:
+		throw gcnew ArgumentException(System::String::Concat("Invalid Boolean socket option: ", name), "name");
+
+	default:
+		throw gcnew ArgumentException("Unhandled socket option name.", "name");
 	}
 }
 
@@ -634,16 +739,33 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, System::Object^ va
 		if (value == nullptr)
 			throw gcnew ArgumentNullException("value");
 
-		Type^ valueType = value->GetType();
+		switch (name)
+		{
+		case Udt::SocketOptionName::BlockingReceive:
+		case Udt::SocketOptionName::BlockingSend:
+		case Udt::SocketOptionName::Rendezvous:
+		case Udt::SocketOptionName::ReuseAddress:
+			SetSocketOptionBoolean(name, System::Convert::ToBoolean(value));
+			break;
 
-		if (valueType->Equals(Int32::typeid))
-			SetSocketOption(name, (int)value);
-		else if (valueType->Equals(Int64::typeid))
-			SetSocketOption(name, (__int64)value);
-		else if (valueType->Equals(Boolean::typeid))
-			SetSocketOption(name, (bool)value);
-		else
-			throw gcnew ArgumentException("Unknown socket option name and/or value type.");
+		case Udt::SocketOptionName::MaxPacketSize:
+		case Udt::SocketOptionName::MaxWindowSize:
+		case Udt::SocketOptionName::SendBuffer:
+		case Udt::SocketOptionName::ReceiveBuffer:
+		case Udt::SocketOptionName::UdpReceiveBuffer:
+		case Udt::SocketOptionName::UdpSendBuffer:
+		case Udt::SocketOptionName::SendTimeout:
+		case Udt::SocketOptionName::ReceiveTimeout:
+			SetSocketOptionInt32(name, System::Convert::ToInt32(value));
+			break;
+
+		case Udt::SocketOptionName::MaxBandwidth:
+			SetSocketOptionInt64(name, System::Convert::ToInt64(value));
+			break;
+
+		default:
+			throw gcnew ArgumentException("Unhandled socket option name.", "name");
+		}
 	}
 }
 
@@ -687,7 +809,7 @@ System::Object^ Udt::Socket::GetSocketOption(Udt::SocketOptionName name)
 		return _congestionControl;
 
 	default:
-		throw gcnew ArgumentException("Unhandled socket option name.");
+		throw gcnew ArgumentException("Unhandled socket option name.", "name");
 	}
 }
 

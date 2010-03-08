@@ -6,6 +6,7 @@ using System.Net.Sockets;
 
 using NUnit.Framework;
 using System.Net;
+using System.Threading;
 
 namespace UdtProtocol_Test
 {
@@ -306,6 +307,116 @@ namespace UdtProtocol_Test
                 });
 
                 Assert.AreEqual(Udt.SocketError.UnboundSocket, error.SocketErrorCode);
+            }
+        }
+
+        ///// <summary>
+        ///// Test for <see cref="Udt.Socket.GetPerformanceInfo()"/> when the
+        ///// connection is not open.
+        ///// </summary>
+        //[Test]
+        //public void GetPerformanceInfo()
+        //{
+        //    IPEndPoint serverEndPoint = null;
+        //    ManualResetEvent serverEvent = new ManualResetEvent(false);
+
+        //    ThreadPool.QueueUserWorkItem((object state) =>
+        //    {
+        //        using (Udt.Socket server = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+        //        {
+        //            server.Bind(IPAddress.Any, 0);
+        //            serverEndPoint = server.LocalEndPoint;
+        //            server.Listen(1);
+                    
+        //            serverEvent.Set();
+
+        //            using (Udt.Socket serverClient = server.Accept())
+        //            {
+        //                serverClient.Receive(new byte[100]);
+        //            }
+        //        }
+        //    });
+
+        //    serverEvent.WaitOne();
+
+        //    using (Udt.Socket client = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+        //    {
+        //        client.Connect(serverEndPoint);
+        //        client.Send(new byte[100]);
+
+        //        Udt.TraceInfo perf = client.GetPerformanceInfo();
+        //    }   
+        //}
+
+        /// <summary>
+        /// Test for <see cref="Udt.Socket.GetPerformanceInfo()"/> when the
+        /// connection is not open.
+        /// </summary>
+        [Test]
+        public void GetPerformanceInfo__NotConnected()
+        {
+            using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+            {
+                Udt.SocketException error = Assert.Throws<Udt.SocketException>(() => socket.GetPerformanceInfo());
+                Assert.AreEqual(Udt.SocketError.NoConnection, error.SocketErrorCode);
+            }
+        }
+
+        /// <summary>
+        /// Test setting and retrieving the various socket optins.
+        /// </summary>
+        [Test]
+        public void SocketOptions()
+        {
+            using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+            {
+                // BlockingReceive
+                Assert.IsTrue(socket.BlockingReceive);
+                socket.BlockingReceive = false;
+                Assert.IsFalse(socket.BlockingReceive);
+
+                Assert.IsFalse((bool)socket.GetSocketOption(Udt.SocketOptionName.BlockingReceive));
+                socket.SetSocketOption(Udt.SocketOptionName.BlockingReceive, true);
+                Assert.IsTrue((bool)socket.GetSocketOption(Udt.SocketOptionName.BlockingReceive));
+
+                // LingerState
+                LingerOption opt = socket.LingerState;
+                Assert.IsTrue(opt.Enabled);
+                Assert.AreEqual(180, opt.LingerTime);
+                socket.LingerState = new LingerOption(false, 500);
+                opt = socket.LingerState;
+                Assert.IsFalse(opt.Enabled);
+                Assert.AreEqual(500, opt.LingerTime);
+
+                opt = (LingerOption)socket.GetSocketOption(Udt.SocketOptionName.Linger);
+                Assert.IsFalse(opt.Enabled);
+                Assert.AreEqual(500, opt.LingerTime);
+                socket.SetSocketOption(Udt.SocketOptionName.Linger, new LingerOption(true, 180));
+                opt = (LingerOption)socket.GetSocketOption(Udt.SocketOptionName.Linger);
+                Assert.IsTrue(opt.Enabled);
+                Assert.AreEqual(180, opt.LingerTime);
+
+                // ReceiveTimeout
+                Assert.AreEqual(-1, socket.ReceiveTimeout);
+                socket.ReceiveTimeout = 50;
+                Assert.AreEqual(50, socket.ReceiveTimeout);
+
+                Assert.AreEqual(50, socket.GetSocketOption(Udt.SocketOptionName.ReceiveTimeout));
+                socket.SetSocketOption(Udt.SocketOptionName.ReceiveTimeout, -1);
+                Assert.AreEqual(-1, socket.GetSocketOption(Udt.SocketOptionName.ReceiveTimeout));
+
+                // ReceiveTimeout
+                Assert.AreEqual(-1L, socket.MaxBandwidth);
+                socket.MaxBandwidth = 50L;
+                Assert.AreEqual(50L, socket.MaxBandwidth);
+
+                Assert.AreEqual(50L, socket.GetSocketOption(Udt.SocketOptionName.MaxBandwidth));
+                socket.SetSocketOption(Udt.SocketOptionName.MaxBandwidth, (object)1);
+                Assert.AreEqual(1L, socket.GetSocketOption(Udt.SocketOptionName.MaxBandwidth));
+                socket.SetSocketOption(Udt.SocketOptionName.MaxBandwidth, 2);
+                Assert.AreEqual(2L, socket.GetSocketOption(Udt.SocketOptionName.MaxBandwidth));
+                socket.SetSocketOption(Udt.SocketOptionName.MaxBandwidth, -1L);
+                Assert.AreEqual(-1L, socket.GetSocketOption(Udt.SocketOptionName.MaxBandwidth));
             }
         }
     }
