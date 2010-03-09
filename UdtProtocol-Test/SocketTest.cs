@@ -378,6 +378,12 @@ namespace UdtProtocol_Test
                 Assert.IsFalse((bool)socket.GetSocketOption(Udt.SocketOptionName.BlockingReceive));
                 socket.SetSocketOption(Udt.SocketOptionName.BlockingReceive, true);
                 Assert.IsTrue((bool)socket.GetSocketOption(Udt.SocketOptionName.BlockingReceive));
+                socket.SetSocketOption(Udt.SocketOptionName.BlockingReceive, 0);
+                Assert.IsFalse(socket.BlockingReceive);
+                socket.SetSocketOption(Udt.SocketOptionName.BlockingReceive, 10L);
+                Assert.IsTrue(socket.BlockingReceive);
+                socket.SetSocketOption(Udt.SocketOptionName.BlockingReceive, (object)false);
+                Assert.IsFalse((bool)socket.GetSocketOption(Udt.SocketOptionName.BlockingReceive));
 
                 // LingerState
                 LingerOption opt = socket.LingerState;
@@ -396,6 +402,35 @@ namespace UdtProtocol_Test
                 Assert.IsTrue(opt.Enabled);
                 Assert.AreEqual(180, opt.LingerTime);
 
+                ArgumentException argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.Linger, 1));
+                Assert.AreEqual("name", argEx.ParamName);
+                argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.Linger, -10L));
+                Assert.AreEqual("name", argEx.ParamName);
+                argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.Linger, true));
+                Assert.AreEqual("name", argEx.ParamName);
+                argEx = Assert.Throws<ArgumentNullException>(() => socket.SetSocketOption(Udt.SocketOptionName.Linger, null));
+                Assert.AreEqual("value", argEx.ParamName);
+                argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.Linger, "string value"));
+                Assert.AreEqual("value", argEx.ParamName);
+
+                // CongestionControl
+                Udt.CongestionControl cc = new Udt.CongestionControl();
+                Assert.IsNull(socket.CongestionControl);
+                socket.CongestionControl = cc;
+                Assert.AreSame(cc, socket.CongestionControl);
+
+                Assert.AreSame(cc, socket.GetSocketOption(Udt.SocketOptionName.CongestionControl));
+                cc = new Udt.CongestionControl();
+                socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, cc);
+                Assert.AreSame(cc, socket.CongestionControl);
+                socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, cc);
+                Assert.AreSame(cc, socket.CongestionControl);
+
+                argEx = Assert.Throws<ArgumentNullException>(() => socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, null));
+                Assert.AreEqual("value", argEx.ParamName);
+                argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, "string value"));
+                Assert.AreEqual("value", argEx.ParamName);
+
                 // ReceiveTimeout
                 Assert.AreEqual(-1, socket.ReceiveTimeout);
                 socket.ReceiveTimeout = 50;
@@ -404,6 +439,12 @@ namespace UdtProtocol_Test
                 Assert.AreEqual(50, socket.GetSocketOption(Udt.SocketOptionName.ReceiveTimeout));
                 socket.SetSocketOption(Udt.SocketOptionName.ReceiveTimeout, -1);
                 Assert.AreEqual(-1, socket.GetSocketOption(Udt.SocketOptionName.ReceiveTimeout));
+                socket.SetSocketOption(Udt.SocketOptionName.ReceiveTimeout, 5L);
+                Assert.AreEqual(5, socket.GetSocketOption(Udt.SocketOptionName.ReceiveTimeout));
+                socket.SetSocketOption(Udt.SocketOptionName.ReceiveTimeout, true);
+                Assert.AreEqual(1, socket.GetSocketOption(Udt.SocketOptionName.ReceiveTimeout));
+                socket.SetSocketOption(Udt.SocketOptionName.ReceiveTimeout, (object)10);
+                Assert.AreEqual(10, socket.GetSocketOption(Udt.SocketOptionName.ReceiveTimeout));
 
                 // ReceiveTimeout
                 Assert.AreEqual(-1L, socket.MaxBandwidth);
@@ -417,7 +458,18 @@ namespace UdtProtocol_Test
                 Assert.AreEqual(2L, socket.GetSocketOption(Udt.SocketOptionName.MaxBandwidth));
                 socket.SetSocketOption(Udt.SocketOptionName.MaxBandwidth, -1L);
                 Assert.AreEqual(-1L, socket.GetSocketOption(Udt.SocketOptionName.MaxBandwidth));
+                socket.SetSocketOption(Udt.SocketOptionName.MaxBandwidth, false);
+                Assert.AreEqual(0L, socket.GetSocketOption(Udt.SocketOptionName.MaxBandwidth));
+                socket.SetSocketOption(Udt.SocketOptionName.MaxBandwidth, (object)10L);
+                Assert.AreEqual(10L, socket.GetSocketOption(Udt.SocketOptionName.MaxBandwidth));
+
+                argEx = Assert.Throws<ArgumentNullException>(() => socket.SetSocketOption(Udt.SocketOptionName.MaxBandwidth, null));
+                Assert.AreEqual("value", argEx.ParamName);
             }
+        }
+
+        private class CongestionControlTester : Udt.CongestionControl
+        {
         }
     }
 }

@@ -707,7 +707,7 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, System::Object^ va
 		}
 		else
 		{
-			throw gcnew ArgumentException("Linger socket option value must be of type System.Net.Sockets.LingerOption");
+			throw gcnew ArgumentException("Linger socket option value must be of type System.Net.Sockets.LingerOption", "value");
 		}
 	}
 	else if (name == Udt::SocketOptionName::CongestionControl)
@@ -731,7 +731,7 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, System::Object^ va
 			}
 			else
 			{
-				throw gcnew ArgumentException("Congestion control socket option value must be of type Udt.CongestionControl");
+				throw gcnew ArgumentException("Congestion control socket option value must be of type Udt.CongestionControl", "value");
 			}
 		}
 	}
