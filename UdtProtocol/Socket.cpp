@@ -48,6 +48,7 @@ using namespace System;
 using namespace System::Net;
 using namespace System::Net::Sockets;
 using namespace System::Collections::Generic;
+using namespace System::Globalization;
 
 void ToTimeVal(TimeSpan^ ts, timeval& tv)
 {
@@ -587,7 +588,7 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, int value)
 	case Udt::SocketOptionName::BlockingSend:
 	case Udt::SocketOptionName::Rendezvous:
 	case Udt::SocketOptionName::ReuseAddress:
-		SetSocketOptionBoolean(name, System::Convert::ToBoolean(value));
+		SetSocketOptionBoolean(name, value != 0);
 		break;
 
 	case Udt::SocketOptionName::MaxPacketSize:
@@ -602,7 +603,7 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, int value)
 		break;
 
 	case Udt::SocketOptionName::MaxBandwidth:
-		SetSocketOptionInt64(name, System::Convert::ToInt64(value));
+		SetSocketOptionInt64(name, (long)value);
 		break;
 
 	case Udt::SocketOptionName::Linger:
@@ -622,7 +623,7 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, __int64 value)
 	case Udt::SocketOptionName::BlockingSend:
 	case Udt::SocketOptionName::Rendezvous:
 	case Udt::SocketOptionName::ReuseAddress:
-		SetSocketOptionBoolean(name, System::Convert::ToBoolean(value));
+		SetSocketOptionBoolean(name, value != 0);
 		break;
 
 	case Udt::SocketOptionName::MaxPacketSize:
@@ -633,7 +634,7 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, __int64 value)
 	case Udt::SocketOptionName::UdpSendBuffer:
 	case Udt::SocketOptionName::SendTimeout:
 	case Udt::SocketOptionName::ReceiveTimeout:
-		SetSocketOptionInt32(name, System::Convert::ToInt32(value));
+		SetSocketOptionInt32(name, (int)value);
 		break;
 
 	case Udt::SocketOptionName::MaxBandwidth:
@@ -668,11 +669,11 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, bool value)
 	case Udt::SocketOptionName::UdpSendBuffer:
 	case Udt::SocketOptionName::SendTimeout:
 	case Udt::SocketOptionName::ReceiveTimeout:
-		SetSocketOptionInt32(name, System::Convert::ToInt32(value));
+		SetSocketOptionInt32(name, value ? 1 : 0);
 		break;
 
 	case Udt::SocketOptionName::MaxBandwidth:
-		SetSocketOptionInt64(name, System::Convert::ToInt64(value));
+		SetSocketOptionInt64(name, value ? 1L : 0L);
 		break;
 
 	case Udt::SocketOptionName::Linger:
@@ -745,7 +746,7 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, System::Object^ va
 		case Udt::SocketOptionName::BlockingSend:
 		case Udt::SocketOptionName::Rendezvous:
 		case Udt::SocketOptionName::ReuseAddress:
-			SetSocketOptionBoolean(name, System::Convert::ToBoolean(value));
+			SetSocketOptionBoolean(name, System::Convert::ToBoolean(value, CultureInfo::InvariantCulture));
 			break;
 
 		case Udt::SocketOptionName::MaxPacketSize:
@@ -756,11 +757,11 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, System::Object^ va
 		case Udt::SocketOptionName::UdpSendBuffer:
 		case Udt::SocketOptionName::SendTimeout:
 		case Udt::SocketOptionName::ReceiveTimeout:
-			SetSocketOptionInt32(name, System::Convert::ToInt32(value));
+			SetSocketOptionInt32(name, System::Convert::ToInt32(value, CultureInfo::InvariantCulture));
 			break;
 
 		case Udt::SocketOptionName::MaxBandwidth:
-			SetSocketOptionInt64(name, System::Convert::ToInt64(value));
+			SetSocketOptionInt64(name, System::Convert::ToInt64(value, CultureInfo::InvariantCulture));
 			break;
 
 		default:
