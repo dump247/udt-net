@@ -37,7 +37,15 @@ namespace Udt
 	public ref class Message
 	{
 	public:
+
+		/// <summary>
+		/// Infinite <see cref="TimeToLive" />.
+		/// </summary>
 		static initonly System::TimeSpan Infinite = System::TimeSpan(0, 0, 0, 0, -1);
+
+		/// <summary>
+		/// Maximum value for <see cref="TimeToLive" />.
+		/// </summary>
 		static initonly System::TimeSpan Max = System::TimeSpan(0, 0, 0, 0, System::Int32::MaxValue);
 
 	private:
@@ -45,17 +53,64 @@ namespace Udt
 		System::TimeSpan _timeToLive;
 
 	public:
+
+		/// <summary>
+		/// Initialize a new instance.
+		/// </summary>
+		/// <param name="array">Array that contains the message bytes.</param>
+		/// <exception cref="System::ArgumentNullException">If <paramref name="array"/> is a null reference.</exception>
 		Message(cli::array<System::Byte>^ array);
+
+		/// <summary>
+		/// Initialize a new instance.
+		/// </summary>
+		/// <param name="array">Array that contains the message bytes.</param>
+		/// <param name="offset">Offset into <paramref name="array"/> that the message starts.</param>
+		/// <param name="count">Number of bytes from <paramref name="array"/> to include in the message.</param>
+		/// <exception cref="System::ArgumentNullException">
+		/// If <paramref name="array"/> is a null reference.
+		/// </exception>
+		/// <exception cref="System::ArgumentOutOfRangeException">
+		/// If <paramref name="offset"/> is negative.
+		/// </exception>
+		/// <exception cref="System::ArgumentException">
+		/// If <paramref name="offset"/> and <paramref name="count"/> do not
+		/// specify a valid range in <paramref name="array"/>.
+		/// </exception>
 		Message(cli::array<System::Byte>^ array, int offset, int count);
+
+		/// <summary>
+		/// Initialize a new instance.
+		/// </summary>
+		/// <param name="buffer">Array segment that contains the message bytes.</param>
+		/// <exception cref="System::ArgumentException">
+		/// If the array in <paramref name="buffer"/> is a null reference.
+		/// </exception>
 		Message(System::ArraySegment<System::Byte> buffer);
 
+		/// <summary>
+		/// Gets the message content.
+		/// </summary>
 		property System::ArraySegment<System::Byte> Buffer
 		{
 			System::ArraySegment<System::Byte> get(void) { return _buffer; }
 		}
 
+		/// <summary>
+		/// True if the message should be delivered in order.
+		/// Default value is <c>false</c>.
+		/// </summary>
 		property bool InOrder;
 
+		/// <summary>
+		/// The time-to-live of the message.
+		/// Default value is <see cref="Infinite"/>.
+		/// </summary>
+		/// <exception cref="System::ArgumentOutOfRangeException">
+		/// If <paramref name="value"/> is not <see cref="Infinite"/> and is less
+		/// than <see cref="System::TimeSpan::Zero"/> or greater than
+		/// <see cref="Max"/>.
+		/// </exception>
 		property System::TimeSpan TimeToLive
 		{
 			System::TimeSpan get(void) { return _timeToLive; }
