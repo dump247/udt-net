@@ -43,7 +43,7 @@ CongestionControl::CongestionControl(void)
 	_cccWrapper = NULL;
 }
 
-void CongestionControl::SetAckTimer(System::TimeSpan^ value)
+void CongestionControl::SetAckTimer(System::TimeSpan value)
 {
 	if (_cccWrapper != NULL)
 	{
@@ -59,7 +59,7 @@ void CongestionControl::SetAckInterval(int value)
 	}
 }
 
-void CongestionControl::SetReadTimeout(System::TimeSpan^ value)
+void CongestionControl::SetReadTimeout(System::TimeSpan value)
 {
 	if (_cccWrapper != NULL)
 	{
@@ -79,7 +79,7 @@ TraceInfo^ CongestionControl::PerformanceInfo::get(void)
 	}
 }
 
-void CongestionControl::PacketSendPeriod::set(System::TimeSpan^ value)
+void CongestionControl::PacketSendPeriod::set(System::TimeSpan value)
 {
 	if (_cccWrapper != NULL)
 	{
@@ -87,7 +87,7 @@ void CongestionControl::PacketSendPeriod::set(System::TimeSpan^ value)
 	}
 }
 
-System::TimeSpan^ CongestionControl::PacketSendPeriod::get(void)
+System::TimeSpan CongestionControl::PacketSendPeriod::get(void)
 {
 	if (_cccWrapper != NULL)
 	{
@@ -139,7 +139,7 @@ int CongestionControl::MaxPacketSize::get(void)
 	}
 }
 
-void CongestionControl::RoundtripTime::set(System::TimeSpan^ value)
+void CongestionControl::RoundtripTime::set(System::TimeSpan value)
 {
 	if (_cccWrapper != NULL)
 	{
@@ -147,7 +147,7 @@ void CongestionControl::RoundtripTime::set(System::TimeSpan^ value)
 	}
 }
 
-System::TimeSpan^ CongestionControl::RoundtripTime::get(void)
+System::TimeSpan CongestionControl::RoundtripTime::get(void)
 {
 	if (_cccWrapper != NULL)
 	{

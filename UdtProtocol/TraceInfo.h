@@ -44,7 +44,7 @@ namespace Udt
 	public:
 		TraceInfo(void);
 
-		property System::TimeSpan^ SocketCreated;
+		property System::TimeSpan SocketCreated;
 		property __int64 TotalPacketsSent;
 		property __int64 TotalPacketsReceived;
 		property int TotalSendPacketsLost;
@@ -75,7 +75,7 @@ namespace Udt
 			Justification = "NAK is the accepted abbreviation for negative acknowledgement in this context.")]
 		property int TotalNaksReceived;
 
-		property System::TimeSpan^ TotalSendDuration;
+		property System::TimeSpan TotalSendDuration;
 
 		property __int64 PacketsSent;
 		property __int64 PacketsReceived;
@@ -108,13 +108,13 @@ namespace Udt
 		property int NaksReceived;
 		property double SendMbps;
 		property double ReceiveMbps;
-		property System::TimeSpan^ SendDuration;
+		property System::TimeSpan SendDuration;
 
-		property System::TimeSpan^ PacketSendPeriod;
+		property System::TimeSpan PacketSendPeriod;
 		property int FlowWindow;
 		property int CongestionWindow;
 		property int FlightSize;
-		property System::TimeSpan^ RoundtripTime;
+		property System::TimeSpan RoundtripTime;
 		property double BandwidthMbps;
 		property int AvailableSendBuffer;
 		property int AvailableReceiveBuffer;

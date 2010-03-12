@@ -56,19 +56,19 @@ namespace Udt
 		virtual void onACK(const int& ack) { _wrapped->OnAck(ack); }
 		virtual void onLoss(const int* losslist, const int& size);
 
-		void setACKTimer(System::TimeSpan^ value);
+		void setACKTimer(System::TimeSpan value);
 		void setACKInterval(int packets);
-		void setRTO(System::TimeSpan^ value);
+		void setRTO(System::TimeSpan value);
 		TraceInfo^ getPerfInfo(void);
 
-		void setPacketSendPeriod(System::TimeSpan^ value);
-		System::TimeSpan^ getPacketSendPeriod(void) const;
+		void setPacketSendPeriod(System::TimeSpan value);
+		System::TimeSpan getPacketSendPeriod(void) const;
 
 		void setWindowSize(int value);
 		int getWindowSize() const;
 
-		void setRoundTripTime(System::TimeSpan^ value);
-		System::TimeSpan^ getRoundTripTime(void) const;
+		void setRoundTripTime(System::TimeSpan value);
+		System::TimeSpan getRoundTripTime(void) const;
 
 		void setMaxPacketSize(int value);
 		int getMaxPacketSize() const;

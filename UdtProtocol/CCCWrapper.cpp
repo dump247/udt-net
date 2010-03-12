@@ -63,15 +63,12 @@ void CCCWrapper::onLoss(const int* losslist, const int& size)
 	}
 }
 
-void CCCWrapper::setACKTimer(TimeSpan^ value)
+void CCCWrapper::setACKTimer(TimeSpan value)
 {
-	if (value == nullptr)
-		throw gcnew System::ArgumentNullException("value");
-
-	if (value->CompareTo(TimeSpan::Zero) < 0)
+	if (value.CompareTo(TimeSpan::Zero) < 0)
 		throw gcnew System::ArgumentOutOfRangeException("value", value, "Value must be greater than or equal to 0.");
 
-	int ms = (int)value->TotalMilliseconds;
+	int ms = (int)value.TotalMilliseconds;
 	this->CCC::setACKTimer(ms);
 }
 
@@ -83,15 +80,12 @@ void CCCWrapper::setACKInterval(int packets)
 	this->CCC::setACKInterval(packets);
 }
 
-void CCCWrapper::setRTO(TimeSpan^ value)
+void CCCWrapper::setRTO(TimeSpan value)
 {
-	if (value == nullptr)
-		throw gcnew System::ArgumentNullException("value");
-
-	if (value->CompareTo(TimeSpan::Zero) < 0)
+	if (value.CompareTo(TimeSpan::Zero) < 0)
 		throw gcnew System::ArgumentOutOfRangeException("value", value, "Value must be greater than or equal to 0.");
 
-	int us = (int)(value->Ticks / 10);
+	int us = (int)(value.Ticks / 10);
 	this->CCC::setRTO(us);
 }
 
@@ -101,20 +95,17 @@ TraceInfo^ CCCWrapper::getPerfInfo(void)
 	return gcnew TraceInfo(*trace_info);
 }
 
-void CCCWrapper::setPacketSendPeriod(System::TimeSpan^ value)
+void CCCWrapper::setPacketSendPeriod(System::TimeSpan value)
 {
-	if (value == nullptr)
-		throw gcnew System::ArgumentNullException("value");
-
-	if (value->CompareTo(TimeSpan::Zero) < 0)
+	if (value.CompareTo(TimeSpan::Zero) < 0)
 		throw gcnew System::ArgumentOutOfRangeException("value", value, "Value must be greater than or equal to 0.");
 
-	m_dPktSndPeriod = (double)(value->Ticks / 10);
+	m_dPktSndPeriod = (double)(value.Ticks / 10);
 }
 
-System::TimeSpan^ CCCWrapper::getPacketSendPeriod(void) const
+System::TimeSpan CCCWrapper::getPacketSendPeriod(void) const
 {
-	return gcnew System::TimeSpan((__int64)(m_dPktSndPeriod * 10));
+	return System::TimeSpan((__int64)(m_dPktSndPeriod * 10));
 }
 
 void CCCWrapper::setWindowSize(int value)
@@ -130,20 +121,17 @@ int CCCWrapper::getWindowSize() const
 	return (int)m_dCWndSize;
 }
 
-void CCCWrapper::setRoundTripTime(System::TimeSpan^ value)
+void CCCWrapper::setRoundTripTime(System::TimeSpan value)
 {
-	if (value == nullptr)
-		throw gcnew System::ArgumentNullException("value");
-
-	if (value->CompareTo(TimeSpan::Zero) < 0)
+	if (value.CompareTo(TimeSpan::Zero) < 0)
 		throw gcnew System::ArgumentOutOfRangeException("value", value, "Value must be greater than or equal to 0.");
 
-	m_iRTT = (int)(value->Ticks / 10);
+	m_iRTT = (int)(value.Ticks / 10);
 }
 
-System::TimeSpan^ CCCWrapper::getRoundTripTime(void) const
+System::TimeSpan CCCWrapper::getRoundTripTime(void) const
 {
-	return gcnew System::TimeSpan(m_iRTT * 10);
+	return System::TimeSpan(m_iRTT * 10);
 }
 
 void CCCWrapper::setMaxPacketSize(int value)

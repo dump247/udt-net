@@ -61,7 +61,7 @@ namespace Udt
 			"Microsoft.Naming",
 			"CA1704:IdentifiersShouldBeSpelledCorrectly",
 			Justification = "ACK is the accepted abbreviation for acknowledgement in this context.")]
-		void SetAckTimer(System::TimeSpan^ value);
+		void SetAckTimer(System::TimeSpan value);
 
 		[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
 			"Microsoft.Naming",
@@ -69,14 +69,14 @@ namespace Udt
 			Justification = "ACK is the accepted abbreviation for acknowledgement in this context.")]
 		void SetAckInterval(int value);
 
-		void SetReadTimeout(System::TimeSpan^ value);
+		void SetReadTimeout(System::TimeSpan value);
 
 		property TraceInfo^ PerformanceInfo { TraceInfo^ get(void); }
 
-		property System::TimeSpan^ PacketSendPeriod
+		property System::TimeSpan PacketSendPeriod
 		{
-			System::TimeSpan^ get(void);
-			void set(System::TimeSpan^ value);
+			System::TimeSpan get(void);
+			void set(System::TimeSpan value);
 		}
 
 		property int WindowSize
@@ -91,10 +91,10 @@ namespace Udt
 			void set(int value);
 		}
 
-		property System::TimeSpan^ RoundtripTime
+		property System::TimeSpan RoundtripTime
 		{
-			System::TimeSpan^ get(void);
-			void set(System::TimeSpan^ value);
+			System::TimeSpan get(void);
+			void set(System::TimeSpan value);
 		}
 	};
 }

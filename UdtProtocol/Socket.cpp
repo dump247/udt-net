@@ -50,9 +50,9 @@ using namespace System::Net::Sockets;
 using namespace System::Collections::Generic;
 using namespace System::Globalization;
 
-void ToTimeVal(TimeSpan^ ts, timeval& tv)
+void ToTimeVal(TimeSpan ts, timeval& tv)
 {
-	__int64 ticks = ts->Ticks;
+	__int64 ticks = ts.Ticks;
 	tv.tv_sec = (long)(ticks / 10000000);
 	tv.tv_usec = (ticks % 10000000) / 10;
 }

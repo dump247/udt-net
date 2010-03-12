@@ -38,7 +38,7 @@ using namespace System;
 
 TraceInfo::TraceInfo(const UDT::TRACEINFO& copy)
 {
-	this->SocketCreated = gcnew TimeSpan(copy.msTimeStamp * 10000);
+	this->SocketCreated = TimeSpan(copy.msTimeStamp * 10000);
 	this->TotalPacketsSent = copy.pktSentTotal;
 	this->TotalPacketsReceived = copy.pktRecvTotal;
 	this->TotalSendPacketsLost = copy.pktSndLossTotal;
@@ -48,7 +48,7 @@ TraceInfo::TraceInfo(const UDT::TRACEINFO& copy)
 	this->TotalAcksReceived = copy.pktRecvACKTotal;
 	this->TotalNaksSent = copy.pktSentNAKTotal;
 	this->TotalNaksReceived = copy.pktRecvNAKTotal;
-	this->TotalSendDuration = gcnew TimeSpan(copy.usSndDurationTotal * 10);
+	this->TotalSendDuration = TimeSpan(copy.usSndDurationTotal * 10);
 
 	this->PacketsSent = copy.pktSent;
 	this->PacketsReceived = copy.pktRecv;
@@ -61,13 +61,13 @@ TraceInfo::TraceInfo(const UDT::TRACEINFO& copy)
 	this->NaksReceived = copy.pktRecvNAK;
 	this->SendMbps = copy.mbpsSendRate;
 	this->ReceiveMbps = copy.mbpsRecvRate;
-	this->SendDuration = gcnew TimeSpan(copy.usSndDuration * 10);
+	this->SendDuration = TimeSpan(copy.usSndDuration * 10);
 
-	this->PacketSendPeriod = gcnew TimeSpan((__int64)(copy.usPktSndPeriod * 10));
+	this->PacketSendPeriod = TimeSpan((__int64)(copy.usPktSndPeriod * 10));
 	this->FlowWindow = copy.pktFlowWindow;
 	this->CongestionWindow = copy.pktCongestionWindow;
 	this->FlightSize = copy.pktFlightSize;
-	this->RoundtripTime = gcnew TimeSpan((__int64)(copy.msRTT * 10000));
+	this->RoundtripTime = TimeSpan((__int64)(copy.msRTT * 10000));
 	this->BandwidthMbps = copy.mbpsBandwidth;
 	this->AvailableSendBuffer = copy.byteAvailSndBuf;
 	this->AvailableReceiveBuffer = copy.byteAvailRcvBuf;
