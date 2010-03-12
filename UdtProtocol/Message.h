@@ -37,25 +37,16 @@ namespace Udt
 	public ref class Message
 	{
 	public:
-		[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
-			"Microsoft.Security",
-			"CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-			Justification = "System.TimeSpan is immutable.")]
-		static initonly System::TimeSpan^ Infinite = gcnew System::TimeSpan(0, 0, 0, 0, -1);
-
-		[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
-			"Microsoft.Security",
-			"CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-			Justification = "System.TimeSpan is immutable.")]
-		static initonly System::TimeSpan^ Max = gcnew  System::TimeSpan(0, 0, 0, 0, System::Int32::MaxValue);
+		static initonly System::TimeSpan Infinite = System::TimeSpan(0, 0, 0, 0, -1);
+		static initonly System::TimeSpan Max = System::TimeSpan(0, 0, 0, 0, System::Int32::MaxValue);
 
 	private:
 		System::ArraySegment<System::Byte> _buffer;
-		System::TimeSpan^ _timeToLive;
+		System::TimeSpan _timeToLive;
 
 	public:
-		Message(cli::array<System::Byte>^ buffer);
-		Message(cli::array<System::Byte>^ buffer, int offset, int count);
+		Message(cli::array<System::Byte>^ array);
+		Message(cli::array<System::Byte>^ array, int offset, int count);
 		Message(System::ArraySegment<System::Byte> buffer);
 
 		property System::ArraySegment<System::Byte> Buffer
@@ -65,16 +56,13 @@ namespace Udt
 
 		property bool InOrder;
 
-		property System::TimeSpan^ TimeToLive
+		property System::TimeSpan TimeToLive
 		{
-			System::TimeSpan^ get(void) { return _timeToLive; }
+			System::TimeSpan get(void) { return _timeToLive; }
 
-			void set(System::TimeSpan^ value)
+			void set(System::TimeSpan value)
 			{
-				if (value == nullptr)
-					throw gcnew System::ArgumentNullException("value");
-
-				if (value != Message::Infinite && (value->CompareTo(System::TimeSpan::Zero) < 0 || value->CompareTo(Message::Max) > 0))
+				if (value != Message::Infinite && (value.CompareTo(System::TimeSpan::Zero) < 0 || value.CompareTo(Message::Max) > 0))
 					throw gcnew System::ArgumentOutOfRangeException("value", value, System::String::Concat("Value must be ", Infinite, " or between ", System::TimeSpan::Zero, " and ", Max, "."));
 
 				_timeToLive = value;

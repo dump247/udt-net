@@ -35,20 +35,23 @@
 
 using namespace Udt;
 
-Message::Message(cli::array<System::Byte>^ buffer)
+Message::Message(cli::array<System::Byte>^ array)
 {
-	_buffer = System::ArraySegment<System::Byte>(buffer);
+	_buffer = System::ArraySegment<System::Byte>(array);
 	_timeToLive = Message::Infinite;
 }
 
-Message::Message(cli::array<System::Byte>^ buffer, int offset, int count)
+Message::Message(cli::array<System::Byte>^ array, int offset, int count)
 {
-	_buffer = System::ArraySegment<System::Byte>(buffer, offset, count);
+	_buffer = System::ArraySegment<System::Byte>(array, offset, count);
 	_timeToLive = Message::Infinite;
 }
 
 Message::Message(System::ArraySegment<System::Byte> buffer)
 {
+	if (buffer.Array == nullptr)
+		throw gcnew System::ArgumentException("Array can not be a null reference.", "buffer");
+
 	_buffer = buffer;
 	_timeToLive = Message::Infinite;
 }

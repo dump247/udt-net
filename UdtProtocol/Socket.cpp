@@ -517,7 +517,7 @@ int Udt::Socket::SendMessage(Message^ message)
 		throw gcnew ArgumentNullException("message");
 
 	ArraySegment<Byte> buffer = message->Buffer;
-	int ttl = (int)message->TimeToLive->TotalMilliseconds;
+	int ttl = (int)message->TimeToLive.TotalMilliseconds;
 	return UdtSendMessage(_socket, buffer.Array, buffer.Offset, buffer.Count, ttl, message->InOrder);
 }
 
