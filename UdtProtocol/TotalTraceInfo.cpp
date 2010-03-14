@@ -31,21 +31,26 @@
  ****************************************************************/
 
 #include "StdAfx.h"
-#include "TraceInfo.h"
+#include "TotalTraceInfo.h"
 
 using namespace Udt;
 using namespace System;
 
-TraceInfo::TraceInfo(const UDT::TRACEINFO& copy)
+TotalTraceInfo::TotalTraceInfo(const UDT::TRACEINFO& copy)
 {
-	_total = gcnew TotalTraceInfo(copy);
-	_local = gcnew LocalTraceInfo(copy);
-	_probe = gcnew ProbeTraceInfo(copy);
+	this->SocketCreated = TimeSpan(copy.msTimeStamp * 10000);
+	this->PacketsSent = copy.pktSentTotal;
+	this->PacketsReceived = copy.pktRecvTotal;
+	this->SendPacketsLost = copy.pktSndLossTotal;
+	this->ReceivePacketsLost = copy.pktRcvLossTotal;
+	this->PacketsRetransmitted = copy.pktRetransTotal;
+	this->AcksSent = copy.pktSentACKTotal;
+	this->AcksReceived = copy.pktRecvACKTotal;
+	this->NaksSent = copy.pktSentNAKTotal;
+	this->NaksReceived = copy.pktRecvNAKTotal;
+	this->SendDuration = TimeSpan(copy.usSndDurationTotal * 10);
 }
 
-TraceInfo::TraceInfo(void)
+TotalTraceInfo::TotalTraceInfo(void)
 {
-	_total = gcnew TotalTraceInfo();
-	_local = gcnew LocalTraceInfo();
-	_probe = gcnew ProbeTraceInfo();
 }

@@ -208,11 +208,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\LocalTraceInfo.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Message.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\NativeIntArray.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ProbeTraceInfo.cpp"
 				>
 			</File>
 			<File
@@ -244,6 +252,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\TotalTraceInfo.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\TraceInfo.cpp"
 				>
 			</File>
@@ -266,11 +278,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\LocalTraceInfo.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Message.h"
 				>
 			</File>
 			<File
 				RelativePath=".\NativeIntArray.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ProbeTraceInfo.h"
 				>
 			</File>
 			<File
@@ -295,6 +315,10 @@
 			</File>
 			<File
 				RelativePath=".\Stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TotalTraceInfo.h"
 				>
 			</File>
 			<File

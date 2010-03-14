@@ -30,22 +30,64 @@
  * POSSIBILITY OF SUCH DAMAGE.
  ****************************************************************/
 
-#include "StdAfx.h"
-#include "TraceInfo.h"
+#pragma once
 
-using namespace Udt;
-using namespace System;
+#include <udt.h>
 
-TraceInfo::TraceInfo(const UDT::TRACEINFO& copy)
+namespace Udt
 {
-	_total = gcnew TotalTraceInfo(copy);
-	_local = gcnew LocalTraceInfo(copy);
-	_probe = gcnew ProbeTraceInfo(copy);
-}
+	/// <summary>
+	/// Performance trace information instant values at the time they are observed.
+	/// </summary>
+	public ref class ProbeTraceInfo
+	{
+	internal:
+		ProbeTraceInfo(const UDT::TRACEINFO& copy);
 
-TraceInfo::TraceInfo(void)
-{
-	_total = gcnew TotalTraceInfo();
-	_local = gcnew LocalTraceInfo();
-	_probe = gcnew ProbeTraceInfo();
+	public:
+		/// <summary>
+		/// Initialize a new instance with default values.
+		/// </summary>
+		ProbeTraceInfo(void);
+
+		/// <summary>
+		/// Packet sending period.
+		/// </summary>
+		property System::TimeSpan PacketSendPeriod;
+
+		/// <summary>
+		/// Flow window size, in number of packets.
+		/// </summary>
+		property int FlowWindow;
+
+		/// <summary>
+		/// Congestion window size, in number of packets.
+		/// </summary>
+		property int CongestionWindow;
+
+		/// <summary>
+		/// Number packets on the flight.
+		/// </summary>
+		property int FlightSize;
+
+		/// <summary>
+		/// Round trip time, in milliseconds.
+		/// </summary>
+		property System::TimeSpan RoundtripTime;
+
+		/// <summary>
+		/// Estimated bandwidth, in Mbps.
+		/// </summary>
+		property double BandwidthMbps;
+
+		/// <summary>
+		/// Available sending buffer size, in bytes.
+		/// </summary>
+		property int AvailableSendBuffer;
+
+		/// <summary>
+		/// Available receiving buffer size, in bytes.
+		/// </summary>
+		property int AvailableReceiveBuffer;
+	};
 }

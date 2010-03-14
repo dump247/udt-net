@@ -31,21 +31,27 @@
  ****************************************************************/
 
 #include "StdAfx.h"
-#include "TraceInfo.h"
+#include "LocalTraceInfo.h"
 
 using namespace Udt;
 using namespace System;
 
-TraceInfo::TraceInfo(const UDT::TRACEINFO& copy)
+LocalTraceInfo::LocalTraceInfo(const UDT::TRACEINFO& copy)
 {
-	_total = gcnew TotalTraceInfo(copy);
-	_local = gcnew LocalTraceInfo(copy);
-	_probe = gcnew ProbeTraceInfo(copy);
+	this->PacketsSent = copy.pktSent;
+	this->PacketsReceived = copy.pktRecv;
+	this->SendPacketsLost = copy.pktSndLoss;
+	this->ReceivePacketsLost = copy.pktRcvLoss;
+	this->PacketsRetransmitted = copy.pktRetrans;
+	this->AcksSent = copy.pktSentACK;
+	this->AcksReceived = copy.pktRecvACK;
+	this->NaksSent = copy.pktSentNAK;
+	this->NaksReceived = copy.pktRecvNAK;
+	this->SendMbps = copy.mbpsSendRate;
+	this->ReceiveMbps = copy.mbpsRecvRate;
+	this->SendDuration = TimeSpan(copy.usSndDuration * 10);
 }
 
-TraceInfo::TraceInfo(void)
+LocalTraceInfo::LocalTraceInfo(void)
 {
-	_total = gcnew TotalTraceInfo();
-	_local = gcnew LocalTraceInfo();
-	_probe = gcnew ProbeTraceInfo();
 }

@@ -54,7 +54,7 @@ namespace SendFile
 						client.SendFile(name);
 
 						trace = client.GetPerformanceInfo();
-						Console.WriteLine("Speed = {0}Mbits/sec", trace.SendMbps);
+						Console.WriteLine("Speed = {0}Mbits/sec", trace.Local.SendMbps);
 
 						client.Close();
 					}

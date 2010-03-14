@@ -33,90 +33,48 @@
 #pragma once
 
 #include <udt.h>
+#include "TotalTraceInfo.h"
+#include "LocalTraceInfo.h"
+#include "ProbeTraceInfo.h"
 
 namespace Udt
 {
+	/// <summary>
+	/// UDT socket performance trace information.
+	/// </summary>
 	public ref class TraceInfo
 	{
+	private:
+		Udt::TotalTraceInfo^ _total;
+		Udt::LocalTraceInfo^ _local;
+		Udt::ProbeTraceInfo^ _probe;
+
 	internal:
 		TraceInfo(const UDT::TRACEINFO& copy);
 
 	public:
+		/// <summary>
+		/// Initialize a new instance with default values.
+		/// </summary>
 		TraceInfo(void);
 
-		property System::TimeSpan SocketCreated;
-		property __int64 TotalPacketsSent;
-		property __int64 TotalPacketsReceived;
-		property int TotalSendPacketsLost;
-		property int TotalReceivePacketsLost;
-		property int TotalPacketsRetransmitted;
+		/// <summary>
+		/// Aggregate values since the UDT socket is created.
+		/// </summary>
+		property Udt::TotalTraceInfo^ Total { Udt::TotalTraceInfo^ get(void) { return _total; } }
 
-		[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
-			"Microsoft.Naming",
-			"CA1704:IdentifiersShouldBeSpelledCorrectly",
-			Justification = "ACK is the accepted abbreviation for acknowledgement in this context.")]
-		property int TotalAcksSent;
+		/// <summary>
+		/// Local values since the last time they are recorded.
+		/// </summary>
+		/// <remarks>
+		/// The local attributes are reset when <c>true</c> is passed to
+		/// <b>Udt.Socket.GetPerformanceInfo(bool)</b>.
+		/// </remarks>
+		property Udt::LocalTraceInfo^ Local { Udt::LocalTraceInfo^ get(void) { return _local; } }
 
-		[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
-			"Microsoft.Naming",
-			"CA1704:IdentifiersShouldBeSpelledCorrectly",
-			Justification = "ACK is the accepted abbreviation for acknowledgement in this context.")]
-		property int TotalAcksReceived;
-
-		[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
-			"Microsoft.Naming",
-			"CA1704:IdentifiersShouldBeSpelledCorrectly",
-			Justification = "NAK is the accepted abbreviation for negative acknowledgement in this context.")]
-		property int TotalNaksSent;
-
-		[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
-			"Microsoft.Naming",
-			"CA1704:IdentifiersShouldBeSpelledCorrectly",
-			Justification = "NAK is the accepted abbreviation for negative acknowledgement in this context.")]
-		property int TotalNaksReceived;
-
-		property System::TimeSpan TotalSendDuration;
-
-		property __int64 PacketsSent;
-		property __int64 PacketsReceived;
-		property int SendPacketsLost;
-		property int ReceivePacketsLost;
-		property int PacketsRetransmitted;
-
-		[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
-			"Microsoft.Naming",
-			"CA1704:IdentifiersShouldBeSpelledCorrectly",
-			Justification = "ACK is the accepted abbreviation for acknowledgement in this context.")]
-		property int AcksSent;
-
-		[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
-			"Microsoft.Naming",
-			"CA1704:IdentifiersShouldBeSpelledCorrectly",
-			Justification = "ACK is the accepted abbreviation for acknowledgement in this context.")]
-		property int AcksReceived;
-
-		[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
-			"Microsoft.Naming",
-			"CA1704:IdentifiersShouldBeSpelledCorrectly",
-			Justification = "NAK is the accepted abbreviation for negative acknowledgement in this context.")]
-		property int NaksSent;
-
-		[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
-			"Microsoft.Naming",
-			"CA1704:IdentifiersShouldBeSpelledCorrectly",
-			Justification = "NAK is the accepted abbreviation for negative acknowledgement in this context.")]
-		property int NaksReceived;
-		property double SendMbps;
-		property double ReceiveMbps;
-		property System::TimeSpan SendDuration;
-
-		property System::TimeSpan PacketSendPeriod;
-		property int FlowWindow;
-		property int CongestionWindow;
-		property int FlightSize;
-		property System::TimeSpan RoundtripTime;
-		property double BandwidthMbps;
-		property int AvailableSendBuffer;
-		property int AvailableReceiveBuffer;
+		/// <summary>
+		/// Instant values at the time they are observed.
+		/// </summary>
+		property Udt::ProbeTraceInfo^ Probe { Udt::ProbeTraceInfo^ get(void) { return _probe; } }
 	};
 }

@@ -31,21 +31,23 @@
  ****************************************************************/
 
 #include "StdAfx.h"
-#include "TraceInfo.h"
+#include "ProbeTraceInfo.h"
 
 using namespace Udt;
 using namespace System;
 
-TraceInfo::TraceInfo(const UDT::TRACEINFO& copy)
+ProbeTraceInfo::ProbeTraceInfo(const UDT::TRACEINFO& copy)
 {
-	_total = gcnew TotalTraceInfo(copy);
-	_local = gcnew LocalTraceInfo(copy);
-	_probe = gcnew ProbeTraceInfo(copy);
+	this->PacketSendPeriod = TimeSpan((__int64)(copy.usPktSndPeriod * 10));
+	this->FlowWindow = copy.pktFlowWindow;
+	this->CongestionWindow = copy.pktCongestionWindow;
+	this->FlightSize = copy.pktFlightSize;
+	this->RoundtripTime = TimeSpan((__int64)(copy.msRTT * 10000));
+	this->BandwidthMbps = copy.mbpsBandwidth;
+	this->AvailableSendBuffer = copy.byteAvailSndBuf;
+	this->AvailableReceiveBuffer = copy.byteAvailRcvBuf;
 }
 
-TraceInfo::TraceInfo(void)
+ProbeTraceInfo::ProbeTraceInfo(void)
 {
-	_total = gcnew TotalTraceInfo();
-	_local = gcnew LocalTraceInfo();
-	_probe = gcnew ProbeTraceInfo();
 }
