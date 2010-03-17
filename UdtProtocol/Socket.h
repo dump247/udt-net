@@ -240,7 +240,20 @@ namespace Udt
 		int ReceiveMessage(cli::array<System::Byte>^ buffer);
 		int ReceiveMessage(cli::array<System::Byte>^ buffer, int offset, int size);
 
+		/// <summary>
+		/// Retrieve internal protocol parameters and performance trace.
+		/// </summary>
+		/// <remarks>
+		/// Same as <c>GetPerformanceInfo(true)</c>.
+		/// </remarks>
+		/// <returns>UDT socket performance trace information.</returns>
 		TraceInfo^ GetPerformanceInfo();
+
+		/// <summary>
+		/// Retrieve internal protocol parameters and performance trace.
+		/// </summary>
+		/// <param name="clear">True to clear local trace information and counts.</param>
+		/// <returns>UDT socket performance trace information.</returns>
 		TraceInfo^ GetPerformanceInfo(bool clear);
 
 		void SetSocketOption(SocketOptionName name, int value);
