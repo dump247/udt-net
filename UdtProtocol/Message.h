@@ -34,6 +34,9 @@
 
 namespace Udt
 {
+	/// <summary>
+	/// Message sent over a UDT socket.
+	/// </summary>
 	public ref class Message
 	{
 	public:
