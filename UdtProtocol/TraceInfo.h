@@ -45,8 +45,13 @@ namespace Udt
 	public ref class TraceInfo
 	{
 	private:
+		[System::Diagnostics::DebuggerBrowsable(System::Diagnostics::DebuggerBrowsableState::Never)]
 		Udt::TotalTraceInfo^ _total;
+
+		[System::Diagnostics::DebuggerBrowsable(System::Diagnostics::DebuggerBrowsableState::Never)]
 		Udt::LocalTraceInfo^ _local;
+
+		[System::Diagnostics::DebuggerBrowsable(System::Diagnostics::DebuggerBrowsableState::Never)]
 		Udt::ProbeTraceInfo^ _probe;
 
 	internal:
