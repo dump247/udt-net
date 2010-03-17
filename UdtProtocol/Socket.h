@@ -57,7 +57,15 @@ namespace Udt
 		static Socket(void)
 		{
 			if (UDT::ERROR == UDT::startup())
-				throw SocketException::GetLastError("Error in UDT initialization");
+				throw SocketException::GetLastError("Error in UDT startup");
+
+			System::AppDomain::CurrentDomain->DomainUnload += gcnew System::EventHandler(DomainUnloaded);
+		}
+
+		static void DomainUnloaded(System::Object^ source, System::EventArgs^ args)
+		{
+			if (UDT::ERROR == UDT::cleanup())
+				throw SocketException::GetLastError("Error in UDT cleanup");
 		}
 
 		int GetSocketOptionInt32(SocketOptionName name);
