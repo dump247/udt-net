@@ -77,6 +77,7 @@ namespace Udt
 		void SetSocketOptionBoolean(SocketOptionName name, bool value);
 
 		static UDT::UDSET* CreateUDSet(System::String^ paramName, System::Collections::Generic::ICollection<Udt::Socket^>^ fds);
+		static void Filter(UDT::UDSET* set, System::Collections::Generic::ICollection<Udt::Socket^>^ fds);
 
 	public:
 
@@ -226,6 +227,9 @@ namespace Udt
 		/// <summary>
 		/// Determines the status of one or more sockets.
 		/// </summary>
+		/// <remarks>
+		/// Note that, currently, <paramref name="checkError"/> is ignored in UDT4.
+		/// </remarks>
 		/// <param name="checkRead">Socket instances to check for readability.</param>
 		/// <param name="checkWrite">Socket instances to check for writeability.</param>
 		/// <param name="checkError">Socket instances to check for errors.</param>

@@ -331,6 +331,25 @@ bool IsEmpty(System::Collections::Generic::ICollection<Udt::Socket^>^ fds)
 	return fds == nullptr || fds->Count == 0;
 }
 
+void Udt::Socket::Filter(UDT::UDSET* set, System::Collections::Generic::ICollection<Udt::Socket^>^ fds)
+{
+	if (!IsEmpty(fds))
+	{
+		HashSet<Udt::Socket^>^ sockets = gcnew HashSet<Udt::Socket^>(fds);
+
+		fds->Clear();
+
+		for each(Udt::Socket^ socket in sockets)
+		{
+			UDTSOCKET socketHandle = socket->_socket;
+			if (UD_ISSET(socketHandle, set))
+			{
+				fds->Add(socket);
+			}
+		}
+	}
+}
+
 void Udt::Socket::Select(System::Collections::Generic::ICollection<Socket^>^ checkRead,
 			System::Collections::Generic::ICollection<Socket^>^ checkWrite,
 			System::Collections::Generic::ICollection<Socket^>^ checkError,
@@ -362,45 +381,16 @@ void Udt::Socket::Select(System::Collections::Generic::ICollection<Socket^>^ che
 
 	std::auto_ptr<UDT::UDSET> readFds(CreateUDSet("checkRead", checkRead));
 	std::auto_ptr<UDT::UDSET> writeFds(CreateUDSet("checkWrite", checkWrite));
+	std::auto_ptr<UDT::UDSET> exceptFds(CreateUDSet("checkError", checkError));
 	
-	if (UDT::ERROR == UDT::select(0, readFds.get(), writeFds.get(), NULL, &tv))
+	if (UDT::ERROR == UDT::select(0, readFds.get(), writeFds.get(), exceptFds.get(), &tv))
 	{
 		throw Udt::SocketException::GetLastError("Error in socket select.");
 	}
 
-	if (!IsEmpty(checkRead))
-	{
-		HashSet<Udt::Socket^>^ readSockets = gcnew HashSet<Udt::Socket^>(checkRead);
-
-		checkRead->Clear();
-
-		for each(Udt::Socket^ socket in readSockets)
-		{
-			UDTSOCKET socketHandle = socket->_socket;
-			if (UD_ISSET(socketHandle, readFds))
-			{
-				checkRead->Add(socket);
-			}
-		}
-	}
-
-	if (!IsEmpty(checkWrite))
-	{
-		HashSet<Udt::Socket^>^ writeSockets = gcnew HashSet<Udt::Socket^>(checkWrite);
-
-		checkWrite->Clear();
-
-		for each(Udt::Socket^ socket in checkWrite)
-		{
-			UDTSOCKET socketHandle = socket->_socket;
-			if (UD_ISSET(socketHandle, writeFds))
-			{
-				checkWrite->Add(socket);
-			}
-		}
-	}
-
-	if (!IsEmpty(checkError)) checkError->Clear();
+	Filter(readFds.get(), checkRead);
+	Filter(writeFds.get(), checkWrite);
+	Filter(exceptFds.get(), checkError);
 }
 
 [System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
