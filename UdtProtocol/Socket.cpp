@@ -306,6 +306,103 @@ void Udt::Socket::Connect(cli::array<System::Net::IPAddress^>^ addresses, int po
 	Connect(addresses[0], port);
 }
 
+UDT::UDSET* Udt::Socket::CreateUDSet(String^ paramName, System::Collections::Generic::ICollection<Udt::Socket^>^ fds)
+{
+	if (fds == nullptr || fds->Count == 0)
+		return NULL;
+
+	UDT::UDSET* set = new UDT::UDSET;
+	UD_ZERO(set);
+
+	for each (Udt::Socket^ socket in fds)
+	{
+		if (socket == nullptr)
+			throw gcnew ArgumentException("Value can not contain null reference.", paramName);
+
+		UDTSOCKET socketHandle = socket->_socket;
+		UD_SET(socketHandle, set);
+	}
+
+	return set;
+}
+
+bool IsEmpty(System::Collections::Generic::ICollection<Udt::Socket^>^ fds)
+{
+	return fds == nullptr || fds->Count == 0;
+}
+
+void Udt::Socket::Select(System::Collections::Generic::ICollection<Socket^>^ checkRead,
+			System::Collections::Generic::ICollection<Socket^>^ checkWrite,
+			System::Collections::Generic::ICollection<Socket^>^ checkError,
+			System::TimeSpan timeout)
+{
+	if (IsEmpty(checkRead) && IsEmpty(checkWrite) && IsEmpty(checkError))
+	{
+		throw gcnew ArgumentException("At least one of checkRead, checkWrite, or checkError is required");
+	}
+
+	if (timeout != Udt::Socket::InfiniteTimeout && timeout < System::TimeSpan::Zero)
+	{
+		throw gcnew ArgumentOutOfRangeException("timeout", timeout, "Value must be infinite (-1 ticks) or greater than or equal to 0.");
+	}
+
+	timeval tv;
+
+	if (timeout == Udt::Socket::InfiniteTimeout)
+	{
+		tv.tv_sec = Int32::MaxValue;
+		tv.tv_usec = 0;
+	}
+	else
+	{
+		__int64 timeoutTicks = timeout.Ticks;
+		tv.tv_sec = (long)(timeoutTicks / 10000000);
+		tv.tv_usec = timeoutTicks % 10000000;
+	}
+
+	std::auto_ptr<UDT::UDSET> readFds(CreateUDSet("checkRead", checkRead));
+	std::auto_ptr<UDT::UDSET> writeFds(CreateUDSet("checkWrite", checkWrite));
+	
+	if (UDT::ERROR == UDT::select(0, readFds.get(), writeFds.get(), NULL, &tv))
+	{
+		throw Udt::SocketException::GetLastError("Error in socket select.");
+	}
+
+	if (!IsEmpty(checkRead))
+	{
+		HashSet<Udt::Socket^>^ readSockets = gcnew HashSet<Udt::Socket^>(checkRead);
+
+		checkRead->Clear();
+
+		for each(Udt::Socket^ socket in readSockets)
+		{
+			UDTSOCKET socketHandle = socket->_socket;
+			if (UD_ISSET(socketHandle, readFds))
+			{
+				checkRead->Add(socket);
+			}
+		}
+	}
+
+	if (!IsEmpty(checkWrite))
+	{
+		HashSet<Udt::Socket^>^ writeSockets = gcnew HashSet<Udt::Socket^>(checkWrite);
+
+		checkWrite->Clear();
+
+		for each(Udt::Socket^ socket in checkWrite)
+		{
+			UDTSOCKET socketHandle = socket->_socket;
+			if (UD_ISSET(socketHandle, writeFds))
+			{
+				checkWrite->Add(socket);
+			}
+		}
+	}
+
+	if (!IsEmpty(checkError)) checkError->Clear();
+}
+
 [System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
 	"Microsoft.Naming",
 	"CA1702:CompoundWordsShouldBeCasedCorrectly",

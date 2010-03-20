@@ -76,7 +76,14 @@ namespace Udt
 		void SetSocketOptionInt64(SocketOptionName name, __int64 value);
 		void SetSocketOptionBoolean(SocketOptionName name, bool value);
 
+		static UDT::UDSET* CreateUDSet(System::String^ paramName, System::Collections::Generic::ICollection<Udt::Socket^>^ fds);
+
 	public:
+
+		/// <summary>
+		/// Timeout value that indicates infinite.
+		/// </summary>
+		static initonly System::TimeSpan InfiniteTimeout = System::TimeSpan(-1L);
 
 		/// <summary>
 		/// Initialize a new instance using the specified address family and
@@ -215,6 +222,34 @@ namespace Udt
 		/// </exception>
 		/// <exception cref="Udt::SocketException">If an error occurs.</exception>
 		void Connect(System::Net::IPEndPoint^ endPoint);
+
+		/// <summary>
+		/// Determines the status of one or more sockets.
+		/// </summary>
+		/// <param name="checkRead">Socket instances to check for readability.</param>
+		/// <param name="checkWrite">Socket instances to check for writeability.</param>
+		/// <param name="checkError">Socket instances to check for errors.</param>
+		/// <param name="timeout">Timeout value or <see cref="InfiniteTimeout"/>.</param>
+		/// <exception cref="System::ArgumentException">
+		/// <paramref name="checkRead"/> is a null reference or empty
+		/// - and -
+		/// <paramref name="checkWrite"/> is a null reference or empty
+		/// - and -
+		/// <paramref name="checkError"/> is a null reference or empty
+		/// </exception>
+		/// <exception cref="System::ArgumentException">
+		/// If <paramref name="checkRead"/>, <paramref name="checkWrite"/>, or
+		/// <paramref name="checkError"/> contains a null reference.
+		/// </exception>
+		/// <exception cref="System::ArgumentOutOfRangeException">
+		/// If <paramref name="timeout"/> is not <see cref="InfiniteTimeout"/> and
+		/// is less than 0.
+		/// </exception>
+		/// <exception cref="Udt::SocketException">If an error occurs.</exception>
+		static void Select(System::Collections::Generic::ICollection<Socket^>^ checkRead,
+			System::Collections::Generic::ICollection<Socket^>^ checkWrite,
+			System::Collections::Generic::ICollection<Socket^>^ checkError,
+			System::TimeSpan timeout);
 
 		int Receive(cli::array<System::Byte>^ buffer);
 		int Receive(cli::array<System::Byte>^ buffer, int offset, int size);
