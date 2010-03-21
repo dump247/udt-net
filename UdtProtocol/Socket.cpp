@@ -375,8 +375,8 @@ void Udt::Socket::Select(System::Collections::Generic::ICollection<Socket^>^ che
 	else
 	{
 		__int64 timeoutTicks = timeout.Ticks;
-		tv.tv_sec = (long)(timeoutTicks / 10000000);
-		tv.tv_usec = timeoutTicks % 10000000;
+		tv.tv_sec = (long)(timeoutTicks / TimeSpan::TicksPerSecond);
+		tv.tv_usec = (timeoutTicks % TimeSpan::TicksPerSecond) / 10;
 	}
 
 	std::auto_ptr<UDT::UDSET> readFds(CreateUDSet("checkRead", checkRead));
