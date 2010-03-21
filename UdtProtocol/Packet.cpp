@@ -39,13 +39,15 @@
 using namespace Udt;
 using namespace System;
 
-Packet::Packet(const CPacket* packet)
+Packet::Packet(const CPacket* packet, bool deletePacket)
 {
 	_packet = packet;
+	_deletePacket = deletePacket;
 }
 
 Packet::~Packet()
 {
+	if (_deletePacket) delete _packet;
 	_packet = NULL;
 }
 

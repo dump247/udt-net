@@ -47,11 +47,12 @@ namespace Udt
 	{
 	private:
 		const CPacket* _packet;
+		bool _deletePacket;
 
 		void AssertNotDisposed();
 
 	internal:
-		Packet(const CPacket* packet);
+		Packet(const CPacket* packet, bool deletePacket);
 
 	public:
 		~Packet(void);

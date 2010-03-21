@@ -52,7 +52,7 @@ CCCWrapper::~CCCWrapper(void)
 
 void CCCWrapper::onPktReceived(const CPacket* packet)
 {
-	Packet^ managedPacket = gcnew Packet(packet);
+	Packet^ managedPacket = gcnew Packet(packet, false);
 
 	__try
 	{
@@ -66,7 +66,7 @@ void CCCWrapper::onPktReceived(const CPacket* packet)
 
 void CCCWrapper::onPktSent(const CPacket* packet)
 {
-	Packet^ managedPacket = gcnew Packet(packet);
+	Packet^ managedPacket = gcnew Packet(packet, false);
 
 	__try
 	{
@@ -80,7 +80,7 @@ void CCCWrapper::onPktSent(const CPacket* packet)
 
 void CCCWrapper::processCustomMsg(const CPacket* packet)
 {
-	Packet^ managedPacket = gcnew Packet(packet);
+	Packet^ managedPacket = gcnew Packet(packet, false);
 
 	__try
 	{
