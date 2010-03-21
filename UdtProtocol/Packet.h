@@ -32,14 +32,12 @@
 
 #pragma once
 
-#include "PacketType.h"
-
-#include <udt.h>
-
 class CPacket;
 
 namespace Udt
 {
+	enum PacketType;
+
 	/// <summary>
 	/// UDT data packet.
 	/// </summary>

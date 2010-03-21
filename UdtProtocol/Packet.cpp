@@ -33,7 +33,9 @@
 #include "StdAfx.h"
 
 #include "Packet.h"
+#include "PacketType.h"
 
+#include <udt.h>
 #include <packet.h>
 
 using namespace Udt;
