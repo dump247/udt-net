@@ -303,6 +303,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PacketType.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ProbeTraceInfo.h"
 				>
 			</File>

@@ -33,14 +33,16 @@
 #pragma once
 
 #include "TraceInfo.h"
-#include "Packet.h"
 
 namespace Udt
 {
+	ref class Packet;
+	class CCCWrapper;
+
 	public ref class CongestionControl
 	{
 	internal:
-		void* _cccWrapper;
+		CCCWrapper* _cccWrapper;
 
 	public:
 		CongestionControl(void);

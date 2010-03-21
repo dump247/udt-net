@@ -40,6 +40,8 @@
 
 namespace Udt
 {
+	ref class Packet;
+
 	class CCCWrapper : public CCC
 	{
 	private:

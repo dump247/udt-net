@@ -32,34 +32,55 @@
 
 #pragma once
 
-#include "PacketType.h"
-
-#include <udt.h>
-
-class CPacket;
-
 namespace Udt
 {
 	/// <summary>
-	/// UDT data packet.
+	/// Types of UDT data packets.
 	/// </summary>
-	public ref class Packet
+	[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
+			"Microsoft.Design",
+			"CA1027:MarkEnumsWithFlags",
+			Justification = "This is a set of discrete values, not a set of flags.")]
+	public enum PacketType
 	{
-	private:
-		const CPacket* _packet;
+		/// <summary>
+		/// Protocol Connection Handshake.
+		/// </summary>
+		Handshake = 0,
+		
+		/// <summary>
+		/// Keep alive.
+		/// </summary>
+		KeepAlive = 1,
+		
+		/// <summary>
+		/// Acknowledgement (ACK).
+		/// </summary>
+		Acknowledgement = 2,
+		
+		/// <summary>
+		/// Negative Acknowledgement (NACK).
+		/// </summary>
+		NegativeAcknowledgement = 3,
 
-		void AssertNotDisposed();
+		/// <summary>
+		/// Congestion Warning.
+		/// </summary>
+		CongestionWarning = 4,
 
-	internal:
-		Packet(const CPacket* packet);
+		/// <summary>
+		/// Shutdown.
+		/// </summary>
+		Shutdown = 5,
 
-	public:
-		~Packet(void);
+		/// <summary>
+		/// Acknowledgement of Acknowledement (ACK-square).
+		/// </summary>
+		AcknowledgementAcknowledement = 6,
 
-		property int Length { int get(void); }
-		property Udt::PacketType PacketType { Udt::PacketType get(void); }
-
-		property bool InOrderDelivery { bool get(void); }
-		property int MessageSequenceNumber { int get(void); }
+		/// <summary>
+		/// Message Drop Request.
+		/// </summary>
+		MessageDropRequest = 7
 	};
 }

@@ -32,6 +32,7 @@
 
 #include "StdAfx.h"
 #include "CongestionControl.h"
+#include "Packet.h"
 
 #include "CCCWrapper.h"
 
@@ -47,7 +48,7 @@ void CongestionControl::SetAckTimer(System::TimeSpan value)
 {
 	if (_cccWrapper != NULL)
 	{
-		((CCCWrapper*)_cccWrapper)->setACKTimer(value);
+		_cccWrapper->setACKTimer(value);
 	}
 }
 
@@ -55,7 +56,7 @@ void CongestionControl::SetAckInterval(int value)
 {
 	if (_cccWrapper != NULL)
 	{
-		((CCCWrapper*)_cccWrapper)->setACKInterval(value);
+		_cccWrapper->setACKInterval(value);
 	}
 }
 
@@ -63,7 +64,7 @@ void CongestionControl::SetReadTimeout(System::TimeSpan value)
 {
 	if (_cccWrapper != NULL)
 	{
-		((CCCWrapper*)_cccWrapper)->setRTO(value);
+		_cccWrapper->setRTO(value);
 	}
 }
 
@@ -71,7 +72,7 @@ TraceInfo^ CongestionControl::PerformanceInfo::get(void)
 {
 	if (_cccWrapper != NULL)
 	{
-		return ((CCCWrapper*)_cccWrapper)->getPerfInfo();
+		return _cccWrapper->getPerfInfo();
 	}
 	else
 	{
@@ -83,7 +84,7 @@ void CongestionControl::PacketSendPeriod::set(System::TimeSpan value)
 {
 	if (_cccWrapper != NULL)
 	{
-		((CCCWrapper*)_cccWrapper)->setPacketSendPeriod(value);
+		_cccWrapper->setPacketSendPeriod(value);
 	}
 }
 
@@ -91,7 +92,7 @@ System::TimeSpan CongestionControl::PacketSendPeriod::get(void)
 {
 	if (_cccWrapper != NULL)
 	{
-		return ((CCCWrapper*)_cccWrapper)->getPacketSendPeriod();
+		return _cccWrapper->getPacketSendPeriod();
 	}
 	else
 	{
@@ -103,7 +104,7 @@ void CongestionControl::WindowSize::set(int value)
 {
 	if (_cccWrapper != NULL)
 	{
-		((CCCWrapper*)_cccWrapper)->setWindowSize(value);
+		_cccWrapper->setWindowSize(value);
 	}
 }
 
@@ -111,7 +112,7 @@ int CongestionControl::WindowSize::get(void)
 {
 	if (_cccWrapper != NULL)
 	{
-		return ((CCCWrapper*)_cccWrapper)->getWindowSize();
+		return _cccWrapper->getWindowSize();
 	}
 	else
 	{
@@ -123,7 +124,7 @@ void CongestionControl::MaxPacketSize::set(int value)
 {
 	if (_cccWrapper != NULL)
 	{
-		((CCCWrapper*)_cccWrapper)->setMaxPacketSize(value);
+		_cccWrapper->setMaxPacketSize(value);
 	}
 }
 
@@ -131,7 +132,7 @@ int CongestionControl::MaxPacketSize::get(void)
 {
 	if (_cccWrapper != NULL)
 	{
-		return ((CCCWrapper*)_cccWrapper)->getMaxPacketSize();
+		return _cccWrapper->getMaxPacketSize();
 	}
 	else
 	{
@@ -143,7 +144,7 @@ void CongestionControl::RoundtripTime::set(System::TimeSpan value)
 {
 	if (_cccWrapper != NULL)
 	{
-		((CCCWrapper*)_cccWrapper)->setRoundTripTime(value);
+		_cccWrapper->setRoundTripTime(value);
 	}
 }
 
@@ -151,7 +152,7 @@ System::TimeSpan CongestionControl::RoundtripTime::get(void)
 {
 	if (_cccWrapper != NULL)
 	{
-		return ((CCCWrapper*)_cccWrapper)->getRoundTripTime();
+		return _cccWrapper->getRoundTripTime();
 	}
 	else
 	{

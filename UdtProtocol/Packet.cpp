@@ -54,3 +54,27 @@ void Packet::AssertNotDisposed()
 	if (_packet == NULL)
 		throw gcnew ObjectDisposedException(this->ToString());
 }
+
+int Packet::Length::get(void)
+{
+	AssertNotDisposed();
+	return _packet->getLength();
+}
+
+Udt::PacketType Packet::PacketType::get(void)
+{
+	AssertNotDisposed();
+	return (Udt::PacketType)_packet->getType();
+}
+
+bool Packet::InOrderDelivery::get(void)
+{
+	AssertNotDisposed();
+	return _packet->getMsgOrderFlag() == 1;
+}
+
+int Packet::MessageSequenceNumber::get(void)
+{
+	AssertNotDisposed();
+	return _packet->getMsgSeq();
+}

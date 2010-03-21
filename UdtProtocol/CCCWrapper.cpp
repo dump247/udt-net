@@ -32,6 +32,7 @@
 
 #include "StdAfx.h"
 #include "CCCWrapper.h"
+#include "Packet.h"
 
 using namespace Udt;
 using namespace System;
