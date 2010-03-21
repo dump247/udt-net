@@ -5,6 +5,7 @@ using System.Text;
 using System.Net.Sockets;
 using System.Net;
 using System.IO;
+using System.Reflection;
 
 namespace SendFile
 {
@@ -54,7 +55,10 @@ namespace SendFile
 						client.SendFile(name);
 
 						trace = client.GetPerformanceInfo();
-						Console.WriteLine("Speed = {0}Mbits/sec", trace.Local.SendMbps);
+
+                        PrintProps("Total", trace.Total);
+                        PrintProps("Local", trace.Local);
+                        PrintProps("Probe", trace.Probe);
 
 						client.Close();
 					}
@@ -70,5 +74,14 @@ namespace SendFile
 				return 2;
 			}
 		}
+
+        static void PrintProps(string name, object obj)
+        {
+            Console.WriteLine("---- {0} ----", name);
+            foreach (PropertyInfo prop in obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            {
+                Console.WriteLine("{0} = {1}", prop.Name, prop.GetValue(obj, null));
+            }
+        }
 	}
 }

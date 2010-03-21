@@ -32,73 +32,26 @@
 
 #pragma once
 
-#include "TraceInfo.h"
-#include "Packet.h"
+#include <udt.h>
+
+class CPacket;
 
 namespace Udt
 {
-	public ref class CongestionControl
+	/// <summary>
+	/// Interface to a UDT socket.
+	/// </summary>
+	public ref class Packet
 	{
+	private:
+		const CPacket* _packet;
+
+		void AssertNotDisposed();
+
 	internal:
-		void* _cccWrapper;
+		Packet(const CPacket* packet);
 
 	public:
-		CongestionControl(void);
-
-		virtual void Initialize() { }
-		virtual void Close() { }
-
-		[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
-			"Microsoft.Naming",
-			"CA1704:IdentifiersShouldBeSpelledCorrectly",
-			Justification = "ACK is the accepted abbreviation for acknowledgement in this context.")]
-		virtual void OnAck(int ack) { }
-		virtual void OnLoss(System::Collections::Generic::IList<int>^ lossList) { }
-		virtual void OnTimeout() { }
-		virtual void OnPacketSent(Packet^ packet) { }
-		virtual void OnPacketReceived(Packet^ packet) { }
-		virtual void ProcessCustomMessage(Packet^ packet) { }
-
-	protected:
-
-		[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
-			"Microsoft.Naming",
-			"CA1704:IdentifiersShouldBeSpelledCorrectly",
-			Justification = "ACK is the accepted abbreviation for acknowledgement in this context.")]
-		void SetAckTimer(System::TimeSpan value);
-
-		[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
-			"Microsoft.Naming",
-			"CA1704:IdentifiersShouldBeSpelledCorrectly",
-			Justification = "ACK is the accepted abbreviation for acknowledgement in this context.")]
-		void SetAckInterval(int value);
-
-		void SetReadTimeout(System::TimeSpan value);
-
-		property TraceInfo^ PerformanceInfo { TraceInfo^ get(void); }
-
-		property System::TimeSpan PacketSendPeriod
-		{
-			System::TimeSpan get(void);
-			void set(System::TimeSpan value);
-		}
-
-		property int WindowSize
-		{
-			int get(void);
-			void set(int value);
-		}
-
-		property int MaxPacketSize
-		{
-			int get(void);
-			void set(int value);
-		}
-
-		property System::TimeSpan RoundtripTime
-		{
-			System::TimeSpan get(void);
-			void set(System::TimeSpan value);
-		}
+		~Packet(void);
 	};
 }

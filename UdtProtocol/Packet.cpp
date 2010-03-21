@@ -30,50 +30,27 @@
  * POSSIBILITY OF SUCH DAMAGE.
  ****************************************************************/
 
-#pragma once
+#include "StdAfx.h"
 
-#include "CongestionControl.h"
-#include "NativeIntArray.h"
-#include "TraceInfo.h"
-#include <ccc.h>
-#include <vcclr.h>
+#include "Packet.h"
 
-namespace Udt
+#include <packet.h>
+
+using namespace Udt;
+using namespace System;
+
+Packet::Packet(const CPacket* packet)
 {
-	class CCCWrapper : public CCC
-	{
-	private:
-		gcroot<CongestionControl^> _wrapped;
+	_packet = packet;
+}
 
-	public:
+Packet::~Packet()
+{
+	_packet = NULL;
+}
 
-		CCCWrapper(CongestionControl^ wrapped);
-		virtual ~CCCWrapper(void);
-
-		virtual void init() { _wrapped->Initialize(); }
-		virtual void close() { _wrapped->Close(); }
-		virtual void onTimeout() { _wrapped->OnTimeout(); }
-		virtual void onACK(const int& ack) { _wrapped->OnAck(ack); }
-		virtual void onLoss(const int* losslist, const int& size);
-		virtual void onPktReceived(const CPacket* packet);
-		virtual void onPktSent(const CPacket*);
-		virtual void processCustomMsg(const CPacket*);
-
-		void setACKTimer(System::TimeSpan value);
-		void setACKInterval(int packets);
-		void setRTO(System::TimeSpan value);
-		TraceInfo^ getPerfInfo(void);
-
-		void setPacketSendPeriod(System::TimeSpan value);
-		System::TimeSpan getPacketSendPeriod(void) const;
-
-		void setWindowSize(int value);
-		int getWindowSize() const;
-
-		void setRoundTripTime(System::TimeSpan value);
-		System::TimeSpan getRoundTripTime(void) const;
-
-		void setMaxPacketSize(int value);
-		int getMaxPacketSize() const;
-	};
+void Packet::AssertNotDisposed()
+{
+	if (_packet == NULL)
+		throw gcnew ObjectDisposedException(this->ToString());
 }

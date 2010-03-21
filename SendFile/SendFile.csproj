@@ -79,6 +79,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>copy "$(SolutionDir)..\udt4\src\udt.dll" "$(TargetDir)udt.dll"</PostBuildEvent>
+    <PostBuildEvent>copy "$(SolutionDir)..\udt4\src\udt.dll" "$(TargetDir)udt.dll"
+copy "$(SolutionDir)..\udt4\src\udt.pdb" "$(TargetDir)udt.pdb"</PostBuildEvent>
   </PropertyGroup>
 </Project>

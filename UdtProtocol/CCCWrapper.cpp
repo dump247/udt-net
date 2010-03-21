@@ -49,6 +49,48 @@ CCCWrapper::~CCCWrapper(void)
 	_wrapped = nullptr;
 }
 
+void CCCWrapper::onPktReceived(const CPacket* packet)
+{
+	Packet^ managedPacket = gcnew Packet(packet);
+
+	__try
+	{
+		_wrapped->OnPacketReceived(managedPacket);
+	}
+	__finally
+	{
+		delete managedPacket;
+	}
+}
+
+void CCCWrapper::onPktSent(const CPacket* packet)
+{
+	Packet^ managedPacket = gcnew Packet(packet);
+
+	__try
+	{
+		_wrapped->OnPacketSent(managedPacket);
+	}
+	__finally
+	{
+		delete managedPacket;
+	}
+}
+
+void CCCWrapper::processCustomMsg(const CPacket* packet)
+{
+	Packet^ managedPacket = gcnew Packet(packet);
+
+	__try
+	{
+		_wrapped->ProcessCustomMessage(managedPacket);
+	}
+	__finally
+	{
+		delete managedPacket;
+	}
+}
+
 void CCCWrapper::onLoss(const int* losslist, const int& size)
 {
 	NativeIntArray^ list = gcnew NativeIntArray(losslist, size);
