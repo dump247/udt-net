@@ -310,44 +310,6 @@ namespace UdtProtocol_Test
             }
         }
 
-        ///// <summary>
-        ///// Test for <see cref="Udt.Socket.GetPerformanceInfo()"/> when the
-        ///// connection is not open.
-        ///// </summary>
-        //[Test]
-        //public void GetPerformanceInfo()
-        //{
-        //    IPEndPoint serverEndPoint = null;
-        //    ManualResetEvent serverEvent = new ManualResetEvent(false);
-
-        //    ThreadPool.QueueUserWorkItem((object state) =>
-        //    {
-        //        using (Udt.Socket server = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
-        //        {
-        //            server.Bind(IPAddress.Any, 0);
-        //            serverEndPoint = server.LocalEndPoint;
-        //            server.Listen(1);
-                    
-        //            serverEvent.Set();
-
-        //            using (Udt.Socket serverClient = server.Accept())
-        //            {
-        //                serverClient.Receive(new byte[100]);
-        //            }
-        //        }
-        //    });
-
-        //    serverEvent.WaitOne();
-
-        //    using (Udt.Socket client = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
-        //    {
-        //        client.Connect(serverEndPoint);
-        //        client.Send(new byte[100]);
-
-        //        Udt.TraceInfo perf = client.GetPerformanceInfo();
-        //    }   
-        //}
-
         /// <summary>
         /// Test for <see cref="Udt.Socket.GetPerformanceInfo()"/> when the
         /// connection is not open.
