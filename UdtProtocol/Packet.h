@@ -50,15 +50,39 @@ namespace Udt
 		void AssertNotDisposed();
 
 	internal:
+
+		/// <summary>
+		/// Initialize a new instance.
+		/// </summary>
+		/// <param name="packet">Native packet to wrap.</param>
+		/// <param name="deletePacket">
+		/// True to delete the native <paramref name="packet"/> when this object
+		/// is disposed.
+		/// </param>
 		Packet(const CPacket* packet, bool deletePacket);
 
 	public:
 		~Packet(void);
 
+		/// <summary>
+		/// Get the payload or the control information field length.
+		/// </summary>
 		property int Length { int get(void); }
+		
+		/// <summary>
+		/// Get the packet type.
+		/// </summary>
 		property Udt::PacketType PacketType { Udt::PacketType get(void); }
 
+		/// <summary>
+		/// Get whether the packet was sent with in-order delivery.
+		/// </summary>
+		/// <value>True if the packet was sent in order</value>
 		property bool InOrderDelivery { bool get(void); }
+
+		/// <summary>
+		/// Get the message sequence number.
+		/// </summary>
 		property int MessageSequenceNumber { int get(void); }
 	};
 }
