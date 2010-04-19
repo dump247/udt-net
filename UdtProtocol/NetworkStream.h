@@ -46,6 +46,8 @@ namespace Udt
 		initonly bool _ownsSocket;
 		initonly System::IO::FileAccess _access;
 
+		void Initialize();
+
 	protected:
 
 		/// <summary>
@@ -64,6 +66,12 @@ namespace Udt
 		/// Initialize a new instance.
 		/// </summary>
 		/// <param name="socket">Socket this stream will use to send/receive data.</param>
+		/// <exception cref="System::ArgumentNullException">If <paramref name="socket"/> is a null reference.</exception>
+		/// <exception cref="System::ArgumentException">
+		/// If <paramref name="socket"/>.SocketType is not <see cref="System::Net::Sockets::SocketType::Stream"/><br/>
+		/// <b>- or -</b><br/>
+		/// <paramref name="socket"/> is in non-blocking mode
+		/// </exception>
 		NetworkStream(Udt::Socket^ socket);
 
 		/// <summary>
@@ -71,6 +79,12 @@ namespace Udt
 		/// </summary>
 		/// <param name="socket">Socket this stream will use to send/receive data.</param>
 		/// <param name="ownsSocket">True if this stream will assume ownership of the <paramref name="socket"/>.</param>
+		/// <exception cref="System::ArgumentNullException">If <paramref name="socket"/> is a null reference.</exception>
+		/// <exception cref="System::ArgumentException">
+		/// If <paramref name="socket"/>.SocketType is not <see cref="System::Net::Sockets::SocketType::Stream"/><br/>
+		/// <b>- or -</b><br/>
+		/// <paramref name="socket"/> is in non-blocking mode
+		/// </exception>
 		NetworkStream(Udt::Socket^ socket, bool ownsSocket);
 
 		/// <summary>
@@ -78,6 +92,12 @@ namespace Udt
 		/// </summary>
 		/// <param name="socket">Socket this stream will use to send/receive data.</param>
 		/// <param name="access">Type of access to the <paramref name="socket"/> given to the stream.</param>
+		/// <exception cref="System::ArgumentNullException">If <paramref name="socket"/> is a null reference.</exception>
+		/// <exception cref="System::ArgumentException">
+		/// If <paramref name="socket"/>.SocketType is not <see cref="System::Net::Sockets::SocketType::Stream"/><br/>
+		/// <b>- or -</b><br/>
+		/// <paramref name="socket"/> is in non-blocking mode
+		/// </exception>
 		NetworkStream(Udt::Socket^ socket, System::IO::FileAccess access);
 
 		/// <summary>
@@ -86,6 +106,12 @@ namespace Udt
 		/// <param name="socket">Socket this stream will use to send/receive data.</param>
 		/// <param name="access">Type of access to the <paramref name="socket"/> given to the stream.</param>
 		/// <param name="ownsSocket">True if this stream will assume ownership of the <paramref name="socket"/>.</param>
+		/// <exception cref="System::ArgumentNullException">If <paramref name="socket"/> is a null reference.</exception>
+		/// <exception cref="System::ArgumentException">
+		/// If <paramref name="socket"/>.SocketType is not <see cref="System::Net::Sockets::SocketType::Stream"/><br/>
+		/// <b>- or -</b><br/>
+		/// <paramref name="socket"/> is in non-blocking mode
+		/// </exception>
 		NetworkStream(Udt::Socket^ socket, System::IO::FileAccess access, bool ownsSocket);
 
 		/// <summary>

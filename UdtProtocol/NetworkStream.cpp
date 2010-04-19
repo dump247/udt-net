@@ -41,42 +41,53 @@ using namespace System::IO;
 
 NetworkStream::NetworkStream(Udt::Socket^ socket)
 {
-	if (socket == nullptr)
-		throw gcnew ArgumentNullException("socket");
-
 	_socket = socket;
 	_access = FileAccess::ReadWrite;
 	_ownsSocket = true;
+
+	Initialize();
 }
 
 NetworkStream::NetworkStream(Udt::Socket^ socket, bool ownsSocket)
 {
-	if (socket == nullptr)
-		throw gcnew ArgumentNullException("socket");
-
 	_socket = socket;
 	_access = FileAccess::ReadWrite;
 	_ownsSocket = ownsSocket;
+
+	Initialize();
 }
 
 NetworkStream::NetworkStream(Udt::Socket^ socket, FileAccess access)
 {
-	if (socket == nullptr)
-		throw gcnew ArgumentNullException("socket");
-
 	_socket = socket;
 	_access = access;
 	_ownsSocket = true;
+
+	Initialize();
 }
 
 NetworkStream::NetworkStream(Udt::Socket^ socket, FileAccess access, bool ownsSocket)
 {
-	if (socket == nullptr)
-		throw gcnew ArgumentNullException("socket");
-
 	_socket = socket;
 	_access = access;
 	_ownsSocket = ownsSocket;
+
+	Initialize();
+}
+
+void NetworkStream::Initialize()
+{
+	if (_socket == nullptr)
+		throw gcnew ArgumentNullException("socket");
+
+	if (_socket->SocketType != System::Net::Sockets::SocketType::Stream)
+		throw gcnew ArgumentException("Socket type must be Stream.", "socket");
+
+	if ((CanRead && !_socket->BlockingReceive) ||
+		(CanWrite && !_socket->BlockingSend))
+	{
+		throw gcnew ArgumentException("Socket must be in blocking state.", "socket");
+	}
 }
 
 NetworkStream::~NetworkStream()
