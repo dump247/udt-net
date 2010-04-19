@@ -39,13 +39,23 @@ using namespace Udt;
 using namespace System;
 using namespace System::IO;
 
+bool Readable(FileAccess access)
+{
+	return (int)((access & FileAccess::Read)) != 0;
+}
+
+bool Writeable(FileAccess access)
+{
+	return (int)((access & FileAccess::Write)) != 0;
+}
+
 NetworkStream::NetworkStream(Udt::Socket^ socket)
 {
 	_socket = socket;
 	_access = FileAccess::ReadWrite;
 	_ownsSocket = true;
 
-	Initialize();
+	Initialize(socket);
 }
 
 NetworkStream::NetworkStream(Udt::Socket^ socket, bool ownsSocket)
@@ -54,7 +64,7 @@ NetworkStream::NetworkStream(Udt::Socket^ socket, bool ownsSocket)
 	_access = FileAccess::ReadWrite;
 	_ownsSocket = ownsSocket;
 
-	Initialize();
+	Initialize(socket);
 }
 
 NetworkStream::NetworkStream(Udt::Socket^ socket, FileAccess access)
@@ -63,7 +73,7 @@ NetworkStream::NetworkStream(Udt::Socket^ socket, FileAccess access)
 	_access = access;
 	_ownsSocket = true;
 
-	Initialize();
+	Initialize(socket);
 }
 
 NetworkStream::NetworkStream(Udt::Socket^ socket, FileAccess access, bool ownsSocket)
@@ -72,19 +82,19 @@ NetworkStream::NetworkStream(Udt::Socket^ socket, FileAccess access, bool ownsSo
 	_access = access;
 	_ownsSocket = ownsSocket;
 
-	Initialize();
+	Initialize(socket);
 }
 
-void NetworkStream::Initialize()
+void NetworkStream::Initialize(Udt::Socket^ socket)
 {
-	if (_socket == nullptr)
+	if (socket == nullptr)
 		throw gcnew ArgumentNullException("socket");
 
-	if (_socket->SocketType != System::Net::Sockets::SocketType::Stream)
+	if (socket->SocketType != System::Net::Sockets::SocketType::Stream)
 		throw gcnew ArgumentException("Socket type must be Stream.", "socket");
 
-	if ((CanRead && !_socket->BlockingReceive) ||
-		(CanWrite && !_socket->BlockingSend))
+	if ((Readable(_access) && !socket->BlockingReceive) ||
+		(Writeable(_access) && !socket->BlockingSend))
 	{
 		throw gcnew ArgumentException("Socket must be in blocking state.", "socket");
 	}
@@ -112,12 +122,12 @@ Udt::Socket^ NetworkStream::Socket::get(void)
 
 bool NetworkStream::CanRead::get(void)
 {
-	return _socket != nullptr && (int)((_access & FileAccess::Read)) != 0;
+	return _socket != nullptr && Readable(_access);
 }
 
 bool NetworkStream::CanWrite::get(void)
 {
-	return _socket != nullptr && (int)((_access & FileAccess::Write)) != 0;
+	return _socket != nullptr && Writeable(_access);
 }
 
 void NetworkStream::Flush(void)

@@ -46,7 +46,7 @@ namespace Udt
 		initonly bool _ownsSocket;
 		initonly System::IO::FileAccess _access;
 
-		void Initialize();
+		void Initialize(Udt::Socket^ socket);
 
 	protected:
 

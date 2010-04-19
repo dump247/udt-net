@@ -144,6 +144,10 @@ namespace Udt
 		/// <exception cref="Udt::SocketException">
 		/// If an error occurs binding the socket (i.e. the socket is already bound, etc).
 		/// </exception>
+		[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
+			"Microsoft.Naming",
+			"CA1702:CompoundWordsShouldBeCasedCorrectly",
+			Justification = "EndPoint is the casing used in IPEndPoint")]
 		void Bind(System::Net::IPEndPoint^ endPoint);
 
 		/// <summary>
@@ -222,6 +226,10 @@ namespace Udt
 		/// If <paramref name="endPoint"/> is a null reference
 		/// </exception>
 		/// <exception cref="Udt::SocketException">If an error occurs.</exception>
+		[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
+			"Microsoft.Naming",
+			"CA1702:CompoundWordsShouldBeCasedCorrectly",
+			Justification = "EndPoint is the casing used in IPEndPoint")]
 		void Connect(System::Net::IPEndPoint^ endPoint);
 
 		/// <summary>

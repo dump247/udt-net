@@ -227,10 +227,6 @@ void Udt::Socket::Bind(IPAddress^ address, int port)
 	}
 }
 
-[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
-	"Microsoft.Naming",
-	"CA1702:CompoundWordsShouldBeCasedCorrectly",
-	Justification = "EndPoint is the casing used in IPEndPoint")]
 void Udt::Socket::Bind(IPEndPoint^ endPoint)
 {
 	if (endPoint == nullptr)
@@ -393,10 +389,6 @@ void Udt::Socket::Select(System::Collections::Generic::ICollection<Socket^>^ che
 	Filter(exceptFds.get(), checkError);
 }
 
-[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
-	"Microsoft.Naming",
-	"CA1702:CompoundWordsShouldBeCasedCorrectly",
-	Justification = "EndPoint is the casing used in IPEndPoint")]
 void Udt::Socket::Connect(System::Net::IPEndPoint^ endPoint)
 {
 	if (endPoint == nullptr)
