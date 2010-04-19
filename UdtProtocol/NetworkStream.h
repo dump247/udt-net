@@ -129,6 +129,6 @@ namespace Udt
 		virtual int Read(cli::array<System::Byte>^ buffer, int offset, int count) override;
 		virtual void Write(cli::array<System::Byte>^ buffer, int offset, int count) override;
 		virtual __int64 Seek(__int64 offset, System::IO::SeekOrigin origin) override;
-		virtual void SetLength(__int64 length) override;
+		virtual void SetLength(__int64 value) override;
 	};
 }

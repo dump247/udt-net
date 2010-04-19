@@ -149,7 +149,7 @@ __int64 NetworkStream::Seek(__int64 offset, System::IO::SeekOrigin origin)
 	throw gcnew NotSupportedException("Stream does not support seeking.");
 }
 
-void NetworkStream::SetLength(__int64 length)
+void NetworkStream::SetLength(__int64 value)
 {
 	throw gcnew NotSupportedException("Stream does not support seeking.");
 }
