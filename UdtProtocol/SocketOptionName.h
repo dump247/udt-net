@@ -36,33 +36,88 @@
 
 namespace Udt
 {
+	/// <summary>
+	/// Socket configuration option names.
+	/// </summary>
 	[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
 			"Microsoft.Design",
 			"CA1027:MarkEnumsWithFlags",
 			Justification = "This is a set of discrete values, not a set of flags.")]
 	public enum class SocketOptionName
 	{
+		/// <summary>
+		/// The maximum transfer unit.
+		/// </summary>
 		MaxPacketSize = UDT_MSS,
+
+		/// <summary>
+		/// If sending is blocking.
+		/// </summary>
 		BlockingSend = UDT_SNDSYN,
+
+		/// <summary>
+		/// If receiving is blocking.
+		/// </summary>
 		BlockingReceive = UDT_RCVSYN,
+
+		/// <summary>
+		/// Flight flag size (window size).
+		/// </summary>
 		MaxWindowSize = UDT_FC,
+
+		/// <summary>
+		/// Maximum buffer in sending queue.
+		/// </summary>
 		SendBuffer = UDT_SNDBUF,
+
+		/// <summary>
+		/// UDT receiving buffer size.
+		/// </summary>
 		ReceiveBuffer = UDT_RCVBUF,
 
+		/// <summary>
+		/// UDP sending buffer size.
+		/// </summary>
 		UdpSendBuffer = UDP_SNDBUF,
+
+		/// <summary>
+		/// UDP receiving buffer size.
+		/// </summary>
 		UdpReceiveBuffer = UDP_RCVBUF,
 
+		/// <summary>
+		/// Rendezvous connection mode.
+		/// </summary>
 		Rendezvous = UDT_RENDEZVOUS,
 
+		/// <summary>
+		/// Send timeout.
+		/// </summary>
 		SendTimeout = UDT_SNDTIMEO,
+
+		/// <summary>
+		/// Receive timeout.
+		/// </summary>
 		ReceiveTimeout = UDT_RCVTIMEO,
 
+		/// <summary>
+		/// Reuse an existing port or create a new one.
+		/// </summary>
 		ReuseAddress = UDT_REUSEADDR,
 
+		/// <summary>
+		/// Maximum bandwidth (bytes per second) that the connection can use.
+		/// </summary>
 		MaxBandwidth = UDT_MAXBW,
 
+		/// <summary>
+		/// Waiting for unsent data when closing.
+		/// </summary>
 		Linger = UDT_LINGER,
 
+		/// <summary>
+		/// Custom congestion control algorithm.
+		/// </summary>
 		CongestionControl = UDT_CC,
 	};
 }
