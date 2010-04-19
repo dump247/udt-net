@@ -20,7 +20,7 @@ namespace UdtProtocol_Test
         /// and <see cref="Udt.NetworkStream.CanSeek"/>.
         /// </summary>
         [Test]
-        public void Constructor_FileAccess_bool()
+        public void CanRead_CanWrite_CanSeek()
         {
             Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream);
             Udt.NetworkStream ns = new Udt.NetworkStream(socket, FileAccess.Read, false);
