@@ -225,6 +225,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\NetworkStream.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Packet.cpp"
 				>
 			</File>
@@ -296,6 +300,10 @@
 			</File>
 			<File
 				RelativePath=".\NativeIntArray.h"
+				>
+			</File>
+			<File
+				RelativePath=".\NetworkStream.h"
 				>
 			</File>
 			<File
