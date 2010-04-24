@@ -375,23 +375,23 @@ namespace UdtProtocol_Test
                 argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.Linger, "string value"));
                 Assert.AreEqual("value", argEx.ParamName);
 
-                // CongestionControl
-                Udt.CongestionControl cc = new Udt.CongestionControl();
-                Assert.IsNull(socket.CongestionControl);
-                socket.CongestionControl = cc;
-                Assert.AreSame(cc, socket.CongestionControl);
+                //// CongestionControl
+                //Udt.CongestionControl cc = new Udt.CongestionControl();
+                //Assert.IsNull(socket.CongestionControl);
+                //socket.CongestionControl = cc;
+                //Assert.AreSame(cc, socket.CongestionControl);
 
-                Assert.AreSame(cc, socket.GetSocketOption(Udt.SocketOptionName.CongestionControl));
-                cc = new Udt.CongestionControl();
-                socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, cc);
-                Assert.AreSame(cc, socket.CongestionControl);
-                socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, cc);
-                Assert.AreSame(cc, socket.CongestionControl);
+                //Assert.AreSame(cc, socket.GetSocketOption(Udt.SocketOptionName.CongestionControl));
+                //cc = new Udt.CongestionControl();
+                //socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, cc);
+                //Assert.AreSame(cc, socket.CongestionControl);
+                //socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, cc);
+                //Assert.AreSame(cc, socket.CongestionControl);
 
-                argEx = Assert.Throws<ArgumentNullException>(() => socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, null));
-                Assert.AreEqual("value", argEx.ParamName);
-                argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, "string value"));
-                Assert.AreEqual("value", argEx.ParamName);
+                //argEx = Assert.Throws<ArgumentNullException>(() => socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, null));
+                //Assert.AreEqual("value", argEx.ParamName);
+                //argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, "string value"));
+                //Assert.AreEqual("value", argEx.ParamName);
 
                 // ReceiveTimeout
                 Assert.AreEqual(-1, socket.ReceiveTimeout);
