@@ -188,20 +188,6 @@ Udt::Socket::~Socket(void)
 	this->Close();
 }
 
-bool Udt::Socket::Equals(System::Object^ obj)
-{
-	if (obj == nullptr) return false;
-	if (obj == this) return true;
-
-	Udt::Socket^ socket = dynamic_cast<Udt::Socket^>(obj);
-	return socket != nullptr && socket->_socket == this->_socket;
-}
-
-int Udt::Socket::GetHashCode()
-{
-	return _socket;
-}
-
 void Udt::Socket::Close(void)
 {
 	if (_socket != UDT::INVALID_SOCK)

@@ -107,9 +107,6 @@ namespace Udt
 		/// </summary>
 		~Socket(void);
 
-		virtual bool Equals(System::Object^ obj) override;
-		virtual int GetHashCode() override;
-
 		/// <summary>
 		/// Close the socket and release any associated resources.
 		/// </summary>
