@@ -322,18 +322,6 @@ UDT::UDSET* Udt::Socket::CreateUDSet(String^ paramName, System::Collections::Gen
 	return set;
 }
 
-void Udt::Socket::FillSocketHandleList(System::String^ paramName, System::Collections::Generic::ICollection<Udt::Socket^>^ fds, std::vector<UDTSOCKET>& list)
-{
-	for each (Udt::Socket^ socket in fds)
-	{
-		if (socket == nullptr)
-			throw gcnew ArgumentException("Value can not contain null reference.", paramName);
-
-		UDTSOCKET socketHandle = socket->_socket;
-		list.push_back(socketHandle);
-	}
-}
-
 void Udt::Socket::FillSocketList(const std::vector<UDTSOCKET>* list, System::Collections::Generic::Dictionary<UDTSOCKET, Udt::Socket^>^ sockets, System::Collections::Generic::ICollection<Udt::Socket^>^ fds)
 {
 	if (list != NULL)
@@ -387,22 +375,28 @@ void Udt::Socket::Select(
 
 	// Setup native function parameters
 	std::vector<UDTSOCKET> fds;
-	FillSocketHandleList("checkSockets", checkSockets, fds);
+	Dictionary<UDTSOCKET, Udt::Socket^>^ socketMap = gcnew Dictionary<UDTSOCKET, Udt::Socket^>();
 
-	std::auto_ptr<std::vector<UDTSOCKET>> readFds;
+	for each (Udt::Socket^ socket in checkSockets)
+	{
+		if (socket == nullptr)
+			throw gcnew ArgumentException("Value can not contain null reference.", "checkSockets");
 
-	if (readSockets != nullptr)
-		readFds.reset(new std::vector<UDTSOCKET>());
+		UDTSOCKET socketHandle = socket->_socket;
 
-	std::auto_ptr<std::vector<UDTSOCKET>> writeFds;
+		if (!socketMap->ContainsKey(socketHandle))
+		{
+			socketMap->Add(socketHandle, socket);
+			fds.push_back(socketHandle);
+		}
+	}
 
-	if (writeSockets != nullptr)
-		writeFds.reset(new std::vector<UDTSOCKET>());
-
-	std::auto_ptr<std::vector<UDTSOCKET>> exceptFds;
-
-	if (errorSockets != nullptr)
-		exceptFds.reset(new std::vector<UDTSOCKET>());
+	std::vector<UDTSOCKET> readFds;
+	std::vector<UDTSOCKET>* readFdsPtr = readSockets == nullptr ? NULL : &readFds;
+	std::vector<UDTSOCKET> writeFds;
+	std::vector<UDTSOCKET>* writeFdsPtr = writeSockets == nullptr ? NULL : &writeFds;
+	std::vector<UDTSOCKET> exceptFds;
+	std::vector<UDTSOCKET>* exceptFdsPtr = errorSockets == nullptr ? NULL : &exceptFds;
 
 	int64_t msTimeOut = Int64::MaxValue;
 
@@ -410,21 +404,15 @@ void Udt::Socket::Select(
 		msTimeOut = (int64_t)timeout.TotalMilliseconds;
 
 	// Call native function
-	if (UDT::ERROR == UDT::selectEx(fds, readFds.get(), writeFds.get(), exceptFds.get(), msTimeOut))
+	if (UDT::ERROR == UDT::selectEx(fds, readFdsPtr, writeFdsPtr, exceptFdsPtr, msTimeOut))
 	{
 		throw Udt::SocketException::GetLastError("Error in socket selectEx.");
 	}
 
-	// Build map from socket handle to socket object
-	Dictionary<UDTSOCKET, Udt::Socket^>^ socketMap = gcnew Dictionary<UDTSOCKET, Udt::Socket^>();
-
-	for each (Udt::Socket^ socket in checkSockets)
-		socketMap[socket->_socket] = socket;
-
 	// Add the sockets to the provided socket collections
-	FillSocketList(readFds.get(), socketMap, readSockets);
-	FillSocketList(writeFds.get(), socketMap, writeSockets);
-	FillSocketList(exceptFds.get(), socketMap, errorSockets);
+	FillSocketList(readFdsPtr, socketMap, readSockets);
+	FillSocketList(writeFdsPtr, socketMap, writeSockets);
+	FillSocketList(exceptFdsPtr, socketMap, errorSockets);
 }
 
 void Udt::Socket::Select(

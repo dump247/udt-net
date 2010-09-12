@@ -77,7 +77,6 @@ namespace Udt
 		void SetSocketOptionBoolean(SocketOptionName name, bool value);
 
 		static UDT::UDSET* CreateUDSet(System::String^ paramName, System::Collections::Generic::ICollection<Udt::Socket^>^ fds);
-		static void FillSocketHandleList(System::String^ paramName, System::Collections::Generic::ICollection<Udt::Socket^>^ fds, std::vector<UDTSOCKET>& list);
 		static void FillSocketList(const std::vector<UDTSOCKET>* list, System::Collections::Generic::Dictionary<UDTSOCKET, Udt::Socket^>^ sockets, System::Collections::Generic::ICollection<Udt::Socket^>^ fds);
 		static void Filter(UDT::UDSET* set, System::Collections::Generic::ICollection<Udt::Socket^>^ fds);
 
