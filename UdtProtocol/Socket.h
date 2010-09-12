@@ -77,6 +77,8 @@ namespace Udt
 		void SetSocketOptionBoolean(SocketOptionName name, bool value);
 
 		static UDT::UDSET* CreateUDSet(System::String^ paramName, System::Collections::Generic::ICollection<Udt::Socket^>^ fds);
+		static void FillSocketHandleList(System::String^ paramName, System::Collections::Generic::ICollection<Udt::Socket^>^ fds, std::vector<UDTSOCKET>& list);
+		static void FillSocketList(const std::vector<UDTSOCKET>* list, System::Collections::Generic::Dictionary<UDTSOCKET, Udt::Socket^>^ sockets, System::Collections::Generic::ICollection<Udt::Socket^>^ fds);
 		static void Filter(UDT::UDSET* set, System::Collections::Generic::ICollection<Udt::Socket^>^ fds);
 
 	public:
@@ -104,6 +106,9 @@ namespace Udt
 		/// Closes the socket.
 		/// </summary>
 		~Socket(void);
+
+		virtual bool Equals(System::Object^ obj) override;
+		virtual int GetHashCode() override;
 
 		/// <summary>
 		/// Close the socket and release any associated resources.
@@ -258,9 +263,39 @@ namespace Udt
 		/// is less than 0.
 		/// </exception>
 		/// <exception cref="Udt::SocketException">If an error occurs.</exception>
-		static void Select(System::Collections::Generic::ICollection<Socket^>^ checkRead,
+		static void Select(
+			System::Collections::Generic::ICollection<Socket^>^ checkRead,
 			System::Collections::Generic::ICollection<Socket^>^ checkWrite,
 			System::Collections::Generic::ICollection<Socket^>^ checkError,
+			System::TimeSpan timeout);
+
+		/// <summary>
+		/// Determines the status of one or more sockets.
+		/// </summary>
+		/// <param name="checkSockets">Sockets to check the status of.</param>
+		/// <param name="readSockets">Sockets that are ready for receive.</param>
+		/// <param name="writeSockets">Socket that are ready to write.</param>
+		/// <param name="errorSockets">Sockets that are closed or with a broken connection.</param>
+		/// <param name="timeout">Timeout value or <see cref="InfiniteTimeout"/>.</param>
+		/// <exception cref="System::ArgumentNullException">
+		/// If <paramref name="checkSockets"/> is a null reference.
+		/// </exception>
+		/// <exception cref="System::ArgumentException">
+		/// If <paramref name="checkSockets"/> contains a null reference.
+		/// </exception>
+		/// <exception cref="System::ArgumentException">
+		/// <paramref name="readSockets"/>, <paramref name="writeSockets"/>, and <paramref name="errorSockets"/> are null references.
+		/// </exception>
+		/// <exception cref="System::ArgumentOutOfRangeException">
+		/// If <paramref name="timeout"/> is not <see cref="InfiniteTimeout"/> and
+		/// is less than 0.
+		/// </exception>
+		/// <exception cref="Udt::SocketException">If an error occurs.</exception>
+		static void Select(
+			System::Collections::Generic::ICollection<Socket^>^ checkSockets,
+			System::Collections::Generic::ICollection<Socket^>^ readSockets,
+			System::Collections::Generic::ICollection<Socket^>^ writeSockets,
+			System::Collections::Generic::ICollection<Socket^>^ errorSockets,
 			System::TimeSpan timeout);
 
 		int Receive(cli::array<System::Byte>^ buffer);

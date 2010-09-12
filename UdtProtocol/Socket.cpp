@@ -188,6 +188,20 @@ Udt::Socket::~Socket(void)
 	this->Close();
 }
 
+bool Udt::Socket::Equals(System::Object^ obj)
+{
+	if (obj == nullptr) return false;
+	if (obj == this) return true;
+
+	Udt::Socket^ socket = dynamic_cast<Udt::Socket^>(obj);
+	return socket != nullptr && socket->_socket == this->_socket;
+}
+
+int Udt::Socket::GetHashCode()
+{
+	return _socket;
+}
+
 void Udt::Socket::Close(void)
 {
 	if (_socket != UDT::INVALID_SOCK)
@@ -322,6 +336,29 @@ UDT::UDSET* Udt::Socket::CreateUDSet(String^ paramName, System::Collections::Gen
 	return set;
 }
 
+void Udt::Socket::FillSocketHandleList(System::String^ paramName, System::Collections::Generic::ICollection<Udt::Socket^>^ fds, std::vector<UDTSOCKET>& list)
+{
+	for each (Udt::Socket^ socket in fds)
+	{
+		if (socket == nullptr)
+			throw gcnew ArgumentException("Value can not contain null reference.", paramName);
+
+		UDTSOCKET socketHandle = socket->_socket;
+		list.push_back(socketHandle);
+	}
+}
+
+void Udt::Socket::FillSocketList(const std::vector<UDTSOCKET>* list, System::Collections::Generic::Dictionary<UDTSOCKET, Udt::Socket^>^ sockets, System::Collections::Generic::ICollection<Udt::Socket^>^ fds)
+{
+	if (list != NULL)
+	{
+		for (std::vector<UDTSOCKET>::const_iterator it = list->begin(); it != list->end(); ++it)
+		{
+			fds->Add(sockets[*it]);
+		}
+	}
+}
+
 bool IsEmpty(System::Collections::Generic::ICollection<Udt::Socket^>^ fds)
 {
 	return fds == nullptr || fds->Count == 0;
@@ -346,7 +383,66 @@ void Udt::Socket::Filter(UDT::UDSET* set, System::Collections::Generic::ICollect
 	}
 }
 
-void Udt::Socket::Select(System::Collections::Generic::ICollection<Socket^>^ checkRead,
+void Udt::Socket::Select(
+			System::Collections::Generic::ICollection<Socket^>^ checkSockets,
+			System::Collections::Generic::ICollection<Socket^>^ readSockets,
+			System::Collections::Generic::ICollection<Socket^>^ writeSockets,
+			System::Collections::Generic::ICollection<Socket^>^ errorSockets,
+			System::TimeSpan timeout)
+{
+	if (checkSockets == nullptr)
+		throw gcnew ArgumentNullException("checkSockets");
+
+	if (readSockets == nullptr && writeSockets == nullptr && errorSockets == nullptr)
+		throw gcnew ArgumentException("At least one of readSockets, writeSockets, or errorSockets is required");
+
+	if (timeout != Udt::Socket::InfiniteTimeout && timeout < System::TimeSpan::Zero)
+		throw gcnew ArgumentOutOfRangeException("timeout", timeout, "Value must be infinite (-1 ticks) or greater than or equal to 0.");
+
+	// Setup native function parameters
+	std::vector<UDTSOCKET> fds;
+	FillSocketHandleList("checkSockets", checkSockets, fds);
+
+	std::auto_ptr<std::vector<UDTSOCKET>> readFds;
+
+	if (readSockets != nullptr)
+		readFds.reset(new std::vector<UDTSOCKET>());
+
+	std::auto_ptr<std::vector<UDTSOCKET>> writeFds;
+
+	if (writeSockets != nullptr)
+		writeFds.reset(new std::vector<UDTSOCKET>());
+
+	std::auto_ptr<std::vector<UDTSOCKET>> exceptFds;
+
+	if (errorSockets != nullptr)
+		exceptFds.reset(new std::vector<UDTSOCKET>());
+
+	int64_t msTimeOut = Int64::MaxValue;
+
+	if (timeout != Udt::Socket::InfiniteTimeout)
+		msTimeOut = (int64_t)timeout.TotalMilliseconds;
+
+	// Call native function
+	if (UDT::ERROR == UDT::selectEx(fds, readFds.get(), writeFds.get(), exceptFds.get(), msTimeOut))
+	{
+		throw Udt::SocketException::GetLastError("Error in socket selectEx.");
+	}
+
+	// Build map from socket handle to socket object
+	Dictionary<UDTSOCKET, Udt::Socket^>^ socketMap = gcnew Dictionary<UDTSOCKET, Udt::Socket^>();
+
+	for each (Udt::Socket^ socket in checkSockets)
+		socketMap[socket->_socket] = socket;
+
+	// Add the sockets to the provided socket collections
+	FillSocketList(readFds.get(), socketMap, readSockets);
+	FillSocketList(writeFds.get(), socketMap, writeSockets);
+	FillSocketList(exceptFds.get(), socketMap, errorSockets);
+}
+
+void Udt::Socket::Select(
+			System::Collections::Generic::ICollection<Socket^>^ checkRead,
 			System::Collections::Generic::ICollection<Socket^>^ checkWrite,
 			System::Collections::Generic::ICollection<Socket^>^ checkError,
 			System::TimeSpan timeout)
