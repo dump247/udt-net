@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup>
-	<UdtHome>..\..\udt.sdk.4.8.win32\udt4</UdtHome>
+    <UdtHome>..\..\udt.sdk.4.8.win32\udt4</UdtHome>
   </PropertyGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CFA7453B-8B9B-4112-AF04-F72C3D431100}</ProjectGuid>
@@ -35,7 +35,6 @@
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="UdtProtocol.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -67,7 +66,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
       <TargetMachine>MachineX86</TargetMachine>
-      <KeyFile>$(ProjectDir)KeyFile.snk</KeyFile>
+      <KeyFile>
+      </KeyFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -85,7 +85,8 @@
       <AdditionalLibraryDirectories>$(UdtHome)\src;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TargetMachine>MachineX86</TargetMachine>
-      <KeyFile>$(ProjectDir)KeyFile.snk</KeyFile>
+      <KeyFile>
+      </KeyFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -145,9 +146,6 @@
     <ClInclude Include="Stdafx.h" />
     <ClInclude Include="TotalTraceInfo.h" />
     <ClInclude Include="TraceInfo.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="KeyFile.snk" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="UdtProtocol.rc" />

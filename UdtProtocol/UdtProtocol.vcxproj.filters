@@ -118,11 +118,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="KeyFile.snk">
-      <Filter>Resource Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="UdtProtocol.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
