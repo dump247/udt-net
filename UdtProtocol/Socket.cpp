@@ -550,7 +550,8 @@ __int64 Udt::Socket::SendFile(System::String^ fileName)
 	int64_t size = ifs.tellg();
 	ifs.seekg(0, std::ios::beg);
 
-	int64_t sent = UDT::sendfile(_socket, ifs, 0, size);
+	int64_t offset = 0;
+	int64_t sent = UDT::sendfile(_socket, ifs, offset, size);
 
 	if (UDT::ERROR == sent)
 	{
@@ -572,7 +573,8 @@ __int64 Udt::Socket::ReceiveFile(System::String^ fileName, __int64 length)
 	const wchar_t* file_name_ptr = file_name_pin;
 	std::fstream ofs(file_name_ptr, std::ios::out | std::ios::binary | std::ios::trunc);
 
-	int64_t received = UDT::recvfile(_socket, ofs, 0, length);
+	int64_t offset = 0;
+	int64_t received = UDT::recvfile(_socket, ofs, offset, length);
 
 	if (received == UDT::ERROR)
 	{

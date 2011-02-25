@@ -4,3 +4,4 @@ glob:*.sdf
 glob:*.suo
 glob:obj/*
 glob:bin/*
+glob:*.opensdf
