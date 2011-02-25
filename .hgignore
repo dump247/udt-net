@@ -1,0 +1,6 @@
+glob:*.user
+glob:*.ncb
+glob:*.sdf
+glob:*.suo
+glob:obj/*
+glob:bin/*
