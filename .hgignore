@@ -8,3 +8,4 @@ bin/*
 *.opensdf
 packages/*/**
 ipch/
+*.aps
