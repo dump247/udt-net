@@ -1,7 +1,9 @@
-glob:*.user
-glob:*.ncb
-glob:*.sdf
-glob:*.suo
-glob:obj/*
-glob:bin/*
-glob:*.opensdf
+syntax: glob
+*.user
+*.ncb
+*.sdf
+*.suo
+obj/*
+bin/*
+*.opensdf
+packages/*/**
