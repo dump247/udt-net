@@ -93,6 +93,7 @@
     <Compile Include="MessageTest.cs" />
     <Compile Include="NetworkStreamTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SocketPollerTest.cs" />
     <Compile Include="SocketTest.cs" />
   </ItemGroup>
   <ItemGroup>

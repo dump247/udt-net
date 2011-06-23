@@ -80,6 +80,13 @@ namespace Udt
 		static void FillSocketList(const std::vector<UDTSOCKET>* list, System::Collections::Generic::Dictionary<UDTSOCKET, Udt::Socket^>^ sockets, System::Collections::Generic::ICollection<Udt::Socket^>^ fds);
 		static void Filter(UDT::UDSET* set, System::Collections::Generic::ICollection<Udt::Socket^>^ fds);
 
+	internal:
+
+		property UDTSOCKET Handle
+		{
+			UDTSOCKET get(void) { return _socket; }
+		}
+
 	public:
 
 		/// <summary>
