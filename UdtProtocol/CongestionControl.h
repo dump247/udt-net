@@ -39,7 +39,7 @@ namespace Udt
 	ref class Packet;
 	class CCCWrapper;
 
-	public ref class CongestionControl
+	public ref class CongestionControl abstract
 	{
 	internal:
 		CCCWrapper* _cccWrapper;
