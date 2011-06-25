@@ -58,6 +58,14 @@ namespace Udt
 		{
 			if (UDT::ERROR == UDT::startup())
 				throw SocketException::GetLastError("Error in UDT startup");
+			
+			System::AppDomain::CurrentDomain->DomainUnload += gcnew System::EventHandler(DomainUnloaded);
+		}
+		
+		static void DomainUnloaded(System::Object^ source, System::EventArgs^ args)
+		{
+			if (UDT::ERROR == UDT::cleanup())
+				throw SocketException::GetLastError("Error in UDT cleanup");
 		}
 
 		int GetSocketOptionInt32(SocketOptionName name);
@@ -80,6 +88,12 @@ namespace Udt
 		}
 
 	public:
+
+		static void Cleanup()
+		{
+			if (UDT::ERROR == UDT::cleanup())
+				throw SocketException::GetLastError("Error in UDT cleanup");
+		}
 
 		/// <summary>
 		/// Timeout value that indicates infinite.
