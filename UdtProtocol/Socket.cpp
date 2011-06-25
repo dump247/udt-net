@@ -192,6 +192,8 @@ void Udt::Socket::Close(void)
 {
 	if (_socket != UDT::INVALID_SOCK)
 	{
+		CongestionControl = nullptr;
+
 		if (UDT::ERROR == UDT::close(_socket))
 		{
 			_socket = UDT::INVALID_SOCK;
@@ -863,12 +865,20 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, System::Object^ va
 	}
 	else if (name == Udt::SocketOptionName::CongestionControl)
 	{
-		if (value == nullptr)
-			throw gcnew ArgumentNullException("value");
-
 		if (value != _congestionControl)
 		{
-			if (Udt::CongestionControl::typeid->IsAssignableFrom(value->GetType()))
+			if (value == nullptr)
+			{
+				CCCFactory<CUDTCC> factory;
+
+				if (UDT::ERROR == UDT::setsockopt(_socket, 0, (UDT::SOCKOPT)name, &factory, sizeof(CCCVirtualFactory)))
+				{
+					throw Udt::SocketException::GetLastError(String::Concat("Error clearing socket option ", name.ToString(), "."));
+				}
+
+				_congestionControl = nullptr;
+			}
+			else if (Udt::CongestionControl::typeid->IsAssignableFrom(value->GetType()))
 			{
 				Udt::CongestionControl^ ccValue = (Udt::CongestionControl^)value;
 				std::auto_ptr<CCCWrapperFactory> factory(new CCCWrapperFactory(ccValue));

@@ -42,5 +42,4 @@ CCCWrapperFactory::CCCWrapperFactory(CongestionControl^ wrapped)
 
 CCCWrapperFactory::~CCCWrapperFactory(void)
 {
-	delete _wrapped;
 }

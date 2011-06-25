@@ -324,6 +324,44 @@ namespace UdtProtocol_Test
             }
         }
 
+        [Test]
+        public void Get_set_CongestionControl()
+        {
+            using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+            {
+                Udt.CongestionControl cc = new CongestionControlTester();
+                Assert.IsNull(socket.CongestionControl);
+                socket.CongestionControl = cc;
+                Assert.AreSame(cc, socket.CongestionControl);
+
+                Assert.AreSame(cc, socket.GetSocketOption(Udt.SocketOptionName.CongestionControl));
+                cc = new CongestionControlTester();
+                socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, cc);
+                Assert.AreSame(cc, socket.CongestionControl);
+                socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, cc);
+                Assert.AreSame(cc, socket.CongestionControl);
+            }
+        }
+
+        [Test]
+        public void Set_CongestionControl_to_invalid_values()
+        {
+            using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+            {
+                ArgumentException argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, "string value"));
+                Assert.AreEqual("value", argEx.ParamName);
+
+                //argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, 10));
+                //Assert.AreEqual("value", argEx.ParamName);
+
+                //argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, 100L));
+                //Assert.AreEqual("value", argEx.ParamName);
+
+                //argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, true));
+                //Assert.AreEqual("value", argEx.ParamName);
+            }
+        }
+
         /// <summary>
         /// Test setting and retrieving the various socket optins.
         /// </summary>
@@ -374,24 +412,6 @@ namespace UdtProtocol_Test
                 Assert.AreEqual("value", argEx.ParamName);
                 argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.Linger, "string value"));
                 Assert.AreEqual("value", argEx.ParamName);
-
-                //// CongestionControl
-                //Udt.CongestionControl cc = new Udt.CongestionControl();
-                //Assert.IsNull(socket.CongestionControl);
-                //socket.CongestionControl = cc;
-                //Assert.AreSame(cc, socket.CongestionControl);
-
-                //Assert.AreSame(cc, socket.GetSocketOption(Udt.SocketOptionName.CongestionControl));
-                //cc = new Udt.CongestionControl();
-                //socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, cc);
-                //Assert.AreSame(cc, socket.CongestionControl);
-                //socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, cc);
-                //Assert.AreSame(cc, socket.CongestionControl);
-
-                //argEx = Assert.Throws<ArgumentNullException>(() => socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, null));
-                //Assert.AreEqual("value", argEx.ParamName);
-                //argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, "string value"));
-                //Assert.AreEqual("value", argEx.ParamName);
 
                 // ReceiveTimeout
                 Assert.AreEqual(-1, socket.ReceiveTimeout);
