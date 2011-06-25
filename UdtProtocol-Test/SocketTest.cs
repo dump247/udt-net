@@ -408,7 +408,7 @@ namespace UdtProtocol_Test
                 socket.SetSocketOption(Udt.SocketOptionName.ReceiveTimeout, (object)10);
                 Assert.AreEqual(10, socket.GetSocketOption(Udt.SocketOptionName.ReceiveTimeout));
 
-                // ReceiveTimeout
+                // MaxBandwidth
                 Assert.AreEqual(-1L, socket.MaxBandwidth);
                 socket.MaxBandwidth = 50L;
                 Assert.AreEqual(50L, socket.MaxBandwidth);
