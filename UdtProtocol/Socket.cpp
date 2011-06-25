@@ -761,7 +761,7 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, int value)
 
 	case Udt::SocketOptionName::Linger:
 	case Udt::SocketOptionName::CongestionControl:
-		throw gcnew ArgumentException(System::String::Concat("Invalid Int32 socket option: ", name), "name");
+		throw gcnew ArgumentException(System::String::Concat("Socket option ", name, " can not be set to Int32 value"), "value");
 
 	default:
 		throw gcnew ArgumentException("Unhandled socket option name.", "name");
@@ -796,7 +796,7 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, __int64 value)
 
 	case Udt::SocketOptionName::Linger:
 	case Udt::SocketOptionName::CongestionControl:
-		throw gcnew ArgumentException(System::String::Concat("Invalid Int64 socket option: ", name), "name");
+		throw gcnew ArgumentException(System::String::Concat("Socket option ", name, " can not be set to Int64 value"), "value");
 
 	default:
 		throw gcnew ArgumentException("Unhandled socket option name.", "name");
@@ -831,7 +831,7 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, bool value)
 
 	case Udt::SocketOptionName::Linger:
 	case Udt::SocketOptionName::CongestionControl:
-		throw gcnew ArgumentException(System::String::Concat("Invalid Boolean socket option: ", name), "name");
+		throw gcnew ArgumentException(System::String::Concat("Socket option ", name, " can not be set to Boolean value"), "value");
 
 	default:
 		throw gcnew ArgumentException("Unhandled socket option name.", "name");
@@ -892,7 +892,7 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, System::Object^ va
 			}
 			else
 			{
-				throw gcnew ArgumentException("Congestion control socket option value must be of type Udt.CongestionControl", "value");
+				throw gcnew ArgumentException(System::String::Concat("Socket option ", name, " can not be set to ", value->GetType()->Name, " value"), "value");
 			}
 		}
 	}

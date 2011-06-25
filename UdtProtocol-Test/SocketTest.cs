@@ -351,14 +351,14 @@ namespace UdtProtocol_Test
                 ArgumentException argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, "string value"));
                 Assert.AreEqual("value", argEx.ParamName);
 
-                //argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, 10));
-                //Assert.AreEqual("value", argEx.ParamName);
+                argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, 10));
+                Assert.AreEqual("value", argEx.ParamName);
 
-                //argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, 100L));
-                //Assert.AreEqual("value", argEx.ParamName);
+                argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, 100L));
+                Assert.AreEqual("value", argEx.ParamName);
 
-                //argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, true));
-                //Assert.AreEqual("value", argEx.ParamName);
+                argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, true));
+                Assert.AreEqual("value", argEx.ParamName);
             }
         }
 
@@ -403,11 +403,11 @@ namespace UdtProtocol_Test
                 Assert.AreEqual(180, opt.LingerTime);
 
                 ArgumentException argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.Linger, 1));
-                Assert.AreEqual("name", argEx.ParamName);
+                Assert.AreEqual("value", argEx.ParamName);
                 argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.Linger, -10L));
-                Assert.AreEqual("name", argEx.ParamName);
+                Assert.AreEqual("value", argEx.ParamName);
                 argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.Linger, true));
-                Assert.AreEqual("name", argEx.ParamName);
+                Assert.AreEqual("value", argEx.ParamName);
                 argEx = Assert.Throws<ArgumentNullException>(() => socket.SetSocketOption(Udt.SocketOptionName.Linger, null));
                 Assert.AreEqual("value", argEx.ParamName);
                 argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.Linger, "string value"));
