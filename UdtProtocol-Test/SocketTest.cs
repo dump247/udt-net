@@ -362,93 +362,136 @@ namespace UdtProtocol_Test
             }
         }
 
-        /// <summary>
-        /// Test setting and retrieving the various socket optins.
-        /// </summary>
+		[Test]
+		public void Get_set_BlockingReceive()
+		{
+			using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+			{
+				Assert.IsTrue(socket.BlockingReceive);
+				socket.BlockingReceive = false;
+				Assert.IsFalse(socket.BlockingReceive);
+
+				Assert.IsFalse((bool)socket.GetSocketOption(Udt.SocketOptionName.BlockingReceive));
+				socket.SetSocketOption(Udt.SocketOptionName.BlockingReceive, true);
+				Assert.IsTrue((bool)socket.GetSocketOption(Udt.SocketOptionName.BlockingReceive));
+				socket.SetSocketOption(Udt.SocketOptionName.BlockingReceive, 0);
+				Assert.IsFalse(socket.BlockingReceive);
+				socket.SetSocketOption(Udt.SocketOptionName.BlockingReceive, 10L);
+				Assert.IsTrue(socket.BlockingReceive);
+				socket.SetSocketOption(Udt.SocketOptionName.BlockingReceive, (object)false);
+				Assert.IsFalse((bool)socket.GetSocketOption(Udt.SocketOptionName.BlockingReceive));
+			}
+		}
+
+		[Test]
+		public void Get_set_LingerState()
+		{
+			using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+			{
+				LingerOption opt = socket.LingerState;
+				Assert.IsTrue(opt.Enabled);
+				Assert.AreEqual(180, opt.LingerTime);
+
+				socket.LingerState = new LingerOption(false, 500);
+				opt = socket.LingerState;
+				Assert.IsFalse(opt.Enabled);
+				Assert.AreEqual(500, opt.LingerTime);
+
+				opt = (LingerOption)socket.GetSocketOption(Udt.SocketOptionName.Linger);
+				Assert.IsFalse(opt.Enabled);
+				Assert.AreEqual(500, opt.LingerTime);
+
+				socket.SetSocketOption(Udt.SocketOptionName.Linger, new LingerOption(true, 180));
+				opt = (LingerOption)socket.GetSocketOption(Udt.SocketOptionName.Linger);
+				Assert.IsTrue(opt.Enabled);
+				Assert.AreEqual(180, opt.LingerTime);
+			}
+		}
+
+		[Test]
+		public void Set_LingerState_to_invalid_values()
+		{
+			using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+			{
+				ArgumentException argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.Linger, 1));
+				Assert.AreEqual("value", argEx.ParamName);
+				argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.Linger, -10L));
+				Assert.AreEqual("value", argEx.ParamName);
+				argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.Linger, true));
+				Assert.AreEqual("value", argEx.ParamName);
+				argEx = Assert.Throws<ArgumentNullException>(() => socket.SetSocketOption(Udt.SocketOptionName.Linger, null));
+				Assert.AreEqual("value", argEx.ParamName);
+				argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.Linger, "string value"));
+				Assert.AreEqual("value", argEx.ParamName);
+			}
+		}
+
+		/// <summary>
+		/// Test setting and retrieving the various socket optins.
+		/// </summary>
+		[Test]
+		public void Get_set_ReceiveTimeout()
+		{
+			using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+			{
+				Assert.AreEqual(-1, socket.ReceiveTimeout);
+				socket.ReceiveTimeout = 50;
+				Assert.AreEqual(50, socket.ReceiveTimeout);
+
+				Assert.AreEqual(50, socket.GetSocketOption(Udt.SocketOptionName.ReceiveTimeout));
+
+				socket.SetSocketOption(Udt.SocketOptionName.ReceiveTimeout, -1);
+				Assert.AreEqual(-1, socket.GetSocketOption(Udt.SocketOptionName.ReceiveTimeout));
+
+				socket.SetSocketOption(Udt.SocketOptionName.ReceiveTimeout, 5L);
+				Assert.AreEqual(5, socket.GetSocketOption(Udt.SocketOptionName.ReceiveTimeout));
+
+				socket.SetSocketOption(Udt.SocketOptionName.ReceiveTimeout, true);
+				Assert.AreEqual(1, socket.GetSocketOption(Udt.SocketOptionName.ReceiveTimeout));
+
+				socket.SetSocketOption(Udt.SocketOptionName.ReceiveTimeout, (object)10);
+				Assert.AreEqual(10, socket.GetSocketOption(Udt.SocketOptionName.ReceiveTimeout));
+			}
+		}
+
         [Test]
-        public void SocketOptions()
+		public void Get_set_MaxBandwidth()
         {
             using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
             {
-                // BlockingReceive
-                Assert.IsTrue(socket.BlockingReceive);
-                socket.BlockingReceive = false;
-                Assert.IsFalse(socket.BlockingReceive);
-
-                Assert.IsFalse((bool)socket.GetSocketOption(Udt.SocketOptionName.BlockingReceive));
-                socket.SetSocketOption(Udt.SocketOptionName.BlockingReceive, true);
-                Assert.IsTrue((bool)socket.GetSocketOption(Udt.SocketOptionName.BlockingReceive));
-                socket.SetSocketOption(Udt.SocketOptionName.BlockingReceive, 0);
-                Assert.IsFalse(socket.BlockingReceive);
-                socket.SetSocketOption(Udt.SocketOptionName.BlockingReceive, 10L);
-                Assert.IsTrue(socket.BlockingReceive);
-                socket.SetSocketOption(Udt.SocketOptionName.BlockingReceive, (object)false);
-                Assert.IsFalse((bool)socket.GetSocketOption(Udt.SocketOptionName.BlockingReceive));
-
-                // LingerState
-                LingerOption opt = socket.LingerState;
-                Assert.IsTrue(opt.Enabled);
-                Assert.AreEqual(180, opt.LingerTime);
-                socket.LingerState = new LingerOption(false, 500);
-                opt = socket.LingerState;
-                Assert.IsFalse(opt.Enabled);
-                Assert.AreEqual(500, opt.LingerTime);
-
-                opt = (LingerOption)socket.GetSocketOption(Udt.SocketOptionName.Linger);
-                Assert.IsFalse(opt.Enabled);
-                Assert.AreEqual(500, opt.LingerTime);
-                socket.SetSocketOption(Udt.SocketOptionName.Linger, new LingerOption(true, 180));
-                opt = (LingerOption)socket.GetSocketOption(Udt.SocketOptionName.Linger);
-                Assert.IsTrue(opt.Enabled);
-                Assert.AreEqual(180, opt.LingerTime);
-
-                ArgumentException argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.Linger, 1));
-                Assert.AreEqual("value", argEx.ParamName);
-                argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.Linger, -10L));
-                Assert.AreEqual("value", argEx.ParamName);
-                argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.Linger, true));
-                Assert.AreEqual("value", argEx.ParamName);
-                argEx = Assert.Throws<ArgumentNullException>(() => socket.SetSocketOption(Udt.SocketOptionName.Linger, null));
-                Assert.AreEqual("value", argEx.ParamName);
-                argEx = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.Linger, "string value"));
-                Assert.AreEqual("value", argEx.ParamName);
-
-                // ReceiveTimeout
-                Assert.AreEqual(-1, socket.ReceiveTimeout);
-                socket.ReceiveTimeout = 50;
-                Assert.AreEqual(50, socket.ReceiveTimeout);
-
-                Assert.AreEqual(50, socket.GetSocketOption(Udt.SocketOptionName.ReceiveTimeout));
-                socket.SetSocketOption(Udt.SocketOptionName.ReceiveTimeout, -1);
-                Assert.AreEqual(-1, socket.GetSocketOption(Udt.SocketOptionName.ReceiveTimeout));
-                socket.SetSocketOption(Udt.SocketOptionName.ReceiveTimeout, 5L);
-                Assert.AreEqual(5, socket.GetSocketOption(Udt.SocketOptionName.ReceiveTimeout));
-                socket.SetSocketOption(Udt.SocketOptionName.ReceiveTimeout, true);
-                Assert.AreEqual(1, socket.GetSocketOption(Udt.SocketOptionName.ReceiveTimeout));
-                socket.SetSocketOption(Udt.SocketOptionName.ReceiveTimeout, (object)10);
-                Assert.AreEqual(10, socket.GetSocketOption(Udt.SocketOptionName.ReceiveTimeout));
-
                 // MaxBandwidth
                 Assert.AreEqual(-1L, socket.MaxBandwidth);
                 socket.MaxBandwidth = 50L;
                 Assert.AreEqual(50L, socket.MaxBandwidth);
 
                 Assert.AreEqual(50L, socket.GetSocketOption(Udt.SocketOptionName.MaxBandwidth));
+
                 socket.SetSocketOption(Udt.SocketOptionName.MaxBandwidth, (object)1);
                 Assert.AreEqual(1L, socket.GetSocketOption(Udt.SocketOptionName.MaxBandwidth));
+
                 socket.SetSocketOption(Udt.SocketOptionName.MaxBandwidth, 2);
                 Assert.AreEqual(2L, socket.GetSocketOption(Udt.SocketOptionName.MaxBandwidth));
+
                 socket.SetSocketOption(Udt.SocketOptionName.MaxBandwidth, -1L);
                 Assert.AreEqual(-1L, socket.GetSocketOption(Udt.SocketOptionName.MaxBandwidth));
+
                 socket.SetSocketOption(Udt.SocketOptionName.MaxBandwidth, false);
                 Assert.AreEqual(0L, socket.GetSocketOption(Udt.SocketOptionName.MaxBandwidth));
+
                 socket.SetSocketOption(Udt.SocketOptionName.MaxBandwidth, (object)10L);
                 Assert.AreEqual(10L, socket.GetSocketOption(Udt.SocketOptionName.MaxBandwidth));
-
-                argEx = Assert.Throws<ArgumentNullException>(() => socket.SetSocketOption(Udt.SocketOptionName.MaxBandwidth, null));
-                Assert.AreEqual("value", argEx.ParamName);
             }
         }
+
+		[Test]
+		public void Set_MaxBandwidth_to_invalid_values()
+		{
+			using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+			{
+				ArgumentException argEx = Assert.Throws<ArgumentNullException>(() => socket.SetSocketOption(Udt.SocketOptionName.MaxBandwidth, null));
+				Assert.AreEqual("value", argEx.ParamName);
+			}
+		}
 
         private class CongestionControlTester : Udt.CongestionControl
         {
