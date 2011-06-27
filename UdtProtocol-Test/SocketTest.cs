@@ -5,6 +5,7 @@ using System.Text;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 
 using NUnit.Framework;
 
@@ -491,6 +492,77 @@ namespace UdtProtocol_Test
 				ArgumentException argEx = Assert.Throws<ArgumentNullException>(() => socket.SetSocketOption(Udt.SocketOptionName.MaxBandwidth, null));
 				Assert.AreEqual("value", argEx.ParamName);
 			}
+		}
+
+		[Test]
+		public void Accept()
+		{
+			ManualResetEvent acceptedEvent = new ManualResetEvent(false);
+
+			var serverTask = Task.Factory.StartNew(() =>
+			{
+				using (Udt.Socket server = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+				{
+					server.Bind(IPAddress.Loopback, 10000);
+					server.Listen(1);
+
+					using (Udt.Socket accept = server.Accept())
+					{
+						acceptedEvent.Set();
+					}
+				}
+			});
+
+			using (Udt.Socket client = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+			{
+				client.Connect(IPAddress.Loopback, 10000);
+				acceptedEvent.WaitOne();
+			}
+
+			serverTask.Wait();
+		}
+
+		[Test]
+		public void Send_receive()
+		{
+			ManualResetEvent serverDoneEvent = new ManualResetEvent(false);
+			ManualResetEvent clientDoneEvent = new ManualResetEvent(false);
+
+			var serverTask = Task.Factory.StartNew(() =>
+			{
+				using (Udt.Socket server = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+				{
+					server.Bind(IPAddress.Loopback, 10000);
+					server.Listen(1);
+
+					using (Udt.Socket accept = server.Accept())
+					{
+						accept.Send(new byte[] { 1, 2, 3 });
+
+						byte[] buffer = new byte[1024];
+						Assert.AreEqual(3, accept.Receive(buffer));
+
+						serverDoneEvent.Set();
+						Assert.IsTrue(clientDoneEvent.WaitOne(1000));
+					}
+				}
+			});
+
+			using (Udt.Socket client = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+			{
+				client.Connect(IPAddress.Loopback, 10000);
+
+				byte[] buffer = new byte[1024];
+				Assert.AreEqual(3, client.Receive(buffer));
+				CollectionAssert.AreEqual(new byte[] { 1, 2, 3 }, buffer.Take(3));
+
+				client.Send(new byte[] { 1, 2, 3 });
+
+				clientDoneEvent.Set();
+				Assert.IsTrue(serverDoneEvent.WaitOne(1000));
+			}
+
+			serverTask.Wait();
 		}
 
         private class CongestionControlTester : Udt.CongestionControl
