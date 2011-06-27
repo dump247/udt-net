@@ -79,8 +79,8 @@ namespace UdtProtocol_Test
 		public void Wait_for_accept()
 		{
 			using (Udt.SocketPoller poller = new Udt.SocketPoller())
+			using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
 			{
-				Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream);
 				socket.Bind(IPAddress.Loopback, 10000);
 				socket.Listen(100);
 				ManualResetEvent doneEvent = new ManualResetEvent(false);
@@ -89,9 +89,11 @@ namespace UdtProtocol_Test
 
 				Task.Factory.StartNew(() =>
 				{
-					Udt.Socket client = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream);
-					client.Connect(IPAddress.Loopback, 10000);
-					doneEvent.WaitOne(1000);
+					using (Udt.Socket client = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+					{
+						client.Connect(IPAddress.Loopback, 10000);
+						doneEvent.WaitOne(1000);
+					}
 				});
 
 				Assert.IsTrue(poller.Wait(TimeSpan.FromSeconds(1)));
@@ -105,8 +107,8 @@ namespace UdtProtocol_Test
 		public void Remove_socket()
 		{
 			using (Udt.SocketPoller poller = new Udt.SocketPoller())
+			using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
 			{
-				Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream);
 				socket.Bind(IPAddress.Loopback, 10000);
 				socket.Listen(100);
 				ManualResetEvent doneEvent = new ManualResetEvent(false);
