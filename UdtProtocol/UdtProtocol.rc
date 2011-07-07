@@ -70,7 +70,7 @@ BEGIN
             VALUE "FileDescription", "UDT.Net wrapper library"
             VALUE "FileVersion", "0.3.0.0"
             VALUE "InternalName", "UdtProtocol"
-            VALUE "LegalCopyright", "Copyright (C) 2010"
+            VALUE "LegalCopyright", "Copyright (C) 2011"
             VALUE "OriginalFilename", "UdtProtocol.dll"
             VALUE "ProductName", "UDT.Net wrapper library"
             VALUE "ProductVersion", "0.3.0.0"

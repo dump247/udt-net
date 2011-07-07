@@ -44,7 +44,7 @@ using namespace System::Security::Permissions;
 // associated with an assembly.
 //
 [assembly:AssemblyTitleAttribute("Udt")];
-[assembly:AssemblyDescriptionAttribute("")];
+[assembly:AssemblyDescriptionAttribute("UDT.Net wrapper library")];
 [assembly:AssemblyConfigurationAttribute("")];
 [assembly:AssemblyCompanyAttribute("")];
 [assembly:AssemblyProductAttribute("Udt")];
