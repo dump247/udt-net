@@ -51,8 +51,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,2,0,0
- PRODUCTVERSION 0,2,0,0
+ FILEVERSION 0,3,0,0
+ PRODUCTVERSION 0,3,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -68,12 +68,12 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "FileDescription", "UDT.Net wrapper library"
-            VALUE "FileVersion", "0.2.0.0"
+            VALUE "FileVersion", "0.3.0.0"
             VALUE "InternalName", "UdtProtocol"
             VALUE "LegalCopyright", "Copyright (C) 2010"
             VALUE "OriginalFilename", "UdtProtocol.dll"
             VALUE "ProductName", "UDT.Net wrapper library"
-            VALUE "ProductVersion", "0.2.0.0"
+            VALUE "ProductVersion", "0.3.0.0"
         END
     END
     BLOCK "VarFileInfo"
