@@ -143,7 +143,7 @@ bool SocketPoller::Wait(System::TimeSpan timeout)
 
 List<Udt::Socket^>^ SocketPoller::GetSockets(std::set<UDTSOCKET>& handles)
 {
-	List<Udt::Socket^>^ list = gcnew List<Udt::Socket^>(handles.size());
+	List<Udt::Socket^>^ list = gcnew List<Udt::Socket^>((int)handles.size());
 
 	for (std::set<UDTSOCKET>::iterator handleIter = handles.begin(); handleIter != handles.end(); ++handleIter)
 	{
