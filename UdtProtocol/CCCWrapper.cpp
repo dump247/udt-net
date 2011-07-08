@@ -52,44 +52,44 @@ CCCWrapper::~CCCWrapper(void)
 
 void CCCWrapper::onPktReceived(const CPacket* packet)
 {
-	Packet^ managedPacket = gcnew Packet(packet, false);
+	//Packet^ managedPacket = gcnew Packet(packet, false);
 
-	__try
-	{
-		_wrapped->OnPacketReceived(managedPacket);
-	}
-	__finally
-	{
-		delete managedPacket;
-	}
+	//__try
+	//{
+	//	_wrapped->OnPacketReceived(managedPacket);
+	//}
+	//__finally
+	//{
+	//	delete managedPacket;
+	//}
 }
 
 void CCCWrapper::onPktSent(const CPacket* packet)
 {
-	Packet^ managedPacket = gcnew Packet(packet, false);
+	//Packet^ managedPacket = gcnew Packet(packet, false);
 
-	__try
-	{
-		_wrapped->OnPacketSent(managedPacket);
-	}
-	__finally
-	{
-		delete managedPacket;
-	}
+	//__try
+	//{
+	//	_wrapped->OnPacketSent(managedPacket);
+	//}
+	//__finally
+	//{
+	//	delete managedPacket;
+	//}
 }
 
 void CCCWrapper::processCustomMsg(const CPacket* packet)
 {
-	Packet^ managedPacket = gcnew Packet(packet, false);
+	//Packet^ managedPacket = gcnew Packet(packet, false);
 
-	__try
-	{
-		_wrapped->ProcessCustomMessage(managedPacket);
-	}
-	__finally
-	{
-		delete managedPacket;
-	}
+	//__try
+	//{
+	//	_wrapped->ProcessCustomMessage(managedPacket);
+	//}
+	//__finally
+	//{
+	//	delete managedPacket;
+	//}
 }
 
 void CCCWrapper::onLoss(const int* losslist, const int& size)

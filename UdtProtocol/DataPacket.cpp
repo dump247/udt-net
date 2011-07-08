@@ -31,8 +31,7 @@
  ****************************************************************/
 
 #include "StdAfx.h"
-
-#include "Packet.h"
+#include "DataPacket.h"
 
 #include <udt.h>
 #include <packet.h>
@@ -40,48 +39,88 @@
 using namespace Udt;
 using namespace System;
 
-Packet::Packet(CPacket* packet, bool deletePacket)
+DataPacket::DataPacket(CPacket* packet, bool deletePacket)
+	: Packet(packet, deletePacket)
 {
-	_packet = packet;
-	_deletePacket = deletePacket;
 }
 
-Packet::~Packet()
+DataPacket::DataPacket(void)
+	: Packet(new CPacket(), true)
 {
-	if (_deletePacket) delete _packet;
-	_packet = NULL;
 }
 
-void Packet::AssertNotDisposed()
+DataPacket::~DataPacket(void)
 {
-	if (_packet == NULL)
-		throw gcnew ObjectDisposedException(this->ToString());
 }
 
-TimeSpan Packet::TimeStamp::get(void)
+Udt::MessageBoundary DataPacket::MessageBoundary::get(void)
 {
 	AssertNotDisposed();
-	return FromMicroseconds((uint32_t)_packet->m_iTimeStamp);
+	return (Udt::MessageBoundary)_packet->getMsgBoundary();
 }
 
-void Packet::TimeStamp::set(TimeSpan value)
+void DataPacket::MessageBoundary::set(Udt::MessageBoundary value)
 {
 	AssertNotDisposed();
 
-	if (value < TimeSpan::Zero || value > MaxTimeStamp)
-		throw gcnew ArgumentOutOfRangeException("value", value, String::Concat("Value must be between ", TimeSpan::Zero, " and ", MaxTimeStamp, "."));
+	int iValue = (int)value;
+	if (iValue < 0 || iValue > 3) throw gcnew ArgumentOutOfRangeException("value", value, "Invalid message boundary flag.");
 
-	_packet->m_iTimeStamp = (int32_t)ToMicroseconds(value);
+	_packet->m_iMsgNo = (_packet->m_iMsgNo & 0x3FFFFFFF) | (iValue << 30);
 }
 
-int Packet::DestinationId::get(void)
+bool DataPacket::InOrder::get(void)
 {
 	AssertNotDisposed();
-	return _packet->m_iID;
+	return _packet->getMsgOrderFlag();
 }
 
-void Packet::DestinationId::set(int value)
+void DataPacket::InOrder::set(bool value)
 {
 	AssertNotDisposed();
-	_packet->m_iID = value;
+
+	if (value)
+		_packet->m_iMsgNo |= 0x20000000;
+	else
+		_packet->m_iMsgNo &= 0xDFFFFFFF;
+}
+
+int DataPacket::MessageNumber::get(void)
+{
+	AssertNotDisposed();
+	return _packet->getMsgSeq();
+}
+
+void DataPacket::MessageNumber::set(int value)
+{
+	AssertNotDisposed();
+	if (value < 0 || value > MaxMessageNumber) throw gcnew ArgumentOutOfRangeException("value", value, String::Concat("Value must be between 0 and ", MaxMessageNumber, "."));
+
+	_packet->m_iMsgNo = (_packet->m_iMsgNo & ~MaxMessageNumber) | value;
+}
+
+int DataPacket::PacketNumber::get(void)
+{
+	AssertNotDisposed();
+	return _packet->m_iSeqNo;
+}
+
+void DataPacket::PacketNumber::set(int value)
+{
+	AssertNotDisposed();
+	if (value < 0) throw gcnew ArgumentOutOfRangeException("value", value, "Value must be greater than or equal to 0.");
+	_packet->m_iSeqNo = value;
+}
+
+int DataPacket::DataLength::get(void)
+{
+	AssertNotDisposed();
+	return _packet->getLength();
+}
+
+void DataPacket::DataLength::set(int value)
+{
+	AssertNotDisposed();
+	if (value < 0) throw gcnew ArgumentOutOfRangeException("value", value, "Value must be greater than or equal to 0.");
+	_packet->setLength(value);
 }

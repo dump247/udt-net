@@ -32,23 +32,16 @@
 
 #pragma once
 
-class CPacket;
+#include "Packet.h"
+#include "MessageBoundary.h"
 
 namespace Udt
 {
 	/// <summary>
-	/// UDT data packet.
+	/// UDT protocol data packet.
 	/// </summary>
-	public ref class Packet abstract
+	public ref class DataPacket : public Packet
 	{
-	private:
-		bool _deletePacket;
-
-	protected:
-		
-		CPacket* _packet;
-		void AssertNotDisposed();
-
 	internal:
 
 		/// <summary>
@@ -59,49 +52,70 @@ namespace Udt
 		/// True to delete the native <paramref name="packet"/> when this object
 		/// is disposed.
 		/// </param>
-		Packet(CPacket* packet, bool deletePacket);
+		DataPacket(CPacket* packet, bool deletePacket);
 
 	public:
-		virtual ~Packet(void);
+		DataPacket(void);
+		virtual ~DataPacket(void);
 
 		/// <summary>
-		/// Get or set the time stamp associated with the packet.
-		/// Default value is <see cref="System::TimeSpan::Zero"/>.
+		/// Get or set the location of the packet in the stream.
+		/// Default value is <b>None</b>.
 		/// </summary>
-		/// <remarks>
-		/// <para>
-		/// The time stamp is generally the difference between when the
-		/// packet was created and when the socket it was sent on was
-		/// created.
-		/// </para>
-		/// <para>
-		/// The resolution of this property is 1 microsecond
-		/// (1000 nanoseconds). The resolution of <see cref="System::TimeSpan"/>
-		/// is 100 nanoseconds. When setting the property, the value will
-		/// be rounded down to the nearest microsecond.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="System::ArgumentOutOfRangeException">If <paramref name="value"/> is less than <see cref="System::TimeSpan::Zero"/> or greater than <see cref="MaxTimeStamp"/>.</exception>
+		/// <exception cref="System::ArgumentOutOfRangeException">If <paramref name="value"/> is invalid.</exception>
 		/// <exception cref="System::ObjectDisposedException">If the object has been disposed.</exception>
-		property System::TimeSpan TimeStamp {
-			System::TimeSpan get(void);
-			void set(System::TimeSpan value);
+		property Udt::MessageBoundary MessageBoundary {
+			Udt::MessageBoundary get(void);
+			void set(Udt::MessageBoundary value);
 		}
 
 		/// <summary>
-		/// Get or set ID of the destination socket for the packet.
-		/// Default value is 0.
+		/// Get or set true if the packet in-order delivery for the packet is
+		/// required. Default value is false.
 		/// </summary>
 		/// <exception cref="System::ObjectDisposedException">If the object has been disposed.</exception>
-		property int DestinationId {
+		property bool InOrder {
+			bool get(void);
+			void set(bool value);
+		}
+
+		/// <summary>
+		/// Get or set the message sequence number for the packet.
+		/// Default value is 0.
+		/// </summary>
+		/// <exception cref="System::ArgumentOutOfRangeException">If <paramref name="value"/> is less than 0 or greater than <see cref="MaxMessageNumber"/>.</exception>
+		/// <exception cref="System::ObjectDisposedException">If the object has been disposed.</exception>
+		property int MessageNumber {
 			int get(void);
 			void set(int value);
 		}
 
 		/// <summary>
-		/// Maximum allowed value for <see cref="TimeStamp"/>.
+		/// Get or set the packet sequence number.
+		/// Default value is 0.
 		/// </summary>
-		/// <value>4,294,967,295 microseconds (01:11:34.9672950).</value>
-		static initonly System::TimeSpan MaxTimeStamp = FromMicroseconds(System::UInt32::MaxValue);
+		/// <exception cref="System::ArgumentOutOfRangeException">If <paramref name="value"/> is less than 0.</exception>
+		/// <exception cref="System::ObjectDisposedException">If the object has been disposed.</exception>
+		property int PacketNumber {
+			int get(void);
+			void set(int value);
+		}
+
+		/// <summary>
+		/// Get or set the length of the packet payload, in bytes.
+		/// Default value is 0.
+		/// </summary>
+		/// <exception cref="System::ArgumentOutOfRangeException">If <paramref name="value"/> is less than 0.</exception>
+		/// <exception cref="System::ObjectDisposedException">If the object has been disposed.</exception>
+		property int DataLength {
+			int get(void);
+			void set(int value);
+		}
+
+		/// <summary>
+		/// Maximum allowed value for <see cref="MessageNumber"/>.
+		/// </summary>
+		/// <value>536,870,911 (0x1FFFFFFF)</value>
+		static const int MaxMessageNumber = 0x1FFFFFFF;
 	};
 }

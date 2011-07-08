@@ -38,7 +38,7 @@ using namespace System;
 
 TotalTraceInfo::TotalTraceInfo(const UDT::TRACEINFO& copy)
 {
-	this->SocketCreated = TimeSpan(copy.msTimeStamp * 10000);
+	this->SocketCreated = FromMilliseconds(copy.msTimeStamp);
 	this->PacketsSent = copy.pktSentTotal;
 	this->PacketsReceived = copy.pktRecvTotal;
 	this->SendPacketsLost = copy.pktSndLossTotal;
@@ -48,7 +48,7 @@ TotalTraceInfo::TotalTraceInfo(const UDT::TRACEINFO& copy)
 	this->AcksReceived = copy.pktRecvACKTotal;
 	this->NaksSent = copy.pktSentNAKTotal;
 	this->NaksReceived = copy.pktRecvNAKTotal;
-	this->SendDuration = TimeSpan(copy.usSndDurationTotal * 10);
+	this->SendDuration = FromMicroseconds(copy.usSndDurationTotal);
 }
 
 TotalTraceInfo::TotalTraceInfo(void)

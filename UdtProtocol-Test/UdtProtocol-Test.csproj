@@ -118,6 +118,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataPacketTest.cs" />
     <Compile Include="MessageTest.cs" />
     <Compile Include="NetworkStreamTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

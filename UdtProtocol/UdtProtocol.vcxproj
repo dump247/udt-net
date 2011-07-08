@@ -181,6 +181,7 @@
     <ClCompile Include="CCCWrapper.cpp" />
     <ClCompile Include="CCCWrapperFactory.cpp" />
     <ClCompile Include="CongestionControl.cpp" />
+    <ClCompile Include="DataPacket.cpp" />
     <ClCompile Include="LocalTraceInfo.cpp" />
     <ClCompile Include="Message.cpp" />
     <ClCompile Include="NativeIntArray.cpp" />
@@ -203,12 +204,13 @@
     <ClInclude Include="CCCWrapper.h" />
     <ClInclude Include="CCCWrapperFactory.h" />
     <ClInclude Include="CongestionControl.h" />
+    <ClInclude Include="DataPacket.h" />
     <ClInclude Include="LocalTraceInfo.h" />
     <ClInclude Include="Message.h" />
+    <ClInclude Include="MessageBoundary.h" />
     <ClInclude Include="NativeIntArray.h" />
     <ClInclude Include="NetworkStream.h" />
     <ClInclude Include="Packet.h" />
-    <ClInclude Include="PacketType.h" />
     <ClInclude Include="ProbeTraceInfo.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Socket.h" />

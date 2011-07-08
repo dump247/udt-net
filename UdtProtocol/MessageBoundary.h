@@ -34,53 +34,11 @@
 
 namespace Udt
 {
-	/// <summary>
-	/// Types of UDT data packets.
-	/// </summary>
-	[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
-			"Microsoft.Design",
-			"CA1027:MarkEnumsWithFlags",
-			Justification = "This is a set of discrete values, not a set of flags.")]
-	public enum PacketType
+	public enum class MessageBoundary : char
 	{
-		/// <summary>
-		/// Protocol Connection Handshake.
-		/// </summary>
-		Handshake = 0,
-		
-		/// <summary>
-		/// Keep alive.
-		/// </summary>
-		KeepAlive = 1,
-		
-		/// <summary>
-		/// Acknowledgement (ACK).
-		/// </summary>
-		Acknowledgement = 2,
-		
-		/// <summary>
-		/// Negative Acknowledgement (NACK).
-		/// </summary>
-		NegativeAcknowledgement = 3,
-
-		/// <summary>
-		/// Congestion Warning.
-		/// </summary>
-		CongestionWarning = 4,
-
-		/// <summary>
-		/// Shutdown.
-		/// </summary>
-		Shutdown = 5,
-
-		/// <summary>
-		/// Acknowledgement of Acknowledement (ACK-square).
-		/// </summary>
-		AcknowledgementAcknowledement = 6,
-
-		/// <summary>
-		/// Message Drop Request.
-		/// </summary>
-		MessageDropRequest = 7
+		None = 0,
+		Last = 1,
+		First = 2,
+		Solo = 3,
 	};
 }

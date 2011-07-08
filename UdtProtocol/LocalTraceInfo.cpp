@@ -49,7 +49,7 @@ LocalTraceInfo::LocalTraceInfo(const UDT::TRACEINFO& copy)
 	this->NaksReceived = copy.pktRecvNAK;
 	this->SendMbps = copy.mbpsSendRate;
 	this->ReceiveMbps = copy.mbpsRecvRate;
-	this->SendDuration = TimeSpan(copy.usSndDuration * 10);
+	this->SendDuration = FromMicroseconds(copy.usSndDuration);
 }
 
 LocalTraceInfo::LocalTraceInfo(void)

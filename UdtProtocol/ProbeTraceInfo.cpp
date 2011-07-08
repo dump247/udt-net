@@ -38,11 +38,11 @@ using namespace System;
 
 ProbeTraceInfo::ProbeTraceInfo(const UDT::TRACEINFO& copy)
 {
-	this->PacketSendPeriod = TimeSpan((__int64)(copy.usPktSndPeriod * 10));
+	this->PacketSendPeriod = FromMicroseconds((__int64)copy.usPktSndPeriod);
 	this->FlowWindow = copy.pktFlowWindow;
 	this->CongestionWindow = copy.pktCongestionWindow;
 	this->FlightSize = copy.pktFlightSize;
-	this->RoundtripTime = TimeSpan((__int64)(copy.msRTT * 10000));
+	this->RoundtripTime = FromMilliseconds((__int64)copy.msRTT);
 	this->BandwidthMbps = copy.mbpsBandwidth;
 	this->AvailableSendBuffer = copy.byteAvailSndBuf;
 	this->AvailableReceiveBuffer = copy.byteAvailRcvBuf;

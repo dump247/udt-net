@@ -4,4 +4,11 @@
 
 #pragma once
 
+#ifndef NULL
 #define NULL 0
+#endif
+
+System::TimeSpan FromMicroseconds(__int64 us);
+System::TimeSpan FromMilliseconds(__int64 ms);
+
+__int64 ToMicroseconds(System::TimeSpan value);
