@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+		 DefaultTargets="Package"
+		 ToolsVersion="4.0">
+		
+	<PropertyGroup>
+		<Version>0.0.0.1</Version>
+	</PropertyGroup>
+		
+	<Target Name="Package"
+			DependsOnTargets="SetVersion;Build">
+			
+		<ItemGroup>
+			<ZipFiles Include="$(MSBuildProjectDirectory)\UdtProtocol\bin\Release\**\*.dll" />
+			<ZipFiles Include="$(MSBuildProjectDirectory)\UdtProtocol\bin\Release\**\*.pdb" />
+			<ZipFiles Include="$(MSBuildProjectDirectory)\UdtProtocol\bin\Release\**\*.xml" />
+		</ItemGroup>
+			
+ 		<Zip Files="@(ZipFiles)"
+			 WorkingDirectory="$(MSBuildProjectDirectory)\UdtProtocol\bin\Release"
+			 ZipFileName="$(MSBuildProjectDirectory)\UdtProtocol-$(Version).zip"
+			 ZipLevel="9" />
+			 
+	</Target>
+	
+	<Target Name="SetVersion">
+	
+		<FileUpdate Files="$(MSBuildProjectDirectory)\UdtProtocol\UdtProtocol.rc"
+					Regex="(FILEVERSION|PRODUCTVERSION)\s+\d+,\d+,\d+,\d+"
+					ReplacementText="$1 $(Version.Replace('.', ','))"
+					Encoding="iso-8859-1" />
+					
+		<FileUpdate Files="$(MSBuildProjectDirectory)\UdtProtocol\UdtProtocol.rc"
+					Regex="VALUE\s+&quot;(FileVersion|ProductVersion)&quot;\s*,\s*&quot;\d+\.\d+\.\d+\.\d+&quot;"
+					ReplacementText="VALUE &quot;$1&quot;, &quot;$(Version)&quot;"
+					Encoding="iso-8859-1" />
+		
+		<FileUpdate Files="$(MSBuildProjectDirectory)\UdtProtocol\AssemblyInfo.cpp"
+					Regex="\[assembly:AssemblyVersionAttribute\(&quot;\d+\.\d+\.\d+\.\d+&quot;\)\];"
+					ReplacementText="[assembly:AssemblyVersionAttribute(&quot;$(Version)&quot;)];"
+					Encoding="iso-8859-1" />
+					
+	</Target>
+	
+	<Target Name="Build">
+	
+		<MSBuild Projects="$(MSBuildProjectDirectory)\UdtProtocol.sln"
+				 Targets="Clean;Build"
+				 Properties="Configuration=Release; Platform=Win32"
+				 ToolsVersion="4.0" />
+				 
+		<MSBuild Projects="$(MSBuildProjectDirectory)\UdtProtocol.sln"
+				 Targets="Clean;Build"
+				 Properties="Configuration=Release; Platform=x64"
+				 ToolsVersion="4.0" />
+				 
+	</Target>
+	
+	<Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets"/>
+   
+</Project>
