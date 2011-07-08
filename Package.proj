@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
+This script requires the MSBuild Community Tasks (http://msbuildtasks.tigris.org).
+
 To build a new version package, run the following command in the solution directory:
 
 	msbuild /property:Version=W.X.Y.Z Package.proj
