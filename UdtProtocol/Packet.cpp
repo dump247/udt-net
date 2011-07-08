@@ -33,12 +33,26 @@
 #include "StdAfx.h"
 
 #include "Packet.h"
+#include "DataPacket.h"
+#include "ControlPacket.h"
 
 #include <udt.h>
 #include <packet.h>
 
 using namespace Udt;
 using namespace System;
+
+Packet^ Packet::Wrap(const CPacket* packet)
+{
+	if (packet->getFlag())
+	{
+		return gcnew ControlPacket((CPacket*)packet, false);
+	}
+	else
+	{
+		return gcnew DataPacket((CPacket*)packet, false);
+	}
+}
 
 Packet::Packet(CPacket* packet, bool deletePacket)
 {
@@ -58,6 +72,12 @@ void Packet::AssertNotDisposed()
 		throw gcnew ObjectDisposedException(this->ToString());
 }
 
+void Packet::AssertIsMutable()
+{
+	AssertNotDisposed();
+	if (!IsEditable) throw gcnew InvalidOperationException("Packet can not be modified.");
+}
+
 TimeSpan Packet::TimeStamp::get(void)
 {
 	AssertNotDisposed();
@@ -66,7 +86,7 @@ TimeSpan Packet::TimeStamp::get(void)
 
 void Packet::TimeStamp::set(TimeSpan value)
 {
-	AssertNotDisposed();
+	AssertIsMutable();
 
 	if (value < TimeSpan::Zero || value > MaxTimeStamp)
 		throw gcnew ArgumentOutOfRangeException("value", value, String::Concat("Value must be between ", TimeSpan::Zero, " and ", MaxTimeStamp, "."));
@@ -82,6 +102,6 @@ int Packet::DestinationId::get(void)
 
 void Packet::DestinationId::set(int value)
 {
-	AssertNotDisposed();
+	AssertIsMutable();
 	_packet->m_iID = value;
 }

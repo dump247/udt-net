@@ -41,7 +41,7 @@ namespace Udt
 	/// <summary>
 	/// UDT protocol control packet.
 	/// </summary>
-	public ref class ControlPacket abstract : public Packet
+	public ref class ControlPacket : public Packet
 	{
 	internal:
 		ControlPacket(CPacket* packet, bool deletePacket);

@@ -48,8 +48,11 @@ namespace Udt
 		
 		CPacket* _packet;
 		void AssertNotDisposed();
+		void AssertIsMutable();
 
 	internal:
+
+		static Packet^ Wrap(const CPacket* packet);
 
 		/// <summary>
 		/// Initialize a new instance.
@@ -63,6 +66,13 @@ namespace Udt
 
 	public:
 		virtual ~Packet(void);
+
+		/// <summary>
+		/// Get true if the packet can be modified.
+		/// </summary>
+		property bool IsEditable {
+			bool get(void) { return _deletePacket; }
+		}
 
 		/// <summary>
 		/// Get or set the time stamp associated with the packet.
@@ -83,6 +93,7 @@ namespace Udt
 		/// </remarks>
 		/// <exception cref="System::ArgumentOutOfRangeException">If <paramref name="value"/> is less than <see cref="System::TimeSpan::Zero"/> or greater than <see cref="MaxTimeStamp"/>.</exception>
 		/// <exception cref="System::ObjectDisposedException">If the object has been disposed.</exception>
+		/// <exception cref="System::InvalidOperationException">If attempting to set the value and <see cref="IsEditable"/> is false.</exception>
 		property System::TimeSpan TimeStamp {
 			System::TimeSpan get(void);
 			void set(System::TimeSpan value);
@@ -93,6 +104,7 @@ namespace Udt
 		/// Default value is 0.
 		/// </summary>
 		/// <exception cref="System::ObjectDisposedException">If the object has been disposed.</exception>
+		/// <exception cref="System::InvalidOperationException">If attempting to set the value and <see cref="IsEditable"/> is false.</exception>
 		property int DestinationId {
 			int get(void);
 			void set(int value);

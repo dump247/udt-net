@@ -61,7 +61,7 @@ Udt::MessageBoundary DataPacket::MessageBoundary::get(void)
 
 void DataPacket::MessageBoundary::set(Udt::MessageBoundary value)
 {
-	AssertNotDisposed();
+	AssertIsMutable();
 
 	int iValue = (int)value;
 	if (iValue < 0 || iValue > 3) throw gcnew ArgumentOutOfRangeException("value", value, "Invalid message boundary flag.");
@@ -77,7 +77,7 @@ bool DataPacket::InOrder::get(void)
 
 void DataPacket::InOrder::set(bool value)
 {
-	AssertNotDisposed();
+	AssertIsMutable();
 
 	if (value)
 		_packet->m_iMsgNo |= 0x20000000;
@@ -93,7 +93,7 @@ int DataPacket::MessageNumber::get(void)
 
 void DataPacket::MessageNumber::set(int value)
 {
-	AssertNotDisposed();
+	AssertIsMutable();
 	if (value < 0 || value > MaxMessageNumber) throw gcnew ArgumentOutOfRangeException("value", value, String::Concat("Value must be between 0 and ", MaxMessageNumber, "."));
 
 	_packet->m_iMsgNo = (_packet->m_iMsgNo & ~MaxMessageNumber) | value;
@@ -107,7 +107,7 @@ int DataPacket::PacketNumber::get(void)
 
 void DataPacket::PacketNumber::set(int value)
 {
-	AssertNotDisposed();
+	AssertIsMutable();
 	if (value < 0) throw gcnew ArgumentOutOfRangeException("value", value, "Value must be greater than or equal to 0.");
 	_packet->m_iSeqNo = value;
 }
@@ -120,7 +120,7 @@ int DataPacket::DataLength::get(void)
 
 void DataPacket::DataLength::set(int value)
 {
-	AssertNotDisposed();
+	AssertIsMutable();
 	if (value < 0) throw gcnew ArgumentOutOfRangeException("value", value, "Value must be greater than or equal to 0.");
 	_packet->setLength(value);
 }

@@ -64,6 +64,7 @@ namespace Udt
 		/// </summary>
 		/// <exception cref="System::ArgumentOutOfRangeException">If <paramref name="value"/> is invalid.</exception>
 		/// <exception cref="System::ObjectDisposedException">If the object has been disposed.</exception>
+		/// <exception cref="System::InvalidOperationException">If attempting to set the value and <see cref="IsEditable"/> is false.</exception>
 		property Udt::MessageBoundary MessageBoundary {
 			Udt::MessageBoundary get(void);
 			void set(Udt::MessageBoundary value);
@@ -74,6 +75,7 @@ namespace Udt
 		/// required. Default value is false.
 		/// </summary>
 		/// <exception cref="System::ObjectDisposedException">If the object has been disposed.</exception>
+		/// <exception cref="System::InvalidOperationException">If attempting to set the value and <see cref="IsEditable"/> is false.</exception>
 		property bool InOrder {
 			bool get(void);
 			void set(bool value);
@@ -85,6 +87,7 @@ namespace Udt
 		/// </summary>
 		/// <exception cref="System::ArgumentOutOfRangeException">If <paramref name="value"/> is less than 0 or greater than <see cref="MaxMessageNumber"/>.</exception>
 		/// <exception cref="System::ObjectDisposedException">If the object has been disposed.</exception>
+		/// <exception cref="System::InvalidOperationException">If attempting to set the value and <see cref="IsEditable"/> is false.</exception>
 		property int MessageNumber {
 			int get(void);
 			void set(int value);
@@ -96,6 +99,7 @@ namespace Udt
 		/// </summary>
 		/// <exception cref="System::ArgumentOutOfRangeException">If <paramref name="value"/> is less than 0.</exception>
 		/// <exception cref="System::ObjectDisposedException">If the object has been disposed.</exception>
+		/// <exception cref="System::InvalidOperationException">If attempting to set the value and <see cref="IsEditable"/> is false.</exception>
 		property int PacketNumber {
 			int get(void);
 			void set(int value);
@@ -107,6 +111,7 @@ namespace Udt
 		/// </summary>
 		/// <exception cref="System::ArgumentOutOfRangeException">If <paramref name="value"/> is less than 0.</exception>
 		/// <exception cref="System::ObjectDisposedException">If the object has been disposed.</exception>
+		/// <exception cref="System::InvalidOperationException">If attempting to set the value and <see cref="IsEditable"/> is false.</exception>
 		property int DataLength {
 			int get(void);
 			void set(int value);
