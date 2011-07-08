@@ -81,7 +81,7 @@ namespace UdtProtocol_Test
 			using (Udt.SocketPoller poller = new Udt.SocketPoller())
 			using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
 			{
-				socket.Bind(IPAddress.Loopback, 10000);
+				socket.Bind(IPAddress.Loopback, 0);
 				socket.Listen(100);
 				ManualResetEvent doneEvent = new ManualResetEvent(false);
 
@@ -91,7 +91,7 @@ namespace UdtProtocol_Test
 				{
 					using (Udt.Socket client = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
 					{
-						client.Connect(IPAddress.Loopback, 10000);
+						client.Connect(IPAddress.Loopback, socket.LocalEndPoint.Port);
 						doneEvent.WaitOne(1000);
 					}
 				});
@@ -109,7 +109,7 @@ namespace UdtProtocol_Test
 			using (Udt.SocketPoller poller = new Udt.SocketPoller())
 			using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
 			{
-				socket.Bind(IPAddress.Loopback, 10000);
+				socket.Bind(IPAddress.Loopback, 0);
 				socket.Listen(100);
 				ManualResetEvent doneEvent = new ManualResetEvent(false);
 
