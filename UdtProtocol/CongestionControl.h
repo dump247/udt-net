@@ -44,9 +44,10 @@ namespace Udt
 	internal:
 		CCCWrapper* _cccWrapper;
 
-	public:
+	protected:
 		CongestionControl(void);
 
+	public:
 		virtual void Initialize() { }
 		virtual void Close() { }
 
