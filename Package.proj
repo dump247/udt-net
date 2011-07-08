@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+To build a new version package, run the following command in the solution directory:
+
+	msbuild /property:Version=W.X.Y.Z Package.proj
+
+The version number will be inserted into the assembly metadata, the project will
+be built (Win32 and x64 in Release), and the result is stored in a file named
+UdtProtocol-[Version].zip.
+-->
+
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
 		 DefaultTargets="Package"
 		 ToolsVersion="4.0">
@@ -25,6 +36,8 @@
 	
 	<Target Name="SetVersion">
 	
+		<!-- Insert the version into the project resource file. -->
+		<!-- This is the version that is shown in the Explorer properties dialog. -->
 		<FileUpdate Files="$(MSBuildProjectDirectory)\UdtProtocol\UdtProtocol.rc"
 					Regex="(FILEVERSION|PRODUCTVERSION)\s+\d+,\d+,\d+,\d+"
 					ReplacementText="$1 $(Version.Replace('.', ','))"
@@ -35,6 +48,7 @@
 					ReplacementText="VALUE &quot;$1&quot;, &quot;$(Version)&quot;"
 					Encoding="iso-8859-1" />
 		
+		<!-- Insert the version into the assembly attributes. -->
 		<FileUpdate Files="$(MSBuildProjectDirectory)\UdtProtocol\AssemblyInfo.cpp"
 					Regex="\[assembly:AssemblyVersionAttribute\(&quot;\d+\.\d+\.\d+\.\d+&quot;\)\];"
 					ReplacementText="[assembly:AssemblyVersionAttribute(&quot;$(Version)&quot;)];"
@@ -48,7 +62,7 @@
 				 Targets="Clean;Build"
 				 Properties="Configuration=Release; Platform=Win32"
 				 ToolsVersion="4.0" />
-				 
+		
 		<MSBuild Projects="$(MSBuildProjectDirectory)\UdtProtocol.sln"
 				 Targets="Clean;Build"
 				 Properties="Configuration=Release; Platform=x64"
