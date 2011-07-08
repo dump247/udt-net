@@ -116,6 +116,6 @@ namespace Udt
 		/// Maximum allowed value for <see cref="MessageNumber"/>.
 		/// </summary>
 		/// <value>536,870,911 (0x1FFFFFFF)</value>
-		static const int MaxMessageNumber = 0x1FFFFFFF;
+		static initonly int MaxMessageNumber = 0x1FFFFFFF;
 	};
 }
