@@ -309,7 +309,7 @@ UDT::UDSET* Udt::Socket::CreateUDSet(String^ paramName, System::Collections::Gen
 	if (fds == nullptr || fds->Count == 0)
 		return NULL;
 
-	UDT::UDSET* set = new UDT::UDSET;
+	std::auto_ptr<UDT::UDSET> set(new UDT::UDSET);
 	UD_ZERO(set);
 
 	for each (Udt::Socket^ socket in fds)
@@ -321,7 +321,7 @@ UDT::UDSET* Udt::Socket::CreateUDSet(String^ paramName, System::Collections::Gen
 		UD_SET(socketHandle, set);
 	}
 
-	return set;
+	return set.release();
 }
 
 void Udt::Socket::FillSocketList(const std::vector<UDTSOCKET>* list, System::Collections::Generic::Dictionary<UDTSOCKET, Udt::Socket^>^ sockets, System::Collections::Generic::ICollection<Udt::Socket^>^ fds)
