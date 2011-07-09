@@ -541,19 +541,31 @@ int Udt::Socket::Send(cli::array<System::Byte>^ buffer, int offset, int size)
 
 __int64 Udt::Socket::SendFile(System::String^ fileName)
 {
-	if (fileName == nullptr)
-		throw gcnew ArgumentNullException("fileName");
+	return SendFile(fileName, 0, -1);
+}
+
+__int64 Udt::Socket::SendFile(System::String^ fileName, __int64 offset)
+{
+	return SendFile(fileName, offset, -1);
+}
+
+__int64 Udt::Socket::SendFile(System::String^ fileName, __int64 offset, __int64 count)
+{
+	if (fileName == nullptr) throw gcnew ArgumentNullException("fileName");
+	if (offset < 0) throw gcnew ArgumentOutOfRangeException("offset", offset, "Value must be greater than or equal to 0.");
+	if (count < -1) throw gcnew ArgumentOutOfRangeException("count", count, "Value must be greater than or equal to -1.");
 
 	cli::pin_ptr<const wchar_t> file_name_pin = PtrToStringChars(fileName);
 	const wchar_t* file_name_ptr = file_name_pin;
 	std::fstream ifs(file_name_ptr, std::ios::in | std::ios::binary);
 
-	ifs.seekg(0, std::ios::end);
-	int64_t size = ifs.tellg();
-	ifs.seekg(0, std::ios::beg);
+	if (count < 0)
+	{
+		ifs.seekg(0, std::ios::end);
+		count = ifs.tellg() - offset;
+	}
 
-	int64_t offset = 0;
-	int64_t sent = UDT::sendfile(_socket, ifs, offset, size);
+	int64_t sent = UDT::sendfile(_socket, ifs, offset, count);
 
 	if (UDT::ERROR == sent)
 	{

@@ -320,8 +320,38 @@ namespace Udt
 		/// </remarks>
 		/// <param name="fileName">Name of the local file to send.</param>
 		/// <returns>The total number of bytes sent.</returns>
+		/// <exception cref="System::ArgumentNullException">If <paramref name="fileName"/> is null.</exception>
 		/// <exception cref="Udt::SocketException">If an error occurs accessing the socket or the file.</exception>
 		__int64 SendFile(System::String^ fileName);
+
+		/// <summary>
+		/// Send the contents of a file on this socket.
+		/// </summary>
+		/// <remarks>
+		/// Does not send a file size.
+		/// </remarks>
+		/// <param name="fileName">Name of the local file to send.</param>
+		/// <param name="offset">Offset in the file to start sending.</param>
+		/// <returns>The total number of bytes sent.</returns>
+		/// <exception cref="System::ArgumentNullException">If <paramref name="fileName"/> is null.</exception>
+		/// <exception cref="System::ArgumentOutOfRangeException">If <paramref name="offset"/> is less than 0.</exception>
+		/// <exception cref="Udt::SocketException">If an error occurs accessing the socket or the file.</exception>
+		__int64 SendFile(System::String^ fileName, __int64 offset);
+
+		/// <summary>
+		/// Send the contents of a file on this socket.
+		/// </summary>
+		/// <remarks>
+		/// Does not send a file size.
+		/// </remarks>
+		/// <param name="fileName">Name of the local file to send.</param>
+		/// <param name="offset">Offset in the file to start sending.</param>
+		/// <param name="count">Number of bytes to send or -1 to send until the end of the file is reached.</param>
+		/// <returns>The total number of bytes sent.</returns>
+		/// <exception cref="System::ArgumentNullException">If <paramref name="fileName"/> is null.</exception>
+		/// <exception cref="System::ArgumentOutOfRangeException">If <paramref name="offset"/> is less than 0 or <paramref name="count"/> is less than -1.</exception>
+		/// <exception cref="Udt::SocketException">If an error occurs accessing the socket or the file.</exception>
+		__int64 SendFile(System::String^ fileName, __int64 offset, __int64 count);
 
 		/// <summary>
 		/// Receive data on this socket and store it in a local file.
