@@ -249,10 +249,46 @@ __int64 StdFileStream::Seek(__int64 offset, SeekOrigin origin)
 
 int StdFileStream::Read(cli::array<unsigned char>^ buffer, int offset, int count)
 {
-	throw gcnew NotImplementedException();
+	if (buffer == nullptr) throw gcnew ArgumentNullException("buffer");
+	if (offset < 0) throw gcnew ArgumentOutOfRangeException("offset", offset, "Value must be greater than or equal to 0.");
+	if (count < 0) throw gcnew ArgumentOutOfRangeException("count", count, "Value must be greater than or equal to 0.");
+	if (buffer->Length - offset < count) throw gcnew ArgumentException("Invalid array offset/count.");
+
+	if (_stream->eof()) return 0;
+
+	pin_ptr<unsigned char> bufferPin = &buffer[0];
+	unsigned char* bufferPtr = bufferPin;
+
+	try
+	{
+		_stream->read((char*)bufferPtr + offset, count);
+	}
+	catch (const std::exception& ex)
+	{
+		if (_stream->bad()) throw gcnew IOException(gcnew String(ex.what()));
+	}
+
+	return (int)_stream->gcount();
 }
 
 void StdFileStream::Write(cli::array<unsigned char>^ buffer, int offset, int count)
 {
-	throw gcnew NotImplementedException();
+	if (buffer == nullptr) throw gcnew ArgumentNullException("buffer");
+	if (offset < 0) throw gcnew ArgumentOutOfRangeException("offset", offset, "Value must be greater than or equal to 0.");
+	if (count < 0) throw gcnew ArgumentOutOfRangeException("count", count, "Value must be greater than or equal to 0.");
+	if (buffer->Length - offset < count) throw gcnew ArgumentException("Invalid array offset/count.");
+
+	AssertNotDisposed();
+
+	pin_ptr<unsigned char> bufferPin = &buffer[0];
+	unsigned char* bufferPtr = bufferPin;
+
+	try
+	{
+		_stream->write((char*)bufferPtr + offset, count);
+	}
+	catch (const std::exception& ex)
+	{
+		throw gcnew IOException(gcnew String(ex.what()));
+	}
 }
