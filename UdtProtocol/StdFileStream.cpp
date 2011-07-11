@@ -34,261 +34,188 @@
 #include "StdFileStream.h"
 
 #include <iostream>
+#include <io.h>
+#include <fcntl.h>
 
 using namespace Udt;
 using namespace System;
 using namespace System::Runtime::InteropServices;
 using namespace System::IO;
+using namespace System::Security::AccessControl;
+using namespace Microsoft::Win32::SafeHandles;
 
-StdFileStream::StdFileStream(System::String^ path, FileMode mode)
-	: _stream(NULL), _canRead(false), _canWrite(false), _canSeek(false)
+StdFileStream::StdFileStream(String^ path, FileMode mode)
 {
-	Init(path, mode, mode == FileMode::Append ? FileAccess::Write : FileAccess::ReadWrite);
+	Init(gcnew FileStream(path, mode));
 }
 
-StdFileStream::StdFileStream(System::String^ path, FileMode mode, FileAccess access)
-	: _stream(NULL), _canRead(false), _canWrite(false), _canSeek(false)
+StdFileStream::StdFileStream(String^ path, FileMode mode, FileAccess access)
 {
-	Init(path, mode, access);
+	Init(gcnew FileStream(path, mode, access));
 }
 
-void StdFileStream::Init(System::String^ path, FileMode mode, FileAccess access)
+StdFileStream::StdFileStream(String^ path, FileMode mode, FileAccess access, FileShare share)
 {
-	if (path == nullptr) throw gcnew ArgumentNullException("path");
-	if (path->Length == 0) throw gcnew ArgumentException("Value can not be empty.", "path");
-
-	char* pathPtr = (char*)(void*)Marshal::StringToHGlobalAnsi(path);
-	
-	__try
-	{
-		Init(pathPtr, mode, access);
-	}
-	__finally
-	{
-		Marshal::FreeHGlobal(IntPtr(pathPtr));
-	}
+	Init(gcnew FileStream(path, mode, access, share));
 }
 
-void StdFileStream::Init(const char* path, FileMode mode, FileAccess access)
+StdFileStream::StdFileStream(String^ path, FileMode mode, FileAccess access, FileShare share, int bufferSize)
 {
-	std::ios_base::openmode stdMode = std::ios_base::binary;
+	Init(gcnew FileStream(path, mode, access, share, bufferSize));
+}
 
-	if (mode == FileMode::Append)
-		stdMode |= std::ios_base::app;
-	if (mode == FileMode::Create || mode == FileMode::Truncate)
-		stdMode |= std::ios_base::trunc;
+StdFileStream::StdFileStream(String^ path, FileMode mode, FileAccess access, FileShare share, int bufferSize, FileOptions options)
+{
+	Init(gcnew FileStream(path, mode, access, share, bufferSize, options));
+}
 
-	if ((access & FileAccess::Read) != (FileAccess)0)
-	{
-		stdMode |= std::ios_base::in;
-		_canRead = true;
-		_canSeek = true;
-	}
+StdFileStream::StdFileStream(String^ path, FileMode mode, FileAccess access, FileShare share, int bufferSize, bool useAsync)
+{
+	Init(gcnew FileStream(path, mode, access, share, bufferSize, useAsync));
+}
 
-	if ((access & FileAccess::Write) != (FileAccess)0)
-	{
-		stdMode |= std::ios_base::out;
-		_canWrite = true;
-	}
+StdFileStream::StdFileStream(String^ path, FileMode mode, FileSystemRights rights, FileShare share, int bufferSize, FileOptions options, FileSecurity^ fileSecurity)
+{
+	Init(gcnew FileStream(path, mode, rights, share, bufferSize, options, fileSecurity));
+}
 
-	_stream = new std::fstream();
-	_stream->exceptions(std::ios::failbit);
+StdFileStream::StdFileStream(String^ path, FileMode mode, FileSystemRights rights, FileShare share, int bufferSize, FileOptions options)
+{
+	Init(gcnew FileStream(path, mode, rights, share, bufferSize, options));
+}
 
-	try
-	{
-		_stream->open(path, stdMode);
-	}
-	catch (const std::exception& ex)
-	{
-		CloseStream();
-		throw gcnew IOException(gcnew String(ex.what()));
-	}
+StdFileStream::StdFileStream(SafeFileHandle^ handle, FileAccess access)
+{
+	Init(gcnew FileStream(handle, access));
+}
+
+StdFileStream::StdFileStream(SafeFileHandle^ handle, FileAccess access, int bufferSize)
+{
+	Init(gcnew FileStream(handle, access, bufferSize));
+}
+
+StdFileStream::StdFileStream(SafeFileHandle^ handle, FileAccess access, int bufferSize, bool isAsync)
+{
+	Init(gcnew FileStream(handle, access, bufferSize, isAsync));
+}
+
+void StdFileStream::Init(System::IO::FileStream^ fileStream)
+{
+	_fileStream = fileStream;
+	_stdStream = NULL;
 }
 
 StdFileStream::~StdFileStream(void)
 {
-	CloseStream();
+	_fileStream->Close();
+
+	delete _stdStream;
+	_stdStream = NULL;
 }
 
-void StdFileStream::CloseStream()
+std::fstream& StdFileStream::LoadStdStream(void)
 {
-	try
+	if (_stdStream == NULL)
 	{
-		std::fstream* stream = _stream;
+		// SafeFileHandle will flush the stream
+		SafeFileHandle^ fileHandle = _fileStream->SafeFileHandle;
 
-		_stream = NULL;
-		_canRead = false;
-		_canWrite = false;
-		_canSeek = false;
+		// Get file descriptor
+		int fileDescFlags = _O_RDONLY;
 
-		delete stream;
+		if (_fileStream->CanWrite)
+		{
+			if (_fileStream->CanRead)
+				fileDescFlags = _O_RDWR;
+			else
+				fileDescFlags = _O_WRONLY;
+		}
+
+		int fileDesc = _open_osfhandle((intptr_t)fileHandle->DangerousGetHandle(), fileDescFlags);
+
+		if (fileDesc == -1) throw gcnew IOException("Error opening C run-time file descriptor.");
+
+		// Get file stream
+		FILE* filePtr;
+
+		switch (fileDescFlags)
+		{
+		case _O_RDONLY:
+			filePtr = _fdopen(fileDesc, "r");
+			break;
+			
+		case _O_WRONLY:
+			filePtr = _fdopen(fileDesc, "w");
+			break;
+			
+		case _O_RDWR:
+			filePtr = _fdopen(fileDesc, "r+");
+			break;
+		}
+
+		// Get std::fstream
+		_stdStream = new std::fstream(filePtr);
 	}
-	catch (const std::exception& ex)
+	else
 	{
-		throw gcnew IOException(gcnew String(ex.what()));
+		_fileStream->Flush();
 	}
-}
 
-void StdFileStream::AssertNotDisposed()
-{
-	if (_stream == NULL) throw gcnew ObjectDisposedException(this->ToString());
+	_stdStream->seekg(_fileStream->Position);
+	return *_stdStream;
 }
 
 void StdFileStream::Flush(void)
 {
-	AssertNotDisposed();
-
-	try
-	{
-		if (CanWrite) _stream->flush();
-	}
-	catch (const std::exception& ex)
-	{
-		throw gcnew IOException(gcnew String(ex.what()));
-	}
+	_fileStream->Flush();
 }
 
 bool StdFileStream::CanRead::get(void)
 {
-	return _canRead;
+	return _fileStream->CanRead;
 }
 
 bool StdFileStream::CanSeek::get(void)
 {
-	return _canSeek;
+	return _fileStream->CanSeek;
 }
 
 bool StdFileStream::CanWrite::get(void)
 {
-	return _canWrite;
+	return _fileStream->CanWrite;
 }
 
 __int64 StdFileStream::Length::get(void)
 {
-	AssertNotDisposed();
-
-	try
-	{
-		std::streampos currentPos = _stream->tellg();
-		_stream->seekg(0, std::ios::end);
-		std::streampos len = _stream->tellg();
-		_stream->seekg(currentPos);
-
-		return len;
-	}
-	catch (const std::exception& ex)
-	{
-		throw gcnew IOException(gcnew String(ex.what()));
-	}
+	return _fileStream->Length;
 }
 
 __int64 StdFileStream::Position::get(void)
 {
-	AssertNotDisposed();
-
-	try
-	{
-		return _stream->tellg();
-	}
-	catch (const std::exception& ex)
-	{
-		throw gcnew IOException(gcnew String(ex.what()));
-	}
+	return _fileStream->Position;
 }
 
 void StdFileStream::Position::set(__int64 value)
 {
-	AssertNotDisposed();
-
-	try
-	{
-		_stream->seekg(value);
-	}
-	catch (const std::exception& ex)
-	{
-		throw gcnew IOException(gcnew String(ex.what()));
-	}
+	_fileStream->Position = value;
 }
 
 void StdFileStream::SetLength(__int64 value)
 {
-	throw gcnew NotImplementedException();
+	_fileStream->SetLength(value);
 }
 
 __int64 StdFileStream::Seek(__int64 offset, SeekOrigin origin)
 {
-	AssertNotDisposed();
-
-	try
-	{
-		switch (origin)
-		{
-		case SeekOrigin::Begin:
-			_stream->seekg(offset, std::ios_base::beg);
-			break;
-		
-		case SeekOrigin::Current:
-			_stream->seekg(offset, std::ios_base::cur);
-			break;
-		
-		case SeekOrigin::End:
-			_stream->seekg(offset, std::ios_base::end);
-			break;
-
-		default:
-			throw gcnew ArgumentException(String::Concat("Unknown value: ", origin), "origin");
-		}
-	}
-	catch (const std::exception& ex)
-	{
-		throw gcnew IOException(gcnew String(ex.what()));
-	}
-
-	return Position;
+	return _fileStream->Seek(offset, origin);
 }
 
 int StdFileStream::Read(cli::array<unsigned char>^ buffer, int offset, int count)
 {
-	if (buffer == nullptr) throw gcnew ArgumentNullException("buffer");
-	if (offset < 0) throw gcnew ArgumentOutOfRangeException("offset", offset, "Value must be greater than or equal to 0.");
-	if (count < 0) throw gcnew ArgumentOutOfRangeException("count", count, "Value must be greater than or equal to 0.");
-	if (buffer->Length - offset < count) throw gcnew ArgumentException("Invalid array offset/count.");
-
-	if (_stream->eof()) return 0;
-
-	pin_ptr<unsigned char> bufferPin = &buffer[0];
-	unsigned char* bufferPtr = bufferPin;
-
-	try
-	{
-		_stream->read((char*)bufferPtr + offset, count);
-	}
-	catch (const std::exception& ex)
-	{
-		if (_stream->bad()) throw gcnew IOException(gcnew String(ex.what()));
-	}
-
-	return (int)_stream->gcount();
+	return _fileStream->Read(buffer, offset, count);
 }
 
 void StdFileStream::Write(cli::array<unsigned char>^ buffer, int offset, int count)
 {
-	if (buffer == nullptr) throw gcnew ArgumentNullException("buffer");
-	if (offset < 0) throw gcnew ArgumentOutOfRangeException("offset", offset, "Value must be greater than or equal to 0.");
-	if (count < 0) throw gcnew ArgumentOutOfRangeException("count", count, "Value must be greater than or equal to 0.");
-	if (buffer->Length - offset < count) throw gcnew ArgumentException("Invalid array offset/count.");
-
-	AssertNotDisposed();
-
-	pin_ptr<unsigned char> bufferPin = &buffer[0];
-	unsigned char* bufferPtr = bufferPin;
-
-	try
-	{
-		_stream->write((char*)bufferPtr + offset, count);
-	}
-	catch (const std::exception& ex)
-	{
-		throw gcnew IOException(gcnew String(ex.what()));
-	}
+	_fileStream->Write(buffer, offset, count);
 }

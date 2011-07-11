@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using NUnit.Framework;
+using System.IO;
 
 namespace UdtProtocol_Test
 {
@@ -584,7 +585,82 @@ namespace UdtProtocol_Test
 			serverTask.Wait();
 		}
 
+		[Test]
+		public void SendFile_stream()
+		{
+			ManualResetEvent serverDoneEvent = new ManualResetEvent(false);
+			ManualResetEvent clientDoneEvent = new ManualResetEvent(false);
+			int port = _portNum++;
+			string path = GetFile("The quick brown fox jumped over the lazy dog");
+
+			var serverTask = Task.Factory.StartNew(() =>
+			{
+				using (Udt.Socket server = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+				{
+					server.Bind(IPAddress.Loopback, port);
+					server.Listen(1);
+
+					using (Udt.Socket accept = server.Accept())
+					using (Udt.StdFileStream file = new Udt.StdFileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
+					{
+						accept.SendFile(file);
+
+						serverDoneEvent.Set();
+						Assert.IsTrue(clientDoneEvent.WaitOne(1000));
+					}
+				}
+			});
+
+			byte[] buffer = new byte[1024];
+
+			using (Udt.Socket client = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+			{
+				client.Connect(IPAddress.Loopback, port);
+				Assert.AreEqual(44, client.Receive(buffer));
+				
+				clientDoneEvent.Set();
+				Assert.IsTrue(serverDoneEvent.WaitOne(1000));
+			}
+
+			CollectionAssert.AreEqual(File.ReadAllBytes(path), buffer.Take(44));
+
+			serverTask.Wait();
+		}
+
 		private int _portNum = 10000;
+
+		private string GetFile(string content = "")
+		{
+			string path = Path.GetTempFileName();
+			File.WriteAllText(path, content);
+			_paths.Add(path);
+			return path;
+		}
+
+		private List<string> _paths;
+
+		[SetUp]
+		public void SetUp()
+		{
+			_paths = new List<string>();
+		}
+
+		[TearDown]
+		public void TearDown()
+		{
+			foreach (string path in _paths)
+			{
+				try
+				{
+					File.Delete(path);
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine("Error deleting file {0}", path);
+					Console.WriteLine(ex);
+				}
+			}
+		}
 
         private class CongestionControlTester : Udt.CongestionControl
         {

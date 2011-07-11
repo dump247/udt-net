@@ -589,7 +589,7 @@ __int64 Udt::Socket::SendFile(StdFileStream^ file, __int64 count)
 		count = file->Length - pos;
 	}
 
-	int64_t sent = UDT::sendfile(_socket, file->Handle, pos, count);
+	int64_t sent = UDT::sendfile(_socket, file->LoadStdStream(), pos, count);
 
 	if (UDT::ERROR == sent)
 	{
