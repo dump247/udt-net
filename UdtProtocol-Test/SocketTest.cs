@@ -107,13 +107,15 @@ namespace UdtProtocol_Test
         [Test]
         public void Bind_IPAddress_int()
         {
+			int port = _portNum++;
+
             using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
             {
-                socket.Bind(IPAddress.Any, 10000);
+				socket.Bind(IPAddress.Any, port);
 
                 IPEndPoint localEP = socket.LocalEndPoint;
                 Assert.AreEqual(IPAddress.Any, localEP.Address);
-                Assert.AreEqual(10000, localEP.Port);
+				Assert.AreEqual(port, localEP.Port);
             }
         }
 
@@ -128,13 +130,15 @@ namespace UdtProtocol_Test
                 Assert.Ignore("OS does not support IPv6");
             }
 
+			int port = _portNum++;
+
             using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetworkV6, SocketType.Stream))
             {
-                socket.Bind(IPAddress.IPv6Any, 10000);
+				socket.Bind(IPAddress.IPv6Any, port);
 
                 IPEndPoint localEP = socket.LocalEndPoint;
                 Assert.AreEqual(IPAddress.IPv6Any, localEP.Address);
-                Assert.AreEqual(10000, localEP.Port);
+				Assert.AreEqual(port, localEP.Port);
             }
         }
 
@@ -143,28 +147,32 @@ namespace UdtProtocol_Test
         /// </summary>
         [Test]
         public void Bind_IPAddress_int__BindTwice()
-        {
+		{
+			int port = _portNum++;
+
             using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
             {
-                socket.Bind(IPAddress.Any, 10000);
+				socket.Bind(IPAddress.Any, port);
 
                 Udt.SocketException error = Assert.Throws<Udt.SocketException>(() =>
                 {
-                    socket.Bind(IPAddress.Any, 10000);
+					socket.Bind(IPAddress.Any, port);
                 });
 
                 Assert.AreEqual(Udt.SocketError.InvalidOperation, error.SocketErrorCode);
             }
 
+			port = _portNum++;
+
             if (Socket.OSSupportsIPv6)
             {
                 using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetworkV6, SocketType.Stream))
                 {
-                    socket.Bind(IPAddress.IPv6Any, 10000);
+					socket.Bind(IPAddress.IPv6Any, port);
 
                     Udt.SocketException error = Assert.Throws<Udt.SocketException>(() =>
                     {
-                        socket.Bind(IPAddress.IPv6Any, 10000);
+						socket.Bind(IPAddress.IPv6Any, port);
                     });
 
                     Assert.AreEqual(Udt.SocketError.InvalidOperation, error.SocketErrorCode);
@@ -178,13 +186,15 @@ namespace UdtProtocol_Test
         /// </summary>
         [Test]
         public void Bind_IPAddress_int__AfterClosed()
-        {
+		{
+			int port = _portNum++;
+
             Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream);
             socket.Dispose();
 
             Udt.SocketException error = Assert.Throws<Udt.SocketException>(() =>
             {
-                socket.Bind(IPAddress.Any, 10000);
+				socket.Bind(IPAddress.Any, port);
             });
             Assert.AreEqual(Udt.SocketError.InvalidSocket, error.SocketErrorCode);
         }
@@ -221,25 +231,29 @@ namespace UdtProtocol_Test
         /// </summary>
         [Test]
         public void Bind_IPEndPoint()
-        {
+		{
+			int port = _portNum++;
+
             using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
             {
-                socket.Bind(new IPEndPoint(IPAddress.Any, 10000));
+				socket.Bind(new IPEndPoint(IPAddress.Any, port));
 
                 IPEndPoint localEP = socket.LocalEndPoint;
                 Assert.AreEqual(IPAddress.Any, localEP.Address);
-                Assert.AreEqual(10000, localEP.Port);
+				Assert.AreEqual(port, localEP.Port);
             }
 
             if (Socket.OSSupportsIPv6)
-            {
+			{
+				port = _portNum++;
+
                 using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetworkV6, SocketType.Stream))
                 {
-                    socket.Bind(new IPEndPoint(IPAddress.IPv6Any, 10000));
+					socket.Bind(new IPEndPoint(IPAddress.IPv6Any, port));
 
                     IPEndPoint localEP = socket.LocalEndPoint;
                     Assert.AreEqual(IPAddress.IPv6Any, localEP.Address);
-                    Assert.AreEqual(10000, localEP.Port);
+					Assert.AreEqual(port, localEP.Port);
                 }
             }
         }
@@ -267,10 +281,12 @@ namespace UdtProtocol_Test
         /// </summary>
         [Test]
         public void Listen()
-        {
+		{
+			int port = _portNum++;
+
             using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
             {
-                socket.Bind(IPAddress.Any, 10000);
+				socket.Bind(IPAddress.Any, port);
                 socket.Listen(1);
                 // What condition to assert here?
             }
@@ -499,11 +515,13 @@ namespace UdtProtocol_Test
 		{
 			ManualResetEvent acceptedEvent = new ManualResetEvent(false);
 
+			int port = _portNum++;
+
 			var serverTask = Task.Factory.StartNew(() =>
 			{
 				using (Udt.Socket server = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
 				{
-					server.Bind(IPAddress.Loopback, 10000);
+					server.Bind(IPAddress.Loopback, port);
 					server.Listen(1);
 
 					using (Udt.Socket accept = server.Accept())
@@ -515,7 +533,7 @@ namespace UdtProtocol_Test
 
 			using (Udt.Socket client = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
 			{
-				client.Connect(IPAddress.Loopback, 10000);
+				client.Connect(IPAddress.Loopback, port);
 				acceptedEvent.WaitOne();
 			}
 
@@ -527,12 +545,13 @@ namespace UdtProtocol_Test
 		{
 			ManualResetEvent serverDoneEvent = new ManualResetEvent(false);
 			ManualResetEvent clientDoneEvent = new ManualResetEvent(false);
+			int port = _portNum++;
 
 			var serverTask = Task.Factory.StartNew(() =>
 			{
 				using (Udt.Socket server = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
 				{
-					server.Bind(IPAddress.Loopback, 10000);
+					server.Bind(IPAddress.Loopback, port);
 					server.Listen(1);
 
 					using (Udt.Socket accept = server.Accept())
@@ -550,7 +569,7 @@ namespace UdtProtocol_Test
 
 			using (Udt.Socket client = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
 			{
-				client.Connect(IPAddress.Loopback, 10000);
+				client.Connect(IPAddress.Loopback, port);
 
 				byte[] buffer = new byte[1024];
 				Assert.AreEqual(3, client.Receive(buffer));
@@ -564,6 +583,8 @@ namespace UdtProtocol_Test
 
 			serverTask.Wait();
 		}
+
+		private int _portNum = 10000;
 
         private class CongestionControlTester : Udt.CongestionControl
         {
