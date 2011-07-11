@@ -37,6 +37,7 @@
 #include "SocketOptionName.h"
 #include "CongestionControl.h"
 #include "SocketException.h"
+#include "StdFileStream.h"
 #include <udt.h>
 
 namespace Udt
@@ -352,6 +353,9 @@ namespace Udt
 		/// <exception cref="System::ArgumentOutOfRangeException">If <paramref name="offset"/> is less than 0 or <paramref name="count"/> is less than -1.</exception>
 		/// <exception cref="Udt::SocketException">If an error occurs accessing the socket or the file.</exception>
 		__int64 SendFile(System::String^ fileName, __int64 offset, __int64 count);
+
+		__int64 SendFile(StdFileStream^ file);
+		__int64 SendFile(StdFileStream^ file, __int64 count);
 
 		/// <summary>
 		/// Receive data on this socket and store it in a local file.

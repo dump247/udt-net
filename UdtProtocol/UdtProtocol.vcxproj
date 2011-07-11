@@ -198,6 +198,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="StdFileStream.cpp" />
     <ClCompile Include="TotalTraceInfo.cpp" />
     <ClCompile Include="TraceInfo.cpp" />
   </ItemGroup>
@@ -221,6 +222,7 @@
     <ClInclude Include="SocketOptionName.h" />
     <ClInclude Include="SocketPoller.h" />
     <ClInclude Include="Stdafx.h" />
+    <ClInclude Include="StdFileStream.h" />
     <ClInclude Include="TotalTraceInfo.h" />
     <ClInclude Include="TraceInfo.h" />
   </ItemGroup>

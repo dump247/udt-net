@@ -575,6 +575,30 @@ __int64 Udt::Socket::SendFile(System::String^ fileName, __int64 offset, __int64 
 	return sent;
 }
 
+__int64 Udt::Socket::SendFile(StdFileStream^ file)
+{
+	return SendFile(file, -1);
+}
+
+__int64 Udt::Socket::SendFile(StdFileStream^ file, __int64 count)
+{
+	__int64 pos = file->Position;
+
+	if (count < 0)
+	{
+		count = file->Length - pos;
+	}
+
+	int64_t sent = UDT::sendfile(_socket, file->Handle, pos, count);
+
+	if (UDT::ERROR == sent)
+	{
+		throw Udt::SocketException::GetLastError("Error sending file.");
+	}
+
+	return sent;
+}
+
 __int64 Udt::Socket::ReceiveFile(System::String^ fileName, __int64 length)
 {
 	if (fileName == nullptr)
