@@ -582,6 +582,9 @@ __int64 Udt::Socket::SendFile(StdFileStream^ file)
 
 __int64 Udt::Socket::SendFile(StdFileStream^ file, __int64 count)
 {
+	if (file == nullptr) throw gcnew ArgumentNullException("file");
+	if (!file->CanRead) throw gcnew ArgumentException("Stream does not support reading.", "file");
+
 	__int64 pos = file->Position;
 
 	if (count < 0)
@@ -601,11 +604,8 @@ __int64 Udt::Socket::SendFile(StdFileStream^ file, __int64 count)
 
 __int64 Udt::Socket::ReceiveFile(System::String^ fileName, __int64 length)
 {
-	if (fileName == nullptr)
-		throw gcnew ArgumentNullException("fileName");
-
-	if (length < 0)
-		throw gcnew ArgumentOutOfRangeException("length", length, "Value must be greater than or equal to 0.");
+	if (fileName == nullptr) throw gcnew ArgumentNullException("fileName");
+	if (length < 0) throw gcnew ArgumentOutOfRangeException("length", length, "Value must be greater than or equal to 0.");
 
 	cli::pin_ptr<const wchar_t> file_name_pin = PtrToStringChars(fileName);
 	const wchar_t* file_name_ptr = file_name_pin;
@@ -617,6 +617,23 @@ __int64 Udt::Socket::ReceiveFile(System::String^ fileName, __int64 length)
 	if (received == UDT::ERROR)
 	{
 		throw Udt::SocketException::GetLastError(String::Concat("Error receiving file ", fileName));
+	}
+
+	return received;
+}
+
+__int64 Udt::Socket::ReceiveFile(StdFileStream^ file, __int64 length)
+{
+	if (file == nullptr) throw gcnew ArgumentNullException("file");
+	if (!file->CanWrite) throw gcnew ArgumentException("Stream does not support writing.", "file");
+	if (length < 0) throw gcnew ArgumentOutOfRangeException("length", length, "Value must be greater than or equal to 0.");
+
+	__int64 offset = file->Position;
+	int64_t received = UDT::recvfile(_socket, file->LoadStdStream(), offset, length);
+
+	if (received == UDT::ERROR)
+	{
+		throw Udt::SocketException::GetLastError("Error receiving file.");
 	}
 
 	return received;

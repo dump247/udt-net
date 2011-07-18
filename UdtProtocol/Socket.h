@@ -366,6 +366,8 @@ namespace Udt
 		/// <exception cref="Udt::SocketException">If an error occurs accessing the socket or the file.</exception>
 		__int64 ReceiveFile(System::String^ fileName, __int64 length);
 
+		__int64 ReceiveFile(StdFileStream^ file, __int64 length);
+
 		int SendMessage(cli::array<System::Byte>^ buffer);
 		int SendMessage(cli::array<System::Byte>^ buffer, int offset, int size);
 		int SendMessage(Message^ message);
