@@ -3,13 +3,14 @@
 <!--
 This script requires the MSBuild Community Tasks (http://msbuildtasks.tigris.org).
 
-To build a new version package, run the following command in the solution directory:
+To build a new version package, run the default target.
 
-	msbuild /property:Version=W.X.Y.Z Package.proj
+	msbuild Package.proj
 
-The version number will be inserted into the assembly metadata, the project will
-be built (Win32 and x64 in Release), and the result is stored in a file named
-UdtProtocol-[Version].zip.
+You will be prompted to enter the version number on the command line in
+W.X.Y.Z format. The version number will be inserted into the assembly metadata,
+the project will be built (Win32 and x64 in Release), and the result is stored
+in a zip file named UdtProtocol-[Version].zip.
 -->
 
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
@@ -17,7 +18,7 @@ UdtProtocol-[Version].zip.
 		 ToolsVersion="4.0">
 		
 	<PropertyGroup>
-		<Version>0.0.0.1</Version>
+		<Version></Version>
 	</PropertyGroup>
 		
 	<Target Name="Package"
@@ -29,6 +30,8 @@ UdtProtocol-[Version].zip.
 			<ZipFiles Include="$(MSBuildProjectDirectory)\UdtProtocol\bin\Release\**\*.xml" />
 		</ItemGroup>
 			
+		<Delete Files="$(MSBuildProjectDirectory)\UdtProtocol-$(Version).zip" />
+			
  		<Zip Files="@(ZipFiles)"
 			 WorkingDirectory="$(MSBuildProjectDirectory)\UdtProtocol\bin\Release"
 			 ZipFileName="$(MSBuildProjectDirectory)\UdtProtocol-$(Version).zip"
@@ -38,6 +41,10 @@ UdtProtocol-[Version].zip.
 	
 	<Target Name="SetVersion">
 	
+		<Prompt Text="Enter the version (example W.X.Y.Z):" Condition="'$(Version)' == ''" >
+			<Output TaskParameter="UserInput" PropertyName="Version" />
+		</Prompt>
+
 		<!-- Insert the version into the project resource file. -->
 		<!-- This is the version that is shown in the Explorer properties dialog. -->
 		<FileUpdate Files="$(MSBuildProjectDirectory)\UdtProtocol\UdtProtocol.rc"
