@@ -198,6 +198,9 @@ FILE* StdFileStream::InitCreateNew(const wchar_t* path, FileAccess access, int s
 	case FileAccess::ReadWrite:
 		CheckFileNotExists(path, shareFlag);
 
+		// w+: write+read (truncate file if exists)
+		// b: binary
+		// N: not inherited
 		streamPtr = _wfsopen(path, L"wbN+", shareFlag);
 		if (streamPtr == NULL) CheckLastError(path);
 
@@ -209,6 +212,9 @@ FILE* StdFileStream::InitCreateNew(const wchar_t* path, FileAccess access, int s
 	case FileAccess::Write:
 		CheckFileNotExists(path, shareFlag);
 
+		// w: write only (truncate file if exists)
+		// b: binary
+		// N: not inherited
 		streamPtr = _wfsopen(path, L"wbN", shareFlag);
 		if (streamPtr == NULL) CheckLastError(path);
 
@@ -231,6 +237,9 @@ FILE* StdFileStream::InitCreate(const wchar_t* path, FileAccess access, int shar
 	switch (access)
 	{
 	case FileAccess::ReadWrite:
+		// w+: write+read (truncate file if exists)
+		// b: binary
+		// N: not inherited
 		streamPtr = _wfsopen(path, L"wbN+", shareFlag);
 		if (streamPtr == NULL) CheckLastError(path);
 
@@ -240,6 +249,9 @@ FILE* StdFileStream::InitCreate(const wchar_t* path, FileAccess access, int shar
 		break;
 
 	case FileAccess::Write:
+		// w: write only (truncate file if exists)
+		// b: binary
+		// N: not inherited
 		streamPtr = _wfsopen(path, L"wbN", shareFlag);
 		if (streamPtr == NULL) CheckLastError(path);
 
@@ -263,6 +275,9 @@ FILE* StdFileStream::InitOpen(const wchar_t* path, FileAccess access, int shareF
 	{
 	case FileAccess::ReadWrite:
 	case FileAccess::Write:
+		// r+: read+write (error file if does not exist)
+		// b: binary
+		// N: not inherited
 		streamPtr = _wfsopen(path, L"rbN+", shareFlag);
 		if (streamPtr == NULL) CheckLastError(path);
 
@@ -272,6 +287,9 @@ FILE* StdFileStream::InitOpen(const wchar_t* path, FileAccess access, int shareF
 		break;
 
 	case FileAccess::Read:
+		// r: read only (error file if does not exist)
+		// b: binary
+		// N: not inherited
 		streamPtr = _wfsopen(path, L"rbN", shareFlag);
 		if (streamPtr == NULL) CheckLastError(path);
 
@@ -295,6 +313,9 @@ FILE* StdFileStream::InitOpenOrCreate(const wchar_t* path, FileAccess access, in
 	{
 	case FileAccess::ReadWrite:
 	case FileAccess::Write:
+		// r+: read+write (error file if does not exist)
+		// b: binary
+		// N: not inherited
 		streamPtr = _wfsopen(path, L"rbN+", shareFlag);
 
 		if (streamPtr == NULL)
@@ -309,6 +330,9 @@ FILE* StdFileStream::InitOpenOrCreate(const wchar_t* path, FileAccess access, in
 		break;
 
 	case FileAccess::Read:
+		// r: read only (error file if does not exist)
+		// b: binary
+		// N: not inherited
 		streamPtr = _wfsopen(path, L"rbN", shareFlag);
 
 		if (streamPtr == NULL)
@@ -337,6 +361,9 @@ FILE* StdFileStream::InitTruncate(const wchar_t* path, FileAccess access, int sh
 	{
 	case FileAccess::ReadWrite:
 	case FileAccess::Write:
+		// r+: read+write (error file if does not exist)
+		// b: binary
+		// N: not inherited
 		streamPtr = _wfsopen(path, L"rbN+", shareFlag);
 
 		if (streamPtr == NULL)
@@ -367,6 +394,9 @@ FILE* StdFileStream::InitAppend(const wchar_t* path, FileAccess access, int shar
 	switch (access)
 	{
 	case FileAccess::Write:
+		// a: append only (error file if does not exist)
+		// b: binary
+		// N: not inherited
 		streamPtr = _wfsopen(path, L"abN", shareFlag);
 		if (streamPtr == NULL) CheckLastError(path);
 
