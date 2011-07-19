@@ -139,8 +139,12 @@ StdFileStream::~StdFileStream(void)
 	_canWrite = false;
 	_canSeek = false;
 
-	delete _stdStream;
-	_stdStream = NULL;
+	if (_stdStream != NULL)
+	{
+		_stdStream->close();
+		delete _stdStream;
+		_stdStream = NULL;
+	}
 }
 
 void StdFileStream::CheckLastError(const wchar_t* path)
