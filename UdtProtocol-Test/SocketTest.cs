@@ -601,7 +601,7 @@ namespace UdtProtocol_Test
 					server.Listen(1);
 
 					using (Udt.Socket accept = server.Accept())
-					using (Udt.StdFileStream file = new Udt.StdFileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
+					using (Udt.StdFileStream file = new Udt.StdFileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
 					{
 						accept.SendFile(file);
 
@@ -611,18 +611,18 @@ namespace UdtProtocol_Test
 				}
 			});
 
-			byte[] buffer = new byte[1024];
-
 			using (Udt.Socket client = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
 			{
+				byte[] buffer = new byte[1024];
+
 				client.Connect(IPAddress.Loopback, port);
 				Assert.AreEqual(44, client.Receive(buffer));
-				
+
+				CollectionAssert.AreEqual(File.ReadAllBytes(path), buffer.Take(44));
+	
 				clientDoneEvent.Set();
 				Assert.IsTrue(serverDoneEvent.WaitOne(1000));
 			}
-
-			CollectionAssert.AreEqual(File.ReadAllBytes(path), buffer.Take(44));
 
 			serverTask.Wait();
 		}
