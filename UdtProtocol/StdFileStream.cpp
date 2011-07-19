@@ -68,7 +68,8 @@ void StdFileStream::AssertNotDisposed()
 void StdFileStream::Init(String^ path, FileMode mode, FileAccess access, FileShare share)
 {
 	if (path == nullptr) throw gcnew ArgumentNullException("path");
-
+	if (path->Length == 0) throw gcnew ArgumentException("Value can not be empty.", "path");
+	
 	_canRead = false;
 	_canWrite = false;
 	_canSeek = false;
@@ -152,6 +153,10 @@ void StdFileStream::CheckLastError(const wchar_t* path)
 	if (errno == ENOENT)
 	{
 		throw gcnew FileNotFoundException("File not found.", gcnew String(path));
+	}
+	else if (errno = EINVAL)
+	{
+		throw gcnew ArgumentException(String::Format("Invalid path value.{0}Value: {1}", Environment::NewLine, gcnew String(path)), "path");
 	}
 	else
 	{
