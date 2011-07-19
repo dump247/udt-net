@@ -42,6 +42,50 @@ namespace UdtProtocol_Test
 		}
 
 		[Test]
+		public void Constructor_with_invalid_args()
+		{
+			string path = GetFile();
+
+			// Null path
+			ArgumentException ex =  Assert.Throws<ArgumentNullException>(() => new StdFileStream(null, FileMode.Open));
+			Assert.AreEqual("path", ex.ParamName);
+
+			// Empty path
+			ex = Assert.Throws<ArgumentException>(() => new StdFileStream("", FileMode.Open));
+			Assert.AreEqual("path", ex.ParamName);
+
+			// Whitespace path
+			ex = Assert.Throws<ArgumentException>(() => new StdFileStream(" \t\r\n", FileMode.Open));
+			Assert.AreEqual("path", ex.ParamName);
+
+			// Invalid character in path
+			ex = Assert.Throws<ArgumentException>(() => new StdFileStream("file|name", FileMode.Open));
+			Assert.AreEqual("path", ex.ParamName);
+
+			// FileShare.Delete
+			ex = Assert.Throws<ArgumentOutOfRangeException>(() => new StdFileStream(path, FileMode.Open, FileAccess.Read, FileShare.Delete));
+			Assert.AreEqual("share", ex.ParamName);
+			
+			// FileShare.Inheritable
+			ex = Assert.Throws<ArgumentOutOfRangeException>(() => new StdFileStream(path, FileMode.Open, FileAccess.Read, FileShare.Inheritable));
+			Assert.AreEqual("share", ex.ParamName);
+		}
+
+		[Test]
+		public void File_not_found()
+		{
+			var ex = Assert.Throws<FileNotFoundException>(() => new StdFileStream(@"file_that_does_not_exist", FileMode.Open));
+			Assert.AreEqual("file_that_does_not_exist", ex.FileName);
+		}
+
+		[Test, Ignore("Not sure how to detect max path error. _wfsopen always seems to return ENOENT (file not found). Also, using MAX_PATH is not correct is we are using Unicode API (should be 32K or so).")]
+		public void Path_too_long()
+		{
+			// See: http://msdn.microsoft.com/en-us/library/aa365247.aspx#maxpath
+			var ex = Assert.Throws<PathTooLongException>(() => new StdFileStream(@"C:\" + new string('a', 50000), FileMode.Open));
+		}
+
+		[Test]
 		public void Write()
 		{
 			string path = GetFile();
@@ -90,6 +134,110 @@ namespace UdtProtocol_Test
 			Assert.AreEqual(0, fs.Read(buffer, 0, 5));
 
 			fs.Close();
+		}
+
+		[Test]
+		public void Exclusive_access()
+		{
+			string path = GetFile();
+
+			using (StdFileStream fs = new StdFileStream(path, FileMode.Open))
+			{
+				Assert.Throws<IOException>(() => new StdFileStream(path, FileMode.Open));
+				fs.Close();
+			}
+
+			using (FileStream fs = new FileStream(path, FileMode.Open))
+			{
+				Assert.Throws<IOException>(() => new FileStream(path, FileMode.Open));
+				fs.Close();
+			}
+		}
+
+		[Test]
+		public void Shared_readwrite_access_followed_by_shared_read()
+		{
+			string path = GetFile();
+
+			using (StdFileStream fs = new StdFileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+			{
+				Assert.Throws<IOException>(() => new StdFileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read));
+				fs.Close();
+			}
+
+			using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+			{
+				Assert.Throws<IOException>(() => new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read));
+				fs.Close();
+			}
+		}
+
+		[Test]
+		public void Shared_read_with_readwrite_access_followed_by_shared_read()
+		{
+			string path = GetFile();
+
+			using (StdFileStream fs = new StdFileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
+			{
+				Assert.Throws<IOException>(() => new StdFileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read));
+				fs.Close();
+			}
+
+			using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
+			{
+				Assert.Throws<IOException>(() => new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read));
+				fs.Close();
+			}
+		}
+
+		[Test]
+		public void Shared_read_access_followed_by_shared_readwrite()
+		{
+			string path = GetFile();
+
+			using (StdFileStream fs = new StdFileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+			{
+				Assert.Throws<IOException>(() => new StdFileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite));
+				fs.Close();
+			}
+
+			using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+			{
+				Assert.Throws<IOException>(() => new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite));
+				fs.Close();
+			}
+		}
+
+		[Test]
+		public void Shared_read_access()
+		{
+			string path = GetFile();
+
+			File.WriteAllBytes(path, new byte[] { 0x01, 0x02, 0x03 });
+
+			using (StdFileStream fs1 = new StdFileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+			using (StdFileStream fs2 = new StdFileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+			{
+				byte[] buffer = new byte[4];
+
+				Assert.AreEqual(3, fs1.Read(buffer, 0, 4));
+				CollectionAssert.AreEqual(new byte[] { 0x01, 0x02, 0x03, 0x00 }, buffer);
+
+				Assert.AreEqual(3, fs2.Read(buffer, 0, 4));
+				CollectionAssert.AreEqual(new byte[] { 0x01, 0x02, 0x03, 0x00 }, buffer);
+			}
+
+			using (FileStream fs1 = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+			using (FileStream fs2 = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+			{
+				byte[] buffer = new byte[4];
+
+				Assert.AreEqual(3, fs1.Read(buffer, 0, 4));
+				CollectionAssert.AreEqual(new byte[] { 0x01, 0x02, 0x03, 0x00 }, buffer);
+
+				Assert.AreEqual(3, fs2.Read(buffer, 0, 4));
+				CollectionAssert.AreEqual(new byte[] { 0x01, 0x02, 0x03, 0x00 }, buffer);
+			}
 		}
 
 		private string GetFile(string content = "")
