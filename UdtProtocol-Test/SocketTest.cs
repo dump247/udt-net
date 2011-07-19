@@ -627,6 +627,50 @@ namespace UdtProtocol_Test
 			serverTask.Wait();
 		}
 
+		[Test]
+		public void ReceiveFile_stream()
+		{
+			ManualResetEvent serverDoneEvent = new ManualResetEvent(false);
+			ManualResetEvent clientDoneEvent = new ManualResetEvent(false);
+			int port = _portNum++;
+			string path = GetFile("The quick brown fox jumped over the lazy dog");
+			string receivePath = GetFile();
+
+			var serverTask = Task.Factory.StartNew(() =>
+			{
+				using (Udt.Socket server = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+				{
+					server.Bind(IPAddress.Loopback, port);
+					server.Listen(1);
+
+					using (Udt.Socket accept = server.Accept())
+					using (Udt.StdFileStream file = new Udt.StdFileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+					{
+						accept.SendFile(file);
+
+						serverDoneEvent.Set();
+						Assert.IsTrue(clientDoneEvent.WaitOne(1000));
+					}
+				}
+			});
+
+			using (Udt.Socket client = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+			using (Udt.StdFileStream file = new Udt.StdFileStream(receivePath, FileMode.Open, FileAccess.ReadWrite))
+			{
+				client.Connect(IPAddress.Loopback, port);
+				Assert.AreEqual(44, client.ReceiveFile(file, 44));
+
+				file.Close();
+
+				CollectionAssert.AreEqual(File.ReadAllBytes(path), File.ReadAllBytes(receivePath));
+
+				clientDoneEvent.Set();
+				Assert.IsTrue(serverDoneEvent.WaitOne(1000));
+			}
+
+			serverTask.Wait();
+		}
+
 		private int _portNum = 10000;
 
 		private string GetFile(string content = "")
