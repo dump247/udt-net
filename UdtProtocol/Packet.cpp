@@ -62,7 +62,12 @@ Packet::Packet(CPacket* packet, bool deletePacket)
 
 Packet::~Packet()
 {
-	if (_deletePacket) delete _packet;
+	if (_deletePacket)
+	{
+		delete [] _packet->m_pcData;
+		delete _packet;
+	}
+
 	_packet = NULL;
 }
 

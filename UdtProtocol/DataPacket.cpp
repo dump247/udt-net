@@ -40,12 +40,12 @@ using namespace Udt;
 using namespace System;
 
 DataPacket::DataPacket(CPacket* packet, bool deletePacket)
-	: Packet(packet, deletePacket)
+	: Packet(packet, deletePacket), _capacity(packet->getLength())
 {
 }
 
 DataPacket::DataPacket(void)
-	: Packet(new CPacket(), true)
+	: Packet(new CPacket(), true), _capacity(0)
 {
 }
 
@@ -122,5 +122,79 @@ void DataPacket::DataLength::set(int value)
 {
 	AssertIsMutable();
 	if (value < 0) throw gcnew ArgumentOutOfRangeException("value", value, "Value must be greater than or equal to 0.");
+
+	EnsureCapacity(value);
 	_packet->setLength(value);
+}
+
+int DataPacket::DataCapacity::get(void)
+{
+	AssertNotDisposed();
+	return _capacity;
+}
+
+void DataPacket::EnsureCapacity(int value)
+{
+	if (value > _capacity)
+	{
+		int newCapacity = value;
+
+		if (newCapacity < 256)
+			newCapacity = 256;
+		else if (newCapacity < _capacity * 2)
+			newCapacity = _capacity * 2;
+
+		char* newBuf = new char[newCapacity];
+		memcpy(newBuf, _packet->m_pcData, _packet->getLength());
+		delete [] _packet->m_pcData;
+		_packet->m_pcData = newBuf;
+		_capacity = newCapacity;
+	}
+}
+
+int DataPacket::Read(int dataOffset, cli::array<unsigned char>^ buffer, int bufferOffset, int bufferCount)
+{
+	AssertNotDisposed();
+
+	int packetLen = _packet->getLength();
+
+	if (dataOffset < 0 || dataOffset > packetLen) throw gcnew ArgumentOutOfRangeException("dataOffset", dataOffset, String::Format("Value must be greater than or equal to 0 and less than the packet length ({0})", packetLen));
+	if (buffer == nullptr) throw gcnew ArgumentNullException("buffer");
+	if (bufferOffset < 0) throw gcnew ArgumentOutOfRangeException("bufferOffset", bufferOffset, "Value must be greater than or equal to 0.");
+	if (bufferCount < 0) throw gcnew ArgumentOutOfRangeException("bufferCount", bufferCount, "Value must be greater than or equal to 0.");
+	if (bufferOffset + bufferCount > buffer->Length) throw gcnew ArgumentException("Invalid buffer offset and count.");
+
+	int readCount = min(packetLen - dataOffset, bufferCount);
+
+	if (readCount > 0)
+	{
+		pin_ptr<unsigned char> bufferPin = &buffer[0];
+		memcpy(bufferPin + bufferOffset, _packet->m_pcData + dataOffset, readCount);
+	}
+
+	return readCount;
+}
+
+void DataPacket::Write(int dataOffset, cli::array<unsigned char>^ buffer, int bufferOffset, int bufferCount)
+{
+	AssertNotDisposed();
+
+	if (dataOffset < 0) throw gcnew ArgumentOutOfRangeException("dataOffset", dataOffset, "Value must be greater than or equal to 0");
+	if (buffer == nullptr) throw gcnew ArgumentNullException("buffer");
+	if (bufferOffset < 0) throw gcnew ArgumentOutOfRangeException("bufferOffset", bufferOffset, "Value must be greater than or equal to 0.");
+	if (bufferCount < 0) throw gcnew ArgumentOutOfRangeException("bufferCount", bufferCount, "Value must be greater than or equal to 0.");
+	if (bufferOffset + bufferCount > buffer->Length) throw gcnew ArgumentException("Invalid buffer offset and count.");
+
+	int requiredLength = dataOffset + bufferCount;
+
+	if (requiredLength > 0)
+	{
+		EnsureCapacity(requiredLength);
+
+		if (requiredLength > _packet->getLength())
+			_packet->setLength(requiredLength);
+
+		pin_ptr<unsigned char> bufferPin = &buffer[0];
+		memcpy(_packet->m_pcData + dataOffset, bufferPin + bufferOffset, bufferCount);
+	}
 }

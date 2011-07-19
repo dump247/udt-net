@@ -42,6 +42,12 @@ namespace Udt
 	/// </summary>
 	public ref class DataPacket : public Packet
 	{
+	private:
+
+		int _capacity;
+
+		void EnsureCapacity(int value);
+
 	internal:
 
 		/// <summary>
@@ -116,6 +122,56 @@ namespace Udt
 			int get(void);
 			void set(int value);
 		}
+
+		/// <summary>
+		/// Get the space allocated to the packet payload. This may be greater
+		/// than or equal to <see cref="DataLength"/>.
+		/// </summary>
+		/// <exception cref="System::ObjectDisposedException">If the object has been disposed.</exception>
+		property int DataCapacity {
+			int get(void);
+		}
+
+		/// <summary>
+		/// Read from the packet payload data.
+		/// </summary>
+		/// <param name="dataOffset">Offset into the packet data to start reading at.</param>
+		/// <param name="buffer">Buffer to read packet data into.</param>
+		/// <param name="bufferOffset">Offset into the <paramref name="buffer"/> to copy data to.</param>
+		/// <param name="bufferCount">Maximum number of bytes to copy from the packet.</param>
+		/// <returns>Number of bytes read into <paramref name="buffer"/>.</returns>
+		/// <exception cref="System::ArgumentNullException">If <paramref name="buffer"/> is null.</exception>
+		/// <exception cref="System::ArgumentOutOfRangeException">
+		/// If <paramref name="dataOffset"/> is less than 0 or greater than <see cref="DataLength"/>.
+		/// - or -
+		/// If <paramref name="bufferOffset"/> or <paramref name="bufferCount"/> is less than 0
+		/// </exception>
+		/// <exception cref="System::ArgumentException">If the sum of <paramref name="bufferOffset"/> and <paramref name="bufferCount"/> is larger than the <paramref name="buffer"/> length.</exception>
+		/// <exception cref="System::ObjectDisposedException">If the object has been disposed.</exception>
+		int Read(int dataOffset, cli::array<unsigned char>^ buffer, int bufferOffset, int bufferCount);
+
+		/// <summary>
+		/// Write to the packet payload data.
+		/// </summary>
+		/// <remarks>
+		/// If the sum of <paramref name="dataOffset"/> and <paramref name="bufferCount"/>
+		/// is greater than <see cref="DataLength"/>, the packet's payload space
+		/// is expanded as needed.
+		/// </remarks>
+		/// <param name="dataOffset">Offset into the packet data to start writing to.</param>
+		/// <param name="buffer">Buffer to copy packet data from.</param>
+		/// <param name="bufferOffset">Offset into the <paramref name="buffer"/> to start reading.</param>
+		/// <param name="bufferCount">Maximum number of bytes to read from <paramref name="buffer"/>.</param>
+		/// <exception cref="System::ArgumentNullException">If <paramref name="buffer"/> is null.</exception>
+		/// <exception cref="System::ArgumentOutOfRangeException">
+		/// If <paramref name="dataOffset"/> is less than 0.
+		/// - or -
+		/// If <paramref name="bufferOffset"/> or <paramref name="bufferCount"/> is less than 0
+		/// </exception>
+		/// <exception cref="System::ArgumentException">If the sum of <paramref name="bufferOffset"/> and <paramref name="bufferCount"/> is larger than the <paramref name="buffer"/> length.</exception>
+		/// <exception cref="System::ObjectDisposedException">If the object has been disposed.</exception>
+		/// <exception cref="System::InvalidOperationException">If attempting to set the value and <see cref="IsEditable"/> is false.</exception>
+		void Write(int dataOffset, cli::array<unsigned char>^ buffer, int bufferOffset, int bufferCount);
 
 		/// <summary>
 		/// Maximum allowed value for <see cref="MessageNumber"/>.

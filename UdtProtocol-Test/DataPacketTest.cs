@@ -30,6 +30,76 @@ namespace UdtProtocol_Test
 		}
 
 		[Test]
+		public void Read_write()
+		{
+			DataPacket packet = new DataPacket();
+
+			packet.Write(0, new byte[] { 0x01 }, 0, 1);
+			Assert.AreEqual(1, packet.DataLength);
+
+			byte[] buffer = new byte[2];
+			Assert.AreEqual(1, packet.Read(0, buffer, 0, 2));
+			CollectionAssert.AreEqual(new byte[] { 0x01, 0x00 }, buffer);
+
+			packet.Dispose();
+		}
+
+		[Test]
+		public void Write_will_reallocate()
+		{
+			DataPacket packet = new DataPacket();
+			
+			packet.Write(0, new byte[] { 0x01 }, 0, 1);
+			int capacity = packet.DataCapacity;
+
+			byte[] data = new byte[500];
+			for (int i = 0; i < data.Length; ++i) data[i] = (byte)(i % 255);
+			packet.Write(1, data, 0, data.Length);
+
+			Assert.That(packet.DataCapacity, Is.GreaterThan(capacity));
+
+			byte[] buffer = new byte[1000];
+			Assert.AreEqual(501, packet.Read(0, buffer, 0, 1000));
+			CollectionAssert.AreEqual(new byte[] { 0x01 }.Concat(data).ToArray(), buffer.Take(501).ToArray());
+
+			packet.Dispose();
+		}
+
+		[Test]
+		public void DataLength()
+		{
+			DataPacket packet = new DataPacket();
+
+			packet.DataLength = 100;
+			Assert.AreEqual(100, packet.DataLength);
+
+			packet.DataLength = 200;
+			Assert.AreEqual(200, packet.DataLength);
+
+			packet.DataLength = 500;
+			Assert.AreEqual(500, packet.DataLength);
+
+			packet.DataLength = 1;
+			Assert.AreEqual(1, packet.DataLength);
+
+			packet.DataLength = 0;
+			Assert.AreEqual(0, packet.DataLength);
+
+			packet.Dispose();
+		}
+
+		[Test]
+		public void DataLength_invalid_args()
+		{
+			DataPacket packet = new DataPacket();
+
+			ArgumentException ex = Assert.Throws<ArgumentOutOfRangeException>(() => packet.DataLength = -1);
+			Assert.AreEqual("value", ex.ParamName);
+
+			packet.Dispose();
+		}
+
+		[Test]
 		public void TimeStamp()
 		{
 			DataPacket packet = new DataPacket();
