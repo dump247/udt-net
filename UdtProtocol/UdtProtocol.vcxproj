@@ -177,6 +177,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Ack2Packet.cpp" />
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="CCCWrapper.cpp" />
     <ClCompile Include="CCCWrapperFactory.cpp" />
@@ -207,6 +208,7 @@
     <ClCompile Include="TraceInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Ack2Packet.h" />
     <ClInclude Include="CCCWrapper.h" />
     <ClInclude Include="CCCWrapperFactory.h" />
     <ClInclude Include="CongestionControl.h" />

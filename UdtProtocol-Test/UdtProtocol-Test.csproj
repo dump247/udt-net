@@ -119,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CongestionPacketTest.cs" />
+    <Compile Include="Ack2PacketTest.cs" />
     <Compile Include="ErrorPacketTest.cs" />
     <Compile Include="ShutdownPacketTest.cs" />
     <Compile Include="DataPacketTest.cs" />

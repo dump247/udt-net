@@ -39,6 +39,7 @@
 #include "ShutdownPacket.h"
 #include "CongestionPacket.h"
 #include "ErrorPacket.h"
+#include "Ack2Packet.h"
 
 #include <udt.h>
 #include <packet.h>
@@ -54,6 +55,10 @@ Packet^ Packet::Wrap(const CPacket* packet)
 	{
 		switch (packet->getType())
 		{
+		case Ack2Packet::TypeCode:
+			wrapper = gcnew Ack2Packet((CPacket*)packet, false);
+			break;
+
 		case ErrorPacket::TypeCode:
 			wrapper = gcnew ErrorPacket((CPacket*)packet, false);
 			break;
