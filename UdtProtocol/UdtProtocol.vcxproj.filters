@@ -78,6 +78,9 @@
     <ClCompile Include="ShutdownPacket.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CongestionPacket.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCCWrapper.h">
@@ -150,6 +153,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ShutdownPacket.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CongestionPacket.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

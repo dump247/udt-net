@@ -181,6 +181,7 @@
     <ClCompile Include="CCCWrapper.cpp" />
     <ClCompile Include="CCCWrapperFactory.cpp" />
     <ClCompile Include="CongestionControl.cpp" />
+    <ClCompile Include="CongestionPacket.cpp" />
     <ClCompile Include="ControlPacket.cpp" />
     <ClCompile Include="DataPacket.cpp" />
     <ClCompile Include="KeepAlivePacket.cpp" />
@@ -208,6 +209,7 @@
     <ClInclude Include="CCCWrapper.h" />
     <ClInclude Include="CCCWrapperFactory.h" />
     <ClInclude Include="CongestionControl.h" />
+    <ClInclude Include="CongestionPacket.h" />
     <ClInclude Include="ControlPacket.h" />
     <ClInclude Include="DataPacket.h" />
     <ClInclude Include="KeepAlivePacket.h" />
