@@ -119,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataPacketTest.cs" />
+    <Compile Include="KeepAlivePacketTest.cs" />
     <Compile Include="MessageTest.cs" />
     <Compile Include="NetworkStreamTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

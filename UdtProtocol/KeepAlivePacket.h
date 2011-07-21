@@ -30,97 +30,26 @@
  * POSSIBILITY OF SUCH DAMAGE.
  ****************************************************************/
 
-#include "StdAfx.h"
+#pragma once
 
-#include "Packet.h"
-#include "DataPacket.h"
 #include "ControlPacket.h"
-#include "KeepAlivePacket.h"
 
-#include <udt.h>
-#include <packet.h>
+class CPacket;
 
-using namespace Udt;
-using namespace System;
-
-Packet^ Packet::Wrap(const CPacket* packet)
+namespace Udt
 {
-	Packet^ wrapper;
-
-	if (packet->getFlag())
+	/// <summary>
+	/// UDT protocol keep-alive control packet.
+	/// </summary>
+	public ref class KeepAlivePacket : public ControlPacket
 	{
-		switch (packet->getType())
-		{
-		case KeepAlivePacket::TypeCode:
-			wrapper = gcnew KeepAlivePacket((CPacket*)packet, false);
-			break;
+	internal:
+		KeepAlivePacket(CPacket* packet, bool deletePacket);
 
-		default:
-			wrapper = gcnew ControlPacket((CPacket*)packet, false);
-			break;
-		}
-	}
-	else
-	{
-		wrapper = gcnew DataPacket((CPacket*)packet, false);
-	}
+		literal int TypeCode = 1;
 
-	return wrapper;
-}
+	public:
 
-Packet::Packet(CPacket* packet, bool deletePacket)
-{
-	_packet = packet;
-	_deletePacket = deletePacket;
-}
-
-Packet::~Packet()
-{
-	if (_deletePacket)
-	{
-		FreePacketData();
-		delete _packet;
-	}
-
-	_packet = NULL;
-}
-
-void Packet::AssertNotDisposed()
-{
-	if (_packet == NULL)
-		throw gcnew ObjectDisposedException(this->ToString());
-}
-
-void Packet::AssertIsMutable()
-{
-	AssertNotDisposed();
-	if (!IsEditable) throw gcnew InvalidOperationException("Packet can not be modified.");
-}
-
-TimeSpan Packet::TimeStamp::get(void)
-{
-	AssertNotDisposed();
-	return FromMicroseconds((uint32_t)_packet->m_iTimeStamp);
-}
-
-void Packet::TimeStamp::set(TimeSpan value)
-{
-	AssertIsMutable();
-
-	if (value < TimeSpan::Zero || value > MaxTimeStamp)
-		throw gcnew ArgumentOutOfRangeException("value", value, String::Concat("Value must be between ", TimeSpan::Zero, " and ", MaxTimeStamp, "."));
-
-	_packet->m_iTimeStamp = (int32_t)ToMicroseconds(value);
-}
-
-int Packet::DestinationId::get(void)
-{
-	AssertNotDisposed();
-	return _packet->m_iID;
-}
-
-void Packet::DestinationId::set(int value)
-{
-	AssertIsMutable();
-	_packet->m_iID = value;
+		KeepAlivePacket(void);
+	};
 }

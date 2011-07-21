@@ -183,6 +183,7 @@
     <ClCompile Include="CongestionControl.cpp" />
     <ClCompile Include="ControlPacket.cpp" />
     <ClCompile Include="DataPacket.cpp" />
+    <ClCompile Include="KeepAlivePacket.cpp" />
     <ClCompile Include="LocalTraceInfo.cpp" />
     <ClCompile Include="Message.cpp" />
     <ClCompile Include="NativeIntArray.cpp" />
@@ -208,6 +209,7 @@
     <ClInclude Include="CongestionControl.h" />
     <ClInclude Include="ControlPacket.h" />
     <ClInclude Include="DataPacket.h" />
+    <ClInclude Include="KeepAlivePacket.h" />
     <ClInclude Include="LocalTraceInfo.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="MessageBoundary.h" />
