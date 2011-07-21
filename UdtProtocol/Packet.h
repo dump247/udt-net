@@ -71,7 +71,7 @@ namespace Udt
 		/// Get true if the packet can be modified.
 		/// </summary>
 		property bool IsEditable {
-			bool get(void) { return _deletePacket; }
+			bool get(void) { return _packet != NULL && _deletePacket; }
 		}
 
 		/// <summary>
