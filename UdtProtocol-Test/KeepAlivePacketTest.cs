@@ -14,7 +14,7 @@ namespace UdtProtocol_Test
 	public class KeepAlivePacketTest
 	{
 		[Test]
-		public void Constructor()
+		public void Create_and_dispose()
 		{
 			KeepAlivePacket packet = new KeepAlivePacket();
 			
