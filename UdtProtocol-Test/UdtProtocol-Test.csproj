@@ -118,6 +118,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ShutdownPacketTest.cs" />
     <Compile Include="DataPacketTest.cs" />
     <Compile Include="KeepAlivePacketTest.cs" />
     <Compile Include="MessageTest.cs" />

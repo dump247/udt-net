@@ -190,6 +190,7 @@
     <ClCompile Include="NetworkStream.cpp" />
     <ClCompile Include="Packet.cpp" />
     <ClCompile Include="ProbeTraceInfo.cpp" />
+    <ClCompile Include="ShutdownPacket.cpp" />
     <ClCompile Include="Socket.cpp" />
     <ClCompile Include="SocketException.cpp" />
     <ClCompile Include="SocketPoller.cpp" />
@@ -218,6 +219,7 @@
     <ClInclude Include="Packet.h" />
     <ClInclude Include="ProbeTraceInfo.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="ShutdownPacket.h" />
     <ClInclude Include="Socket.h" />
     <ClInclude Include="SocketError.h" />
     <ClInclude Include="SocketException.h" />
