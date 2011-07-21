@@ -48,6 +48,10 @@ namespace Udt
 
 		void EnsureCapacity(int value);
 
+	protected:
+
+		virtual void FreePacketData() override;
+		
 	internal:
 
 		/// <summary>

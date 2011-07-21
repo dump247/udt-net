@@ -53,6 +53,11 @@ DataPacket::~DataPacket(void)
 {
 }
 
+void DataPacket::FreePacketData()
+{
+	delete [] _packet->m_pcData;
+}
+
 Udt::MessageBoundary DataPacket::MessageBoundary::get(void)
 {
 	AssertNotDisposed();

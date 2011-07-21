@@ -64,7 +64,7 @@ Packet::~Packet()
 {
 	if (_deletePacket)
 	{
-		delete [] _packet->m_pcData;
+		FreePacketData();
 		delete _packet;
 	}
 

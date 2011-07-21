@@ -49,6 +49,7 @@ namespace Udt
 		CPacket* _packet;
 		void AssertNotDisposed();
 		void AssertIsMutable();
+		virtual void FreePacketData() {}
 
 	internal:
 
