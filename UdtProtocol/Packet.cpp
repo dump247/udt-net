@@ -38,6 +38,7 @@
 #include "KeepAlivePacket.h"
 #include "ShutdownPacket.h"
 #include "CongestionPacket.h"
+#include "ErrorPacket.h"
 
 #include <udt.h>
 #include <packet.h>
@@ -53,6 +54,10 @@ Packet^ Packet::Wrap(const CPacket* packet)
 	{
 		switch (packet->getType())
 		{
+		case ErrorPacket::TypeCode:
+			wrapper = gcnew ErrorPacket((CPacket*)packet, false);
+			break;
+
 		case CongestionPacket::TypeCode:
 			wrapper = gcnew CongestionPacket((CPacket*)packet, false);
 			break;
