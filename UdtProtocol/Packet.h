@@ -76,6 +76,13 @@ namespace Udt
 		}
 
 		/// <summary>
+		/// Get true if the packet has been disposed.
+		/// </summary>
+		property bool IsDisposed {
+			bool get(void) { return _packet == NULL; }
+		}
+
+		/// <summary>
 		/// Get or set the time stamp associated with the packet.
 		/// Default value is <see cref="System::TimeSpan::Zero"/>.
 		/// </summary>
