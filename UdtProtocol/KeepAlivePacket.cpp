@@ -38,8 +38,8 @@
 
 using namespace Udt;
 
-KeepAlivePacket::KeepAlivePacket(CPacket* packet, bool deletePacket)
-	: ControlPacket(packet, deletePacket)
+KeepAlivePacket::KeepAlivePacket(const CPacket* packet)
+	: ControlPacket(packet)
 {
 }
 

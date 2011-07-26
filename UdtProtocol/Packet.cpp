@@ -56,42 +56,46 @@ Packet^ Packet::Wrap(const CPacket* packet)
 		switch (packet->getType())
 		{
 		case Ack2Packet::TypeCode:
-			wrapper = gcnew Ack2Packet((CPacket*)packet, false);
+			wrapper = gcnew Ack2Packet(packet);
 			break;
 
 		case ErrorPacket::TypeCode:
-			wrapper = gcnew ErrorPacket((CPacket*)packet, false);
+			wrapper = gcnew ErrorPacket(packet);
 			break;
 
 		case CongestionPacket::TypeCode:
-			wrapper = gcnew CongestionPacket((CPacket*)packet, false);
+			wrapper = gcnew CongestionPacket(packet);
 			break;
 
 		case ShutdownPacket::TypeCode:
-			wrapper = gcnew ShutdownPacket((CPacket*)packet, false);
+			wrapper = gcnew ShutdownPacket(packet);
 			break;
 
 		case KeepAlivePacket::TypeCode:
-			wrapper = gcnew KeepAlivePacket((CPacket*)packet, false);
+			wrapper = gcnew KeepAlivePacket(packet);
 			break;
 
 		default:
-			wrapper = gcnew ControlPacket((CPacket*)packet, false);
+			wrapper = gcnew ControlPacket(packet);
 			break;
 		}
 	}
 	else
 	{
-		wrapper = gcnew DataPacket((CPacket*)packet, false);
+		wrapper = gcnew DataPacket(packet);
 	}
 
 	return wrapper;
 }
 
 Packet::Packet(CPacket* packet, bool deletePacket)
+	: _packet(packet), _deletePacket(deletePacket)
 {
-	_packet = packet;
-	_deletePacket = deletePacket;
+}
+
+Packet::Packet(const CPacket* packet)
+	: _packet((CPacket*)packet), _deletePacket(false)
+{
 }
 
 Packet::~Packet()

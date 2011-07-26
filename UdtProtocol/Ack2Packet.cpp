@@ -38,8 +38,8 @@
 
 using namespace Udt;
 
-Ack2Packet::Ack2Packet(CPacket* packet, bool deletePacket)
-	: ControlPacket(packet, deletePacket)
+Ack2Packet::Ack2Packet(const CPacket* packet)
+	: ControlPacket(packet)
 {
 }
 

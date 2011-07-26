@@ -44,7 +44,7 @@ namespace Udt
 	public ref class Ack2Packet : public ControlPacket
 	{
 	internal:
-		Ack2Packet(CPacket* packet, bool deletePacket);
+		Ack2Packet(const CPacket* packet);
 
 		literal int TypeCode = 6;
 

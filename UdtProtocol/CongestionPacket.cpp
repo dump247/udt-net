@@ -38,8 +38,8 @@
 
 using namespace Udt;
 
-CongestionPacket::CongestionPacket(CPacket* packet, bool deletePacket)
-	: ControlPacket(packet, deletePacket)
+CongestionPacket::CongestionPacket(const CPacket* packet)
+	: ControlPacket(packet)
 {
 }
 

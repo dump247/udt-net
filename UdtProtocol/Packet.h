@@ -65,6 +65,8 @@ namespace Udt
 		/// </param>
 		Packet(CPacket* packet, bool deletePacket);
 
+		Packet(const CPacket* packet);
+
 	public:
 		virtual ~Packet(void);
 

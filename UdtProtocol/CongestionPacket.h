@@ -44,7 +44,7 @@ namespace Udt
 	public ref class CongestionPacket : public ControlPacket
 	{
 	internal:
-		CongestionPacket(CPacket* packet, bool deletePacket);
+		CongestionPacket(const CPacket* packet);
 
 		literal int TypeCode = 4;
 

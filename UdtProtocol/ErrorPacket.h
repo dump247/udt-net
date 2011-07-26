@@ -44,7 +44,7 @@ namespace Udt
 	public ref class ErrorPacket : public ControlPacket
 	{
 	internal:
-		ErrorPacket(CPacket* packet, bool deletePacket);
+		ErrorPacket(const CPacket* packet);
 
 		literal int TypeCode = 8;
 

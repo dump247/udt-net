@@ -44,7 +44,7 @@ namespace Udt
 	public ref class KeepAlivePacket : public ControlPacket
 	{
 	internal:
-		KeepAlivePacket(CPacket* packet, bool deletePacket);
+		KeepAlivePacket(const CPacket* packet);
 
 		literal int TypeCode = 1;
 

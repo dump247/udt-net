@@ -45,6 +45,7 @@ namespace Udt
 	{
 	internal:
 		ControlPacket(CPacket* packet, bool deletePacket);
+		ControlPacket(const CPacket* packet);
 
 	public:
 		virtual ~ControlPacket(void);

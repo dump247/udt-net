@@ -39,8 +39,8 @@
 using namespace Udt;
 using namespace System;
 
-DataPacket::DataPacket(CPacket* packet, bool deletePacket)
-	: Packet(packet, deletePacket), _capacity(packet->getLength())
+DataPacket::DataPacket(const CPacket* packet)
+	: Packet(packet), _capacity(packet->getLength())
 {
 }
 

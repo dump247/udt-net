@@ -38,8 +38,8 @@
 
 using namespace Udt;
 
-ShutdownPacket::ShutdownPacket(CPacket* packet, bool deletePacket)
-	: ControlPacket(packet, deletePacket)
+ShutdownPacket::ShutdownPacket(const CPacket* packet)
+	: ControlPacket(packet)
 {
 }
 

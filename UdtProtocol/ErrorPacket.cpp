@@ -38,8 +38,8 @@
 
 using namespace Udt;
 
-ErrorPacket::ErrorPacket(CPacket* packet, bool deletePacket)
-	: ControlPacket(packet, deletePacket)
+ErrorPacket::ErrorPacket(const CPacket* packet)
+	: ControlPacket(packet)
 {
 }
 

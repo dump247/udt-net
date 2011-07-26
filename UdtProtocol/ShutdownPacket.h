@@ -44,7 +44,7 @@ namespace Udt
 	public ref class ShutdownPacket : public ControlPacket
 	{
 	internal:
-		ShutdownPacket(CPacket* packet, bool deletePacket);
+		ShutdownPacket(const CPacket* packet);
 
 		literal int TypeCode = 5;
 

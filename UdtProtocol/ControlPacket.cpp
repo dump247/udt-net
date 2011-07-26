@@ -43,6 +43,11 @@ ControlPacket::ControlPacket(CPacket* packet, bool deletePacket)
 {
 }
 
+ControlPacket::ControlPacket(const CPacket* packet)
+	: Packet(packet)
+{
+}
+
 ControlPacket::~ControlPacket(void)
 {
 }
