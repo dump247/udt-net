@@ -44,7 +44,6 @@ KeepAlivePacket::KeepAlivePacket(const CPacket* packet)
 }
 
 KeepAlivePacket::KeepAlivePacket(void)
-	: ControlPacket(new CPacket(), true)
 {
 	_packet->pack(TypeCode, NULL, NULL);
 }

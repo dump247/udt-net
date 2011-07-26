@@ -88,8 +88,8 @@ Packet^ Packet::Wrap(const CPacket* packet)
 	return wrapper;
 }
 
-Packet::Packet(CPacket* packet, bool deletePacket)
-	: _packet(packet), _deletePacket(deletePacket)
+Packet::Packet()
+	: _packet(new CPacket()), _deletePacket(true)
 {
 }
 

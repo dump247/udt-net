@@ -44,7 +44,7 @@ namespace Udt
 	public ref class ControlPacket : public Packet
 	{
 	internal:
-		ControlPacket(CPacket* packet, bool deletePacket);
+		ControlPacket(void);
 		ControlPacket(const CPacket* packet);
 
 	public:

@@ -38,8 +38,7 @@
 
 using namespace Udt;
 
-ControlPacket::ControlPacket(CPacket* packet, bool deletePacket)
-	: Packet(packet, deletePacket)
+ControlPacket::ControlPacket(void)
 {
 }
 

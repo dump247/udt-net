@@ -44,7 +44,6 @@ CongestionPacket::CongestionPacket(const CPacket* packet)
 }
 
 CongestionPacket::CongestionPacket(void)
-	: ControlPacket(new CPacket(), true)
 {
 	_packet->pack(TypeCode, NULL, NULL);
 }

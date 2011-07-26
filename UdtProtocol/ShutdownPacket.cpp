@@ -44,7 +44,6 @@ ShutdownPacket::ShutdownPacket(const CPacket* packet)
 }
 
 ShutdownPacket::ShutdownPacket(void)
-	: ControlPacket(new CPacket(), true)
 {
-	_packet->pack(TypeCode, NULL, NULL);
+	_packet->pack(TypeCode);
 }

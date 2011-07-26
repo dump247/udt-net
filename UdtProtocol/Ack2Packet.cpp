@@ -44,7 +44,6 @@ Ack2Packet::Ack2Packet(const CPacket* packet)
 }
 
 Ack2Packet::Ack2Packet(void)
-	: ControlPacket(new CPacket(), true)
 {
 	int seqNo = 0;
 	_packet->pack(TypeCode, &seqNo);

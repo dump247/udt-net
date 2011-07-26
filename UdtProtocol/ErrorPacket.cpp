@@ -44,14 +44,12 @@ ErrorPacket::ErrorPacket(const CPacket* packet)
 }
 
 ErrorPacket::ErrorPacket(void)
-	: ControlPacket(new CPacket(), true)
 {
 	int errorCode = 0;
 	_packet->pack(TypeCode, &errorCode, NULL);
 }
 
 ErrorPacket::ErrorPacket(int errorCode)
-	: ControlPacket(new CPacket(), true)
 {
 	_packet->pack(TypeCode, &errorCode, NULL);
 }

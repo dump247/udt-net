@@ -45,7 +45,7 @@ DataPacket::DataPacket(const CPacket* packet)
 }
 
 DataPacket::DataPacket(void)
-	: Packet(new CPacket(), true), _capacity(0)
+	: _capacity(0)
 {
 }
 

@@ -55,16 +55,7 @@ namespace Udt
 
 		static Packet^ Wrap(const CPacket* packet);
 
-		/// <summary>
-		/// Initialize a new instance.
-		/// </summary>
-		/// <param name="packet">Native packet to wrap.</param>
-		/// <param name="deletePacket">
-		/// True to delete the native <paramref name="packet"/> when this object
-		/// is disposed.
-		/// </param>
-		Packet(CPacket* packet, bool deletePacket);
-
+		Packet(void);
 		Packet(const CPacket* packet);
 
 	public:
