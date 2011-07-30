@@ -186,6 +186,7 @@
     <ClCompile Include="ControlPacket.cpp" />
     <ClCompile Include="DataPacket.cpp" />
     <ClCompile Include="ErrorPacket.cpp" />
+    <ClCompile Include="ICongestionControlFactory.cpp" />
     <ClCompile Include="KeepAlivePacket.cpp" />
     <ClCompile Include="LocalTraceInfo.cpp" />
     <ClCompile Include="Message.cpp" />
@@ -216,6 +217,7 @@
     <ClInclude Include="ControlPacket.h" />
     <ClInclude Include="DataPacket.h" />
     <ClInclude Include="ErrorPacket.h" />
+    <ClInclude Include="ICongestionControlFactory.h" />
     <ClInclude Include="KeepAlivePacket.h" />
     <ClInclude Include="LocalTraceInfo.h" />
     <ClInclude Include="Message.h" />

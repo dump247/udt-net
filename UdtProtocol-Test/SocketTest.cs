@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 using NUnit.Framework;
 using System.IO;
+using Moq;
 
 namespace UdtProtocol_Test
 {
@@ -345,19 +346,20 @@ namespace UdtProtocol_Test
         [Test]
         public void Get_set_CongestionControl()
         {
+            var mock1 = new Mock<Udt.ICongestionControlFactory>();
+            var mock2 = new Mock<Udt.ICongestionControlFactory>();
+
             using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
             {
-                Udt.CongestionControl cc = new CongestionControlTester();
                 Assert.IsNull(socket.CongestionControl);
-                socket.CongestionControl = cc;
-                Assert.AreSame(cc, socket.CongestionControl);
+                socket.CongestionControl = mock1.Object;
+                Assert.AreSame(mock1.Object, socket.CongestionControl);
+                Assert.AreSame(mock1.Object, socket.GetSocketOption(Udt.SocketOptionName.CongestionControl));
 
-                Assert.AreSame(cc, socket.GetSocketOption(Udt.SocketOptionName.CongestionControl));
-                cc = new CongestionControlTester();
-                socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, cc);
-                Assert.AreSame(cc, socket.CongestionControl);
-                socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, cc);
-                Assert.AreSame(cc, socket.CongestionControl);
+                socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, mock2.Object);
+                Assert.AreSame(mock2.Object, socket.CongestionControl);
+                socket.SetSocketOption(Udt.SocketOptionName.CongestionControl, mock2.Object);
+                Assert.AreSame(mock2.Object, socket.CongestionControl);
             }
         }
 
@@ -705,6 +707,14 @@ namespace UdtProtocol_Test
 				}
 			}
 		}
+
+        private class CongestionControlFactoryTester : Udt.ICongestionControlFactory
+        {
+            public Udt.CongestionControl CreateCongestionControl()
+            {
+                return new CongestionControlTester();
+            }
+        }
 
         private class CongestionControlTester : Udt.CongestionControl
         {

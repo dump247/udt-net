@@ -931,12 +931,12 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, System::Object^ va
 
 				_congestionControl = nullptr;
 			}
-			else if (Udt::CongestionControl::typeid->IsAssignableFrom(value->GetType()))
+			else if (ICongestionControlFactory::typeid->IsAssignableFrom(value->GetType()))
 			{
-				Udt::CongestionControl^ ccValue = (Udt::CongestionControl^)value;
-				std::auto_ptr<CCCWrapperFactory> factory(new CCCWrapperFactory(ccValue));
+				ICongestionControlFactory^ ccValue = (ICongestionControlFactory^)value;
+				CCCWrapperFactory factory(ccValue);
 
-				if (UDT::ERROR == UDT::setsockopt(_socket, 0, (UDT::SOCKOPT)name, factory.get(), sizeof(CCCWrapperFactory)))
+				if (UDT::ERROR == UDT::setsockopt(_socket, 0, (UDT::SOCKOPT)name, &factory, sizeof(CCCWrapperFactory)))
 				{
 					throw Udt::SocketException::GetLastError(String::Concat("Error setting socket option ", name.ToString(), " to ", value->ToString(), "."));
 				}

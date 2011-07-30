@@ -30,26 +30,5 @@
  * POSSIBILITY OF SUCH DAMAGE.
  ****************************************************************/
 
-#pragma once
-
-#include <ccc.h>
-#include <vcclr.h>
-
-namespace Udt
-{
-	interface class ICongestionControlFactory;
-
-	class CCCWrapperFactory : public CCCVirtualFactory
-	{
-	private:
-		gcroot<ICongestionControlFactory^> _managedFactory;
-
-	public:
-
-		CCCWrapperFactory(ICongestionControlFactory^ managedFactory);
-		virtual ~CCCWrapperFactory(void);
-		
-		virtual CCC* create();
-		virtual CCCVirtualFactory* clone();
-	};
-}
+#include "StdAfx.h"
+#include "ICongestionControlFactory.h"

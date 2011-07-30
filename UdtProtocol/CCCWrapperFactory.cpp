@@ -31,15 +31,29 @@
  ****************************************************************/
 
 #include "StdAfx.h"
+
+#include "ICongestionControlFactory.h"
+
 #include "CCCWrapperFactory.h"
+#include "CCCWrapper.h"
 
 using namespace Udt;
 
-CCCWrapperFactory::CCCWrapperFactory(CongestionControl^ wrapped)
+CCCWrapperFactory::CCCWrapperFactory(ICongestionControlFactory^ managedFactory)
+	: _managedFactory(managedFactory)
 {
-	_wrapped = wrapped;
 }
 
 CCCWrapperFactory::~CCCWrapperFactory(void)
 {
+}
+
+CCC* CCCWrapperFactory::create()
+{
+	return new CCCWrapper(_managedFactory->CreateCongestionControl());
+}
+
+CCCVirtualFactory* CCCWrapperFactory::clone()
+{
+	return new CCCWrapperFactory(_managedFactory);
 }

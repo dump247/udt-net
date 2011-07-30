@@ -38,16 +38,17 @@ using namespace Udt;
 using namespace System;
 
 CCCWrapper::CCCWrapper(Udt::CongestionControl^ wrapped)
+	: _wrapped(nullptr)
 {
+	if (wrapped->_cccWrapper != NULL) throw gcnew InvalidOperationException("Congestion control object already in use. Can not reuse congestion control objects.");
+	if (wrapped->IsDisposed) throw gcnew InvalidOperationException("Invalid congestion control object. Object is disposed.");
+
 	_wrapped = wrapped;
 	_wrapped->_cccWrapper = this;
 }
 
 CCCWrapper::~CCCWrapper(void)
 {
-	_wrapped->_cccWrapper = NULL;
-	delete _wrapped;
-	_wrapped = nullptr;
 }
 
 void CCCWrapper::onPktReceived(const CPacket* packet)

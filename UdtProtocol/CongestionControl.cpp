@@ -40,122 +40,83 @@ using namespace Udt;
 using namespace System;
 
 CongestionControl::CongestionControl(void)
+	: _cccWrapper(NULL), _isDisposed(false)
 {
-	_cccWrapper = NULL;
+}
+
+void CongestionControl::AssertNotDisposed()
+{
+	if (this->IsDisposed) throw gcnew ObjectDisposedException(this->ToString());
 }
 
 void CongestionControl::SetAckTimer(System::TimeSpan value)
 {
-	if (_cccWrapper != NULL)
-	{
-		_cccWrapper->setACKTimer(value);
-	}
+	AssertNotDisposed();
+	_cccWrapper->setACKTimer(value);
 }
 
 void CongestionControl::SetAckInterval(int value)
 {
-	if (_cccWrapper != NULL)
-	{
-		_cccWrapper->setACKInterval(value);
-	}
+	AssertNotDisposed();
+	_cccWrapper->setACKInterval(value);
 }
 
 void CongestionControl::SetReadTimeout(System::TimeSpan value)
 {
-	if (_cccWrapper != NULL)
-	{
-		_cccWrapper->setRTO(value);
-	}
+	AssertNotDisposed();
+	_cccWrapper->setRTO(value);
 }
 
 TraceInfo^ CongestionControl::PerformanceInfo::get(void)
 {
-	if (_cccWrapper != NULL)
-	{
-		return _cccWrapper->getPerfInfo();
-	}
-	else
-	{
-		return gcnew TraceInfo();
-	}
+	AssertNotDisposed();
+	return _cccWrapper->getPerfInfo();
 }
 
 void CongestionControl::PacketSendPeriod::set(System::TimeSpan value)
 {
-	if (_cccWrapper != NULL)
-	{
-		_cccWrapper->setPacketSendPeriod(value);
-	}
+	AssertNotDisposed();
+	_cccWrapper->setPacketSendPeriod(value);
 }
 
 System::TimeSpan CongestionControl::PacketSendPeriod::get(void)
 {
-	if (_cccWrapper != NULL)
-	{
-		return _cccWrapper->getPacketSendPeriod();
-	}
-	else
-	{
-		return System::TimeSpan::Zero;
-	}
+	AssertNotDisposed();
+	return _cccWrapper->getPacketSendPeriod();
 }
 
 void CongestionControl::WindowSize::set(int value)
 {
-	if (_cccWrapper != NULL)
-	{
-		_cccWrapper->setWindowSize(value);
-	}
+	AssertNotDisposed();
+	_cccWrapper->setWindowSize(value);
 }
 
 int CongestionControl::WindowSize::get(void)
 {
-	if (_cccWrapper != NULL)
-	{
-		return _cccWrapper->getWindowSize();
-	}
-	else
-	{
-		return 0;
-	}
+	AssertNotDisposed();
+	return _cccWrapper->getWindowSize();
 }
 
 void CongestionControl::MaxPacketSize::set(int value)
 {
-	if (_cccWrapper != NULL)
-	{
-		_cccWrapper->setMaxPacketSize(value);
-	}
+	AssertNotDisposed();
+	_cccWrapper->setMaxPacketSize(value);
 }
 
 int CongestionControl::MaxPacketSize::get(void)
 {
-	if (_cccWrapper != NULL)
-	{
-		return _cccWrapper->getMaxPacketSize();
-	}
-	else
-	{
-		return 0;
-	}
+	AssertNotDisposed();
+	return _cccWrapper->getMaxPacketSize();
 }
 
 void CongestionControl::RoundtripTime::set(System::TimeSpan value)
 {
-	if (_cccWrapper != NULL)
-	{
-		_cccWrapper->setRoundTripTime(value);
-	}
+	AssertNotDisposed();
+	_cccWrapper->setRoundTripTime(value);
 }
 
 System::TimeSpan CongestionControl::RoundtripTime::get(void)
 {
-	if (_cccWrapper != NULL)
-	{
-		return _cccWrapper->getRoundTripTime();
-	}
-	else
-	{
-		return System::TimeSpan::Zero;
-	}
+	AssertNotDisposed();
+	return _cccWrapper->getRoundTripTime();
 }

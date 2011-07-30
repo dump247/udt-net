@@ -87,6 +87,9 @@
     <ClCompile Include="Ack2Packet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ICongestionControlFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCCWrapper.h">
@@ -168,6 +171,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ack2Packet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ICongestionControlFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

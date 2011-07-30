@@ -43,6 +43,7 @@ namespace Udt
 	{
 	internal:
 		CCCWrapper* _cccWrapper;
+		bool _isDisposed;
 
 	protected:
 		CongestionControl(void);
@@ -50,6 +51,8 @@ namespace Udt
 	public:
 		virtual void Initialize() { }
 		virtual void Close() { }
+
+		property bool IsDisposed { bool get(void) { return _isDisposed; } }
 
 		[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
 			"Microsoft.Naming",
@@ -63,6 +66,8 @@ namespace Udt
 		virtual void ProcessCustomMessage(Packet^ packet) { }
 
 	protected:
+
+		void AssertNotDisposed();
 
 		[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
 			"Microsoft.Naming",

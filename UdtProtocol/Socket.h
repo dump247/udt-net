@@ -35,13 +35,14 @@
 #include "Message.h"
 #include "TraceInfo.h"
 #include "SocketOptionName.h"
-#include "CongestionControl.h"
 #include "SocketException.h"
 #include "StdFileStream.h"
 #include <udt.h>
 
 namespace Udt
 {
+	interface class ICongestionControlFactory;
+
 	/// <summary>
 	/// Interface to a UDT socket.
 	/// </summary>
@@ -51,7 +52,7 @@ namespace Udt
 		UDTSOCKET _socket;
 		System::Net::Sockets::AddressFamily _addressFamily;
 		System::Net::Sockets::SocketType _socketType;
-		CongestionControl^ _congestionControl;
+		ICongestionControlFactory^ _congestionControl;
 
 		Socket(UDTSOCKET socket, System::Net::Sockets::AddressFamily family, System::Net::Sockets::SocketType type);
 
@@ -537,14 +538,22 @@ namespace Udt
 			void set(int value) { SetSocketOptionInt32(Udt::SocketOptionName::MaxWindowSize, value); }
 		}
 
-		property Udt::CongestionControl^ CongestionControl
+		/// <summary>
+		/// Get or set the custom congestion control algorithm for this socket
+		/// or null to use the default.
+		/// </summary>
+		/// <remarks>
+		/// The custom congestion control algorithm will be passed to any
+		/// sockets accepted by this socket.
+		/// </remarks>
+		property ICongestionControlFactory^ CongestionControl
 		{
-			Udt::CongestionControl^ get(void)
+			ICongestionControlFactory^ get(void)
 			{
-				return (Udt::CongestionControl^)GetSocketOption(Udt::SocketOptionName::CongestionControl);
+				return (ICongestionControlFactory^)GetSocketOption(Udt::SocketOptionName::CongestionControl);
 			}
 
-			void set(Udt::CongestionControl^ value)
+			void set(ICongestionControlFactory^ value)
 			{
 				SetSocketOption(Udt::SocketOptionName::CongestionControl, value);
 			}

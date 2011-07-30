@@ -32,24 +32,31 @@
 
 #pragma once
 
-#include <ccc.h>
-#include <vcclr.h>
-
 namespace Udt
 {
-	interface class ICongestionControlFactory;
+	ref class CongestionControl;
+	ref class Socket;
 
-	class CCCWrapperFactory : public CCCVirtualFactory
+	/// <summary>
+	/// Factory that creates <see cref="CongestionControl"/> instances for a
+	/// <see cref="Udt::Socket"/>.
+	/// </summary>
+	/// <remarks>
+	/// <see cref="CreateCongestionControl"/> must return a new instance every
+	/// time it is invoked. If the same instance returns the same instance more
+	/// than once, the result is undefined behavior.
+	/// </remarks>
+	public interface class ICongestionControlFactory
 	{
-	private:
-		gcroot<ICongestionControlFactory^> _managedFactory;
-
-	public:
-
-		CCCWrapperFactory(ICongestionControlFactory^ managedFactory);
-		virtual ~CCCWrapperFactory(void);
-		
-		virtual CCC* create();
-		virtual CCCVirtualFactory* clone();
+		/// <summary>
+		/// Create a new <see cref="CongestionControl"/> instance.
+		/// </summary>
+		/// <remarks>
+		/// This method must return a new instance every time it is invoked.
+		/// If the same instance returns the same instance more than once,
+		/// the result is undefined behavior.
+		/// </remarks>
+		/// <returns>New congestion control object.</returns>
+		CongestionControl^ CreateCongestionControl();
 	};
 }
