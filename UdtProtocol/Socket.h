@@ -54,7 +54,7 @@ namespace Udt
 		System::Net::Sockets::SocketType _socketType;
 		ICongestionControlFactory^ _congestionControl;
 
-		Socket(UDTSOCKET socket, System::Net::Sockets::AddressFamily family, System::Net::Sockets::SocketType type);
+		Socket(UDTSOCKET socket, System::Net::Sockets::AddressFamily family, System::Net::Sockets::SocketType type, ICongestionControlFactory^ congestionControl);
 
 		static Socket(void)
 		{

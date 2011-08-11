@@ -126,11 +126,12 @@ void ToSockAddr(System::Net::IPAddress^ address, int port, sockaddr_storage& soc
 	}
 }
 
-Udt::Socket::Socket(UDTSOCKET socket, System::Net::Sockets::AddressFamily family, System::Net::Sockets::SocketType type)
+Udt::Socket::Socket(UDTSOCKET socket, System::Net::Sockets::AddressFamily family, System::Net::Sockets::SocketType type, ICongestionControlFactory^ congestionControl)
 {
 	_socket = socket;
 	_addressFamily = family;
 	_socketType = type;
+	_congestionControl = congestionControl;
 }
 
 Udt::Socket::Socket(System::Net::Sockets::AddressFamily family, System::Net::Sockets::SocketType type)
@@ -260,7 +261,7 @@ Udt::Socket^ Udt::Socket::Accept()
 	if (client == UDT::INVALID_SOCK)
 		throw Udt::SocketException::GetLastError("Error accepting new connection.");
 
-	return gcnew Socket(client, _addressFamily, _socketType);
+	return gcnew Socket(client, _addressFamily, _socketType, _congestionControl);
 }
 
 void Udt::Socket::Connect(System::String^ host, int port)
