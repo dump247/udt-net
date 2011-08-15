@@ -91,12 +91,6 @@ namespace Udt
 
 	public:
 
-		static void Cleanup()
-		{
-			if (UDT::ERROR == UDT::cleanup())
-				throw SocketException::GetLastError("Error in UDT cleanup");
-		}
-
 		/// <summary>
 		/// Timeout value that indicates infinite.
 		/// </summary>
