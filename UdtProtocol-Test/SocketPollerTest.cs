@@ -99,6 +99,9 @@ namespace UdtProtocol_Test
                 Assert.IsTrue(poller.Wait(TimeSpan.FromSeconds(1)));
                 CollectionAssert.IsEmpty(poller.WriteSockets);
                 CollectionAssert.AreEqual(new[] { socket }, poller.ReadSockets);
+
+                Udt.Socket acceptedSocket = socket.Accept();
+                acceptedSocket.Dispose();
                 doneEvent.Set();
 
                 Assert.IsFalse(poller.Wait(TimeSpan.Zero));
