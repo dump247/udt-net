@@ -154,7 +154,7 @@ void StdFileStream::CheckLastError(const wchar_t* path)
 	{
 		throw gcnew FileNotFoundException("File not found.", gcnew String(path));
 	}
-	else if (errno = EINVAL)
+	else if (errno == EINVAL)
 	{
 		throw gcnew ArgumentException(String::Format("Invalid path value.{0}Value: {1}", Environment::NewLine, gcnew String(path)), "path");
 	}
