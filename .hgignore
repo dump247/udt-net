@@ -9,3 +9,4 @@ bin/*
 packages/*/**
 ipch/
 *.aps
+TestResult.xml

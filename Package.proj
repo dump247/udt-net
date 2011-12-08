@@ -19,6 +19,7 @@ in a zip file named UdtProtocol-[Version].zip.
 		
 	<PropertyGroup>
 		<Version></Version>
+		<NUnitHome>C:\Program Files (x86)\NUnit 2.5.10</NUnitHome>
 	</PropertyGroup>
 		
 	<Target Name="Package"
@@ -71,11 +72,15 @@ in a zip file named UdtProtocol-[Version].zip.
 				 Targets="Clean;Build"
 				 Properties="Configuration=Release; Platform=Win32"
 				 ToolsVersion="4.0" />
+				 
+		<Exec Command="&quot;$(NUnitHome)\bin\net-2.0\nunit-console-x86.exe&quot; &quot;$(MSBuildProjectDirectory)\UdtProtocol-Test\bin\x86\Release\UdtProtocol-Test.dll&quot;"/>
 		
 		<MSBuild Projects="$(MSBuildProjectDirectory)\UdtProtocol.sln"
 				 Targets="Clean;Build"
 				 Properties="Configuration=Release; Platform=x64"
 				 ToolsVersion="4.0" />
+				 
+		<Exec Command="&quot;$(NUnitHome)\bin\net-2.0\nunit-console.exe&quot; &quot;$(MSBuildProjectDirectory)\UdtProtocol-Test\bin\x64\Release\UdtProtocol-Test.dll&quot;"/>
 				 
 	</Target>
 	
