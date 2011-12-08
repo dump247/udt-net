@@ -130,7 +130,7 @@ bool SocketPoller::Wait(System::TimeSpan timeout)
 
 	if (writeSockets.size() > 0)
 	{
-		List<Socket^>^ socketList = GetSockets(readSockets);
+		List<Socket^>^ socketList = GetSockets(writeSockets);
 	
 		if (socketList->Count > 0)
 		{
