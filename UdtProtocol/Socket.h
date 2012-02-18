@@ -161,6 +161,44 @@ namespace Udt
 		void Bind(System::Net::IPEndPoint^ endPoint);
 
 		/// <summary>
+		/// Bind directly to an existing UDP socket.
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// This is useful for firewall traversing in certain situations:
+		/// <list type="number">
+		/// <item><description>
+		/// A UDP socket is created and its address is learned from a name server,
+		/// there is no need to close the UDP socket and open a UDT socket on the
+		/// same address again
+		/// </description></item>
+		/// <item><description>
+		/// For certain firewalls, especially some on local system, the port mapping
+		/// may be changed or the "hole" may be closed when a UDP socket is closed
+		/// and reopened, thus it is necessary to use the UDP socket directly in UDT.
+		/// </description></item>
+		/// </list>
+		/// </para>
+		/// <para>
+		/// Use this form of bind with caution, as it violates certain programming
+		/// rules regarding code robustness. Once <paramref name="udpSocket"/> is
+		/// passed to UDT, it MUST NOT be touched again. DO NOT use this unless
+		/// you clearly understand how the related systems work.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="System::ArgumentNullException">
+		/// If <paramref name="udpSocket"/> is a null reference
+		/// </exception>
+		/// <exception cref="System::ArgumentException">
+		/// <see cref="System::Net::Sockets::Socket::ProtocolType"/> is not
+		/// <c>Udp</c> for <paramref name="udpSocket"/>
+		/// </exception>
+		/// <exception cref="Udt::SocketException">
+		/// If an error occurs binding the socket (i.e. the socket is already bound, etc).
+		/// </exception>
+		void Bind(System::Net::Sockets::Socket^ udpSocket);
+
+		/// <summary>
 		/// Places the socket in a listening state.
 		/// </summary>
 		/// <exception cref="System::ArgumentOutOfRangeException">

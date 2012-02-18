@@ -270,7 +270,7 @@ namespace UdtProtocol_Test
             Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream);
 
             // endPoint
-            ArgumentException ex = Assert.Throws<ArgumentNullException>(() => socket.Bind(null));
+            ArgumentException ex = Assert.Throws<ArgumentNullException>(() => socket.Bind((IPEndPoint)null));
             Assert.AreEqual("endPoint", ex.ParamName);
 
             // address type different from family passed to constructor

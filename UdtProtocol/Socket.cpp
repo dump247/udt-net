@@ -50,6 +50,12 @@ using namespace System::Net::Sockets;
 using namespace System::Collections::Generic;
 using namespace System::Globalization;
 
+#ifdef _WIN64
+#define INTPTR_TO_UDTSOCKET(ptr) (ptr.ToInt64())
+#else
+#define INTPTR_TO_UDTSOCKET(ptr) (ptr.ToInt32())
+#endif
+
 void ToTimeVal(TimeSpan ts, timeval& tv)
 {
 	__int64 ticks = ts.Ticks;
@@ -239,6 +245,20 @@ void Udt::Socket::Bind(IPEndPoint^ endPoint)
 		throw gcnew ArgumentException(String::Concat("Address must be same as socket address family (", _addressFamily, ")."), "endPoint");
 
 	Bind(endPoint->Address, endPoint->Port);
+}
+
+void Udt::Socket::Bind(System::Net::Sockets::Socket^ udpSocket)
+{
+	if (udpSocket == nullptr)
+		throw gcnew ArgumentNullException("udpSocket");
+	
+	if (udpSocket->ProtocolType != ProtocolType::Udp)
+		throw gcnew ArgumentException(String::Concat("Socket must be a UDP Socket. Socket is ", udpSocket->ProtocolType), "udpSocket");
+
+	if (UDT::ERROR == UDT::bind(_socket, INTPTR_TO_UDTSOCKET(udpSocket->Handle)))
+	{
+		throw Udt::SocketException::GetLastError("Error binding to existing UDP socket.");
+	}
 }
 
 void Udt::Socket::Listen(int backlog)
