@@ -590,16 +590,14 @@ __int64 Udt::Socket::SendFile(System::String^ fileName, __int64 offset, __int64 
 	//}
 
 	FILE* streamPtr = _wfsopen(file_name_ptr, L"rbN", _SH_DENYRW); // ifs will close handle
+	if (streamPtr == NULL) StdFileStream::CheckLastError(file_name_ptr);
 	std::fstream ifs(streamPtr);
 	
 	if (count < 0)
 	{
-		if (_fseeki64(streamPtr, offset, SEEK_END))
-		{
-			throw gcnew System::IO::IOException("Seek failed. Unable to determine file length.");
-		}
-
+		_fseeki64(streamPtr, 0, SEEK_END))
 		count = _ftelli64(streamPtr) - offset;
+		if (count < 0) throw gcnew ArgumentOutOfRangeException("offset", offset, "Value is greater than the length of the file.");
 	}
 
 	int64_t sent = UDT::sendfile(_socket, ifs, offset, count);

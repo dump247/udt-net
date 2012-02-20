@@ -50,7 +50,6 @@ namespace Udt
 		std::fstream* _stdStream;
 		FILE* _streamPtr;
 
-		static void CheckLastError(const wchar_t* path);
 		static void CheckFileNotExists(const wchar_t* path, int shareFlag);
 
 		void Init(System::String^ path, System::IO::FileMode mode, System::IO::FileAccess access, System::IO::FileShare share);
@@ -65,6 +64,7 @@ namespace Udt
 		
 	internal:
 
+		static void CheckLastError(const wchar_t* path);
 		std::fstream& LoadStdStream(void);
 
 	public:
