@@ -578,12 +578,28 @@ __int64 Udt::Socket::SendFile(System::String^ fileName, __int64 offset, __int64 
 
 	cli::pin_ptr<const wchar_t> file_name_pin = PtrToStringChars(fileName);
 	const wchar_t* file_name_ptr = file_name_pin;
-	std::fstream ifs(file_name_ptr, std::ios::in | std::ios::binary);
 
+	// In VC10, fstream tellg has a bug. Should be fixed in VC11.
+	// http://connect.microsoft.com/VisualStudio/feedback/details/627639/std-fstream-use-32-bit-int-as-pos-type-even-on-x64-platform
+	//std::fstream ifs(file_name_ptr, std::ios::in | std::ios::binary);
+
+	//if (count < 0)
+	//{
+	//	ifs.seekg(0, std::ios::end);
+	//	count = ifs.tellg() - offset;
+	//}
+
+	FILE* streamPtr = _wfsopen(file_name_ptr, L"rbN", _SH_DENYRW); // ifs will close handle
+	std::fstream ifs(streamPtr);
+	
 	if (count < 0)
 	{
-		ifs.seekg(0, std::ios::end);
-		count = ifs.tellg() - offset;
+		if (_fseeki64(streamPtr, offset, SEEK_END))
+		{
+			throw gcnew System::IO::IOException("Seek failed. Unable to determine file length.");
+		}
+
+		count = _ftelli64(streamPtr) - offset;
 	}
 
 	int64_t sent = UDT::sendfile(_socket, ifs, offset, count);

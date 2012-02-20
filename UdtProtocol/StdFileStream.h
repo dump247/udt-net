@@ -48,6 +48,7 @@ namespace Udt
 		bool _canWrite;
 		bool _canSeek;
 		std::fstream* _stdStream;
+		FILE* _streamPtr;
 
 		static void CheckLastError(const wchar_t* path);
 		static void CheckFileNotExists(const wchar_t* path, int shareFlag);

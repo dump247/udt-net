@@ -240,6 +240,53 @@ namespace UdtProtocol_Test
 			}
 		}
 
+        /// <summary>
+        /// Addressing 'Udt.StdFileStream.Length is not correct when the file size is 2G+'
+        /// http://code.google.com/p/udt-net/issues/detail?id=7
+        /// </summary>
+        [Test]
+        public void Issue7_Length_of_long_file()
+        {
+            long size = (1024L * 1024L * 1024L * 2L) - 1;
+
+            using (StdFileStream fs = BuildFile(size))
+            {
+                Assert.AreEqual(size, fs.Position);
+                Assert.AreEqual(size, fs.Length);
+
+                fs.WriteByte(0);
+
+                // This was failing with a negative value
+                Assert.AreEqual(size + 1, fs.Position);
+                Assert.AreEqual(size + 1, fs.Length);
+            }
+        }
+
+        public StdFileStream BuildFile(long length)
+        {
+            string path = GetFile();
+            StdFileStream fs = new StdFileStream(path, FileMode.Open);
+
+            try
+            {
+                byte[] buffer = new byte[4096];
+                long remaining = length;
+
+                while (remaining > 0)
+                {
+                    fs.Write(buffer, 0, (int)Math.Min(remaining, buffer.Length));
+                    remaining -= buffer.Length;
+                }
+
+                return fs;
+            }
+            catch
+            {
+                fs.Close();
+                throw;
+            }
+        }
+
 		private string GetFile(string content = "")
 		{
 			string path = Path.GetTempFileName();

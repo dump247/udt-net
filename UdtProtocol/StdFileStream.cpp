@@ -76,8 +76,7 @@ void StdFileStream::Init(String^ path, FileMode mode, FileAccess access, FileSha
 
 	int shareFlag;
 	pin_ptr<const wchar_t> pathPin = PtrToStringChars(path);
-	FILE* streamPtr = NULL;
-
+	
 	switch (share)
 	{
 	case FileShare::Read:
@@ -103,34 +102,34 @@ void StdFileStream::Init(String^ path, FileMode mode, FileAccess access, FileSha
 	switch (mode)
 	{
 	case FileMode::CreateNew:
-		streamPtr = InitCreateNew(pathPin, access, shareFlag);
+		_streamPtr = InitCreateNew(pathPin, access, shareFlag);
 		break;
 		
 	case FileMode::Create:
-		streamPtr = InitCreate(pathPin, access, shareFlag);
+		_streamPtr = InitCreate(pathPin, access, shareFlag);
 		break;
 
 	case FileMode::Open:
-		streamPtr = InitOpen(pathPin, access, shareFlag);
+		_streamPtr = InitOpen(pathPin, access, shareFlag);
 		break;
 		
 	case FileMode::OpenOrCreate:
-		InitOpenOrCreate(pathPin, access, shareFlag);
+		_streamPtr = InitOpenOrCreate(pathPin, access, shareFlag);
 		break;
 		
 	case FileMode::Truncate:
-		streamPtr = InitTruncate(pathPin, access, shareFlag);
+		_streamPtr = InitTruncate(pathPin, access, shareFlag);
 		break;
 		
 	case FileMode::Append:
-		streamPtr = InitAppend(pathPin, access, shareFlag);
+		_streamPtr = InitAppend(pathPin, access, shareFlag);
 		break;
 
 	default:
 		throw gcnew ArgumentOutOfRangeException("mode", mode, "File mode is not supported.");
 	}
 
-	_stdStream = new std::fstream(streamPtr);
+	_stdStream = new std::fstream(_streamPtr);
 	_stdStream->exceptions(std::ios::failbit);
 }
 
@@ -145,6 +144,7 @@ StdFileStream::~StdFileStream(void)
 		_stdStream->close();
 		delete _stdStream;
 		_stdStream = NULL;
+		_streamPtr = NULL; // Handle is closed by _stdStream
 	}
 }
 
@@ -445,10 +445,17 @@ __int64 StdFileStream::Length::get(void)
 
 	try
 	{
-		std::streampos currentPos = _stdStream->tellg();
-		_stdStream->seekg(0, std::ios_base::end);
-		std::streampos length = _stdStream->tellg();
-		_stdStream->seekg(currentPos);
+		// In VC10, fstream tellg has a bug. Should be fixed in VC11.
+		// http://connect.microsoft.com/VisualStudio/feedback/details/627639/std-fstream-use-32-bit-int-as-pos-type-even-on-x64-platform
+		//std::streampos currentPos = _stdStream->tellg();
+		//_stdStream->seekg(0, std::ios_base::end);
+		//std::streampos length = _stdStream->tellg();
+		//_stdStream->seekg(currentPos);
+
+		__int64 currentPos = _ftelli64(_streamPtr);
+		_fseeki64(_streamPtr, 0, SEEK_END);
+		__int64 length = _ftelli64(_streamPtr);
+		_fseeki64(_streamPtr, currentPos, SEEK_SET);
 
 		return length;
 	}
@@ -464,7 +471,11 @@ __int64 StdFileStream::Position::get(void)
 
 	try
 	{
-		return _stdStream->tellg();
+		// In VC10, fstream tellg has a bug. Should be fixed in VC11.
+		// http://connect.microsoft.com/VisualStudio/feedback/details/627639/std-fstream-use-32-bit-int-as-pos-type-even-on-x64-platform
+		//return _stdStream->tellg();
+
+		return _ftelli64(_streamPtr);
 	}
 	catch (const std::exception& ex)
 	{
@@ -482,7 +493,12 @@ void StdFileStream::Position::set(__int64 value)
 
 	try
 	{
-		_stdStream->seekg(value);
+		if (_fseeki64(_streamPtr, value, SEEK_SET))
+			throw gcnew IOException("Seek failed");
+
+		// In VC10, fstream tellg has a bug. Should be fixed in VC11.
+		// http://connect.microsoft.com/VisualStudio/feedback/details/627639/std-fstream-use-32-bit-int-as-pos-type-even-on-x64-platform
+		//_stdStream->seekg(value);
 	}
 	catch (const std::exception& ex)
 	{
@@ -508,15 +524,30 @@ __int64 StdFileStream::Seek(__int64 offset, SeekOrigin origin)
 		switch (origin)
 		{
 		case SeekOrigin::Begin:
-			_stdStream->seekg(offset, std::ios_base::beg);
+			if (_fseeki64(_streamPtr, offset, SEEK_SET))
+				throw gcnew IOException("Seek failed");
+
+			// In VC10, fstream tellg has a bug. Should be fixed in VC11.
+			// http://connect.microsoft.com/VisualStudio/feedback/details/627639/std-fstream-use-32-bit-int-as-pos-type-even-on-x64-platform
+			//_stdStream->seekg(offset, std::ios_base::beg);
 			break;
 		
 		case SeekOrigin::End:
-			_stdStream->seekg(offset, std::ios_base::end);
+			if (_fseeki64(_streamPtr, offset, SEEK_END))
+				throw gcnew IOException("Seek failed");
+
+			// In VC10, fstream tellg has a bug. Should be fixed in VC11.
+			// http://connect.microsoft.com/VisualStudio/feedback/details/627639/std-fstream-use-32-bit-int-as-pos-type-even-on-x64-platform
+			//_stdStream->seekg(offset, std::ios_base::end);
 			break;
 
 		case SeekOrigin::Current:
-			_stdStream->seekg(offset, std::ios_base::cur);
+			if (_fseeki64(_streamPtr, offset, SEEK_CUR))
+				throw gcnew IOException("Seek failed");
+
+			// In VC10, fstream tellg has a bug. Should be fixed in VC11.
+			// http://connect.microsoft.com/VisualStudio/feedback/details/627639/std-fstream-use-32-bit-int-as-pos-type-even-on-x64-platform
+			//_stdStream->seekg(offset, std::ios_base::cur);
 			break;
 
 		default:
