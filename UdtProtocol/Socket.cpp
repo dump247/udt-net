@@ -38,6 +38,7 @@
 #include "Socket.h"
 #include "SocketException.h"
 #include "CCCWrapperFactory.h"
+#include "StdFileStream.h"
 
 #include <fstream>
 #include <iostream>
