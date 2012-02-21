@@ -596,7 +596,7 @@ __int64 Udt::Socket::SendFile(System::String^ fileName, __int64 offset, __int64 
 	
 	if (count < 0)
 	{
-		_fseeki64(streamPtr, 0, SEEK_END))
+		_fseeki64(streamPtr, 0, SEEK_END);
 		count = _ftelli64(streamPtr) - offset;
 		if (count < 0) throw gcnew ArgumentOutOfRangeException("offset", offset, "Value is greater than the length of the file.");
 	}
