@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReceiveFile", "ReceiveFile\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UdtProtocol-Test", "UdtProtocol-Test\UdtProtocol-Test.csproj", "{CF9918BA-989A-463B-BC64-02593041C9DD}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "udt", "..\udt.sdk.4.8.win32\udt4\win\udt.vcxproj", "{D84D100A-7C21-4CCB-B16E-0FB37137C16C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "udt", "..\udt.sdk.4.10\udt4\win\udt.vcxproj", "{D84D100A-7C21-4CCB-B16E-0FB37137C16C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

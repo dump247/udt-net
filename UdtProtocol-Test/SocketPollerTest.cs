@@ -44,7 +44,7 @@ namespace UdtProtocol_Test
                 Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream);
                 poller.AddSocket(socket);
                 socket.Dispose();
-                Assert.Throws<Udt.SocketException>(() => poller.RemoveSocket(socket));
+                poller.RemoveSocket(socket);
             }
         }
 
@@ -97,15 +97,15 @@ namespace UdtProtocol_Test
                 });
 
                 Assert.IsTrue(poller.Wait(TimeSpan.FromSeconds(1)));
-                CollectionAssert.IsEmpty(poller.WriteSockets);
+                CollectionAssert.AreEqual(new[] { socket }, poller.WriteSockets);
                 CollectionAssert.AreEqual(new[] { socket }, poller.ReadSockets);
 
                 Udt.Socket acceptedSocket = socket.Accept();
                 acceptedSocket.Dispose();
                 doneEvent.Set();
 
-                Assert.IsFalse(poller.Wait(TimeSpan.Zero));
-                CollectionAssert.IsEmpty(poller.WriteSockets);
+                Assert.IsTrue(poller.Wait(TimeSpan.Zero));
+                CollectionAssert.AreEqual(new[] { socket }, poller.WriteSockets);
                 CollectionAssert.IsEmpty(poller.ReadSockets);
             }
         }
