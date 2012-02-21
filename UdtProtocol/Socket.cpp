@@ -201,14 +201,12 @@ void Udt::Socket::Close(void)
 	if (_socket != UDT::INVALID_SOCK)
 	{
 		CongestionControl = nullptr;
+		_socket = UDT::INVALID_SOCK;
 
 		if (UDT::ERROR == UDT::close(_socket))
 		{
-			_socket = UDT::INVALID_SOCK;
 			throw Udt::SocketException::GetLastError("Error closing socket");
 		}
-
-		_socket = UDT::INVALID_SOCK;
 	}
 }
 
