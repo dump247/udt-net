@@ -50,9 +50,16 @@ namespace Udt
 	{
 	private:
 		UDTSOCKET _socket;
+		bool _isDisposed;
 		System::Net::Sockets::AddressFamily _addressFamily;
 		System::Net::Sockets::SocketType _socketType;
 		ICongestionControlFactory^ _congestionControl;
+
+		void AssertNotDisposed(void)
+		{
+			if (_isDisposed)
+				throw gcnew System::ObjectDisposedException(this->ToString());
+		}
 
 		Socket(UDTSOCKET socket, System::Net::Sockets::AddressFamily family, System::Net::Sockets::SocketType type, ICongestionControlFactory^ congestionControl);
 
@@ -589,6 +596,14 @@ namespace Udt
 			{
 				SetSocketOption(Udt::SocketOptionName::CongestionControl, value);
 			}
+		}
+
+		/// <summary>
+		/// Get true or false if this socket has been closed.
+		/// </summary>
+		property bool IsDisposed
+		{
+			bool get(void) { return _isDisposed; }
 		}
 	};
 }

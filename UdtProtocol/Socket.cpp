@@ -136,6 +136,7 @@ void ToSockAddr(System::Net::IPAddress^ address, int port, sockaddr_storage& soc
 Udt::Socket::Socket(UDTSOCKET socket, System::Net::Sockets::AddressFamily family, System::Net::Sockets::SocketType type, ICongestionControlFactory^ congestionControl)
 {
 	_socket = socket;
+	_isDisposed = false;
 	_addressFamily = family;
 	_socketType = type;
 	_congestionControl = congestionControl;
@@ -143,6 +144,7 @@ Udt::Socket::Socket(UDTSOCKET socket, System::Net::Sockets::AddressFamily family
 
 Udt::Socket::Socket(System::Net::Sockets::AddressFamily family, System::Net::Sockets::SocketType type)
 {
+	_isDisposed = false;
 	_addressFamily = family;
 	_socketType = type;
 
@@ -198,10 +200,10 @@ Udt::Socket::~Socket(void)
 
 void Udt::Socket::Close(void)
 {
-	if (_socket != UDT::INVALID_SOCK)
+	if (!_isDisposed)
 	{
 		CongestionControl = nullptr;
-		_socket = UDT::INVALID_SOCK;
+		_isDisposed = true;
 
 		if (UDT::ERROR == UDT::close(_socket))
 		{
@@ -212,6 +214,8 @@ void Udt::Socket::Close(void)
 
 void Udt::Socket::Bind(IPAddress^ address, int port)
 {
+	AssertNotDisposed();
+
 	if (address == nullptr)
 		throw gcnew ArgumentNullException("address");
 
@@ -248,6 +252,8 @@ void Udt::Socket::Bind(IPEndPoint^ endPoint)
 
 void Udt::Socket::Bind(System::Net::Sockets::Socket^ udpSocket)
 {
+	AssertNotDisposed();
+
 	if (udpSocket == nullptr)
 		throw gcnew ArgumentNullException("udpSocket");
 	
@@ -262,6 +268,8 @@ void Udt::Socket::Bind(System::Net::Sockets::Socket^ udpSocket)
 
 void Udt::Socket::Listen(int backlog)
 {
+	AssertNotDisposed();
+
 	if (backlog < 1)
 		throw gcnew ArgumentOutOfRangeException("backlog", backlog, "Value must be greater than 0.");
 
@@ -273,6 +281,8 @@ void Udt::Socket::Listen(int backlog)
 
 Udt::Socket^ Udt::Socket::Accept()
 {
+	AssertNotDisposed();
+
 	sockaddr_storage client_addr;
 	int client_addr_len = sizeof(client_addr);
 	UDTSOCKET client = UDT::accept(_socket, (sockaddr*)&client_addr, &client_addr_len);
@@ -293,6 +303,8 @@ void Udt::Socket::Connect(System::String^ host, int port)
 
 void Udt::Socket::Connect(System::Net::IPAddress^ address, int port)
 {
+	AssertNotDisposed();
+
 	if (address == nullptr)
 		throw gcnew ArgumentNullException("address");
 
@@ -403,7 +415,7 @@ void Udt::Socket::Select(
 	{
 		if (socket == nullptr)
 			throw gcnew ArgumentException("Value can not contain null reference.", "checkSockets");
-
+		
 		UDTSOCKET socketHandle = socket->_socket;
 
 		if (!socketMap->ContainsKey(socketHandle))
@@ -499,6 +511,8 @@ int Udt::Socket::Receive(cli::array<System::Byte>^ buffer)
 
 int Udt::Socket::Receive(cli::array<System::Byte>^ buffer, int offset, int size)
 {
+	AssertNotDisposed();
+
 	if (buffer == nullptr)
 		throw gcnew ArgumentNullException("buffer");
 
@@ -534,6 +548,8 @@ int Udt::Socket::Send(cli::array<System::Byte>^ buffer)
 
 int Udt::Socket::Send(cli::array<System::Byte>^ buffer, int offset, int size)
 {
+	AssertNotDisposed();
+
 	if (buffer == nullptr)
 		throw gcnew ArgumentNullException("buffer");
 
@@ -571,6 +587,8 @@ __int64 Udt::Socket::SendFile(System::String^ fileName, __int64 offset)
 
 __int64 Udt::Socket::SendFile(System::String^ fileName, __int64 offset, __int64 count)
 {
+	AssertNotDisposed();
+
 	if (fileName == nullptr) throw gcnew ArgumentNullException("fileName");
 	if (offset < 0) throw gcnew ArgumentOutOfRangeException("offset", offset, "Value must be greater than or equal to 0.");
 	if (count < -1) throw gcnew ArgumentOutOfRangeException("count", count, "Value must be greater than or equal to -1.");
@@ -616,6 +634,8 @@ __int64 Udt::Socket::SendFile(StdFileStream^ file)
 
 __int64 Udt::Socket::SendFile(StdFileStream^ file, __int64 count)
 {
+	AssertNotDisposed();
+
 	if (file == nullptr) throw gcnew ArgumentNullException("file");
 	if (!file->CanRead) throw gcnew ArgumentException("Stream does not support reading.", "file");
 
@@ -638,6 +658,8 @@ __int64 Udt::Socket::SendFile(StdFileStream^ file, __int64 count)
 
 __int64 Udt::Socket::ReceiveFile(System::String^ fileName, __int64 length)
 {
+	AssertNotDisposed();
+
 	if (fileName == nullptr) throw gcnew ArgumentNullException("fileName");
 	if (length < 0) throw gcnew ArgumentOutOfRangeException("length", length, "Value must be greater than or equal to 0.");
 
@@ -658,6 +680,8 @@ __int64 Udt::Socket::ReceiveFile(System::String^ fileName, __int64 length)
 
 __int64 Udt::Socket::ReceiveFile(StdFileStream^ file, __int64 length)
 {
+	AssertNotDisposed();
+
 	if (file == nullptr) throw gcnew ArgumentNullException("file");
 	if (!file->CanWrite) throw gcnew ArgumentException("Stream does not support writing.", "file");
 	if (length < 0) throw gcnew ArgumentOutOfRangeException("length", length, "Value must be greater than or equal to 0.");
@@ -680,6 +704,8 @@ TraceInfo^ Udt::Socket::GetPerformanceInfo()
 
 TraceInfo^ Udt::Socket::GetPerformanceInfo(bool clear)
 {
+	AssertNotDisposed();
+
 	UDT::TRACEINFO trace_info;
 
 	if (UDT::ERROR == UDT::perfmon(_socket, &trace_info, clear))
@@ -702,6 +728,8 @@ System::Net::Sockets::SocketType Udt::Socket::SocketType::get(void)
 
 System::Net::IPEndPoint^ Udt::Socket::LocalEndPoint::get(void)
 {
+	AssertNotDisposed();
+
 	sockaddr_storage local_addr;
 	int local_addr_len = sizeof(local_addr);
 
@@ -715,6 +743,8 @@ System::Net::IPEndPoint^ Udt::Socket::LocalEndPoint::get(void)
 
 System::Net::IPEndPoint^ Udt::Socket::RemoteEndPoint::get(void)
 {
+	AssertNotDisposed();
+
 	sockaddr_storage remote_addr;
 	int remote_addr_len = sizeof(remote_addr);
 
@@ -736,6 +766,8 @@ int Udt::Socket::SendMessage(cli::array<System::Byte>^ buffer)
 
 int Udt::Socket::SendMessage(cli::array<System::Byte>^ buffer, int offset, int size)
 {
+	AssertNotDisposed();
+
 	if (buffer == nullptr)
 		throw gcnew ArgumentNullException("buffer");
 
@@ -753,6 +785,8 @@ int Udt::Socket::SendMessage(cli::array<System::Byte>^ buffer, int offset, int s
 
 int Udt::Socket::SendMessage(Message^ message)
 {
+	AssertNotDisposed();
+
 	if (message == nullptr)
 		throw gcnew ArgumentNullException("message");
 
@@ -771,6 +805,8 @@ int Udt::Socket::ReceiveMessage(cli::array<System::Byte>^ buffer)
 
 int Udt::Socket::ReceiveMessage(cli::array<System::Byte>^ buffer, int offset, int size)
 {
+	AssertNotDisposed();
+
 	if (buffer == nullptr)
 		throw gcnew ArgumentNullException("buffer");
 
@@ -798,6 +834,8 @@ int Udt::Socket::ReceiveMessage(cli::array<System::Byte>^ buffer, int offset, in
 
 void Udt::Socket::SetSocketOptionInt32(Udt::SocketOptionName name, int value)
 {
+	AssertNotDisposed();
+
 	if (UDT::ERROR == UDT::setsockopt(_socket, 0, (UDT::SOCKOPT)name, &value, sizeof(int)))
 	{
 		throw Udt::SocketException::GetLastError(String::Concat("Error setting socket option ", name.ToString(), " to ", (Object^)value, "."));
@@ -806,6 +844,8 @@ void Udt::Socket::SetSocketOptionInt32(Udt::SocketOptionName name, int value)
 
 void Udt::Socket::SetSocketOptionInt64(Udt::SocketOptionName name, __int64 value)
 {
+	AssertNotDisposed();
+
 	if (UDT::ERROR == UDT::setsockopt(_socket, 0, (UDT::SOCKOPT)name, &value, sizeof(__int64)))
 	{
 		throw Udt::SocketException::GetLastError(String::Concat("Error setting socket option ", name.ToString(), " to ", (Object^)value, "."));
@@ -814,6 +854,8 @@ void Udt::Socket::SetSocketOptionInt64(Udt::SocketOptionName name, __int64 value
 
 void Udt::Socket::SetSocketOptionBoolean(Udt::SocketOptionName name, bool value)
 {
+	AssertNotDisposed();
+
 	if (UDT::ERROR == UDT::setsockopt(_socket, 0, (UDT::SOCKOPT)name, &value, sizeof(bool)))
 	{
 		throw Udt::SocketException::GetLastError(String::Concat("Error setting socket option ", name.ToString(), " to ", (Object^)value, "."));
@@ -1064,6 +1106,8 @@ System::Object^ Udt::Socket::GetSocketOption(Udt::SocketOptionName name)
 
 int Udt::Socket::GetSocketOptionInt32(Udt::SocketOptionName name)
 {
+	AssertNotDisposed();
+
 	int value;
 	int valueLen = sizeof(int);
 
@@ -1077,6 +1121,8 @@ int Udt::Socket::GetSocketOptionInt32(Udt::SocketOptionName name)
 
 __int64 Udt::Socket::GetSocketOptionInt64(Udt::SocketOptionName name)
 {
+	AssertNotDisposed();
+
 	__int64 value;
 	int valueLen = sizeof(__int64);
 
@@ -1090,6 +1136,8 @@ __int64 Udt::Socket::GetSocketOptionInt64(Udt::SocketOptionName name)
 
 bool Udt::Socket::GetSocketOptionBoolean(Udt::SocketOptionName name)
 {
+	AssertNotDisposed();
+
 	bool value;
 	int valueLen = sizeof(bool);
 

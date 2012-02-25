@@ -194,11 +194,10 @@ namespace UdtProtocol_Test
             Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream);
             socket.Dispose();
 
-            Udt.SocketException error = Assert.Throws<Udt.SocketException>(() =>
+            Assert.Throws<ObjectDisposedException>(() =>
             {
 				socket.Bind(IPAddress.Any, port);
             });
-            Assert.AreEqual(Udt.SocketError.InvalidSocket, error.SocketErrorCode);
         }
 
         /// <summary>
