@@ -445,13 +445,6 @@ __int64 StdFileStream::Length::get(void)
 
 	try
 	{
-		// In VC10, fstream tellg has a bug. Should be fixed in VC11.
-		// http://connect.microsoft.com/VisualStudio/feedback/details/627639/std-fstream-use-32-bit-int-as-pos-type-even-on-x64-platform
-		//std::streampos currentPos = _stdStream->tellg();
-		//_stdStream->seekg(0, std::ios_base::end);
-		//std::streampos length = _stdStream->tellg();
-		//_stdStream->seekg(currentPos);
-
 		__int64 currentPos = _ftelli64(_streamPtr);
 		_fseeki64(_streamPtr, 0, SEEK_END);
 		__int64 length = _ftelli64(_streamPtr);
@@ -471,10 +464,6 @@ __int64 StdFileStream::Position::get(void)
 
 	try
 	{
-		// In VC10, fstream tellg has a bug. Should be fixed in VC11.
-		// http://connect.microsoft.com/VisualStudio/feedback/details/627639/std-fstream-use-32-bit-int-as-pos-type-even-on-x64-platform
-		//return _stdStream->tellg();
-
 		return _ftelli64(_streamPtr);
 	}
 	catch (const std::exception& ex)
@@ -495,10 +484,6 @@ void StdFileStream::Position::set(__int64 value)
 	{
 		if (_fseeki64(_streamPtr, value, SEEK_SET))
 			throw gcnew IOException("Seek failed");
-
-		// In VC10, fstream tellg has a bug. Should be fixed in VC11.
-		// http://connect.microsoft.com/VisualStudio/feedback/details/627639/std-fstream-use-32-bit-int-as-pos-type-even-on-x64-platform
-		//_stdStream->seekg(value);
 	}
 	catch (const std::exception& ex)
 	{
@@ -526,28 +511,16 @@ __int64 StdFileStream::Seek(__int64 offset, SeekOrigin origin)
 		case SeekOrigin::Begin:
 			if (_fseeki64(_streamPtr, offset, SEEK_SET))
 				throw gcnew IOException("Seek failed");
-
-			// In VC10, fstream tellg has a bug. Should be fixed in VC11.
-			// http://connect.microsoft.com/VisualStudio/feedback/details/627639/std-fstream-use-32-bit-int-as-pos-type-even-on-x64-platform
-			//_stdStream->seekg(offset, std::ios_base::beg);
 			break;
 		
 		case SeekOrigin::End:
 			if (_fseeki64(_streamPtr, offset, SEEK_END))
 				throw gcnew IOException("Seek failed");
-
-			// In VC10, fstream tellg has a bug. Should be fixed in VC11.
-			// http://connect.microsoft.com/VisualStudio/feedback/details/627639/std-fstream-use-32-bit-int-as-pos-type-even-on-x64-platform
-			//_stdStream->seekg(offset, std::ios_base::end);
 			break;
 
 		case SeekOrigin::Current:
 			if (_fseeki64(_streamPtr, offset, SEEK_CUR))
 				throw gcnew IOException("Seek failed");
-
-			// In VC10, fstream tellg has a bug. Should be fixed in VC11.
-			// http://connect.microsoft.com/VisualStudio/feedback/details/627639/std-fstream-use-32-bit-int-as-pos-type-even-on-x64-platform
-			//_stdStream->seekg(offset, std::ios_base::cur);
 			break;
 
 		default:

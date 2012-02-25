@@ -48,6 +48,10 @@ namespace Udt
 		bool _canWrite;
 		bool _canSeek;
 		std::fstream* _stdStream;
+
+		// In VC10, fstream tellg has a bug. Should be fixed in VC11.
+		// So, we retain the FILE handle to perform seek/tell operations.
+		// http://connect.microsoft.com/VisualStudio/feedback/details/627639/std-fstream-use-32-bit-int-as-pos-type-even-on-x64-platform
 		FILE* _streamPtr;
 
 		static void CheckFileNotExists(const wchar_t* path, int shareFlag);
