@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup>
-    <UdtHome>..\..\udt.sdk.4.10\udt4</UdtHome>
+    <UdtHome>..\..\udt.sdk.4.11\udt4</UdtHome>
   </PropertyGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CFA7453B-8B9B-4112-AF04-F72C3D431100}</ProjectGuid>

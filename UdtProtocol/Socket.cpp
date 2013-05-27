@@ -260,7 +260,7 @@ void Udt::Socket::Bind(System::Net::Sockets::Socket^ udpSocket)
 	if (udpSocket->ProtocolType != ProtocolType::Udp)
 		throw gcnew ArgumentException(String::Concat("Socket must be a UDP Socket. Socket is ", udpSocket->ProtocolType), "udpSocket");
 
-	if (UDT::ERROR == UDT::bind(_socket, INTPTR_TO_UDTSOCKET(udpSocket->Handle)))
+	if (UDT::ERROR == UDT::bind2(_socket, INTPTR_TO_UDTSOCKET(udpSocket->Handle)))
 	{
 		throw Udt::SocketException::GetLastError("Error binding to existing UDP socket.");
 	}

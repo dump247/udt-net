@@ -112,8 +112,13 @@ bool SocketPoller::Wait(System::TimeSpan timeout)
 
 	int result = UDT::epoll_wait(_epollId, &readSockets, &writeSockets, (int64_t)timeout.TotalMilliseconds);
 
-	if (result < 0)
+	if (result < 0) {
+		if (UDT::getlasterror().getErrorCode() == CUDTException::ETIMEOUT) {
+			return false;
+		}
+
 		throw Udt::SocketException::GetLastError("Error waiting for socket epoll.");
+	}
 
 	if (result == 0)
 		return false;
