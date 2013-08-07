@@ -140,7 +140,7 @@ Udt::Socket::Socket(UDTSOCKET socket, System::Net::Sockets::AddressFamily family
 	_addressFamily = family;
 	_socketType = type;
 	_congestionControl = congestionControl;
-	_blockingSend = true;
+	_blockingSend = GetSocketOptionBoolean(Udt::SocketOptionName::BlockingSend);
 }
 
 Udt::Socket::Socket(System::Net::Sockets::AddressFamily family, System::Net::Sockets::SocketType type)
