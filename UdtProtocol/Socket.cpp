@@ -140,6 +140,7 @@ Udt::Socket::Socket(UDTSOCKET socket, System::Net::Sockets::AddressFamily family
 	_addressFamily = family;
 	_socketType = type;
 	_congestionControl = congestionControl;
+	_blockingSend = true;
 }
 
 Udt::Socket::Socket(System::Net::Sockets::AddressFamily family, System::Net::Sockets::SocketType type)
@@ -147,6 +148,7 @@ Udt::Socket::Socket(System::Net::Sockets::AddressFamily family, System::Net::Soc
 	_isDisposed = false;
 	_addressFamily = family;
 	_socketType = type;
+	_blockingSend = true;
 
 	int socketFamily;
 	int socketType;
@@ -563,13 +565,38 @@ int Udt::Socket::Send(cli::array<System::Byte>^ buffer, int offset, int size)
 		throw gcnew ArgumentException("Buffer is smaller than specified segment (count + size).", "buffer");
 
 	cli::pin_ptr<unsigned char> buffer_pin = &buffer[0];
-	unsigned char* buffer_pin_ptr = &buffer_pin[offset];
+	char* buffer_pin_ptr = (char*)&buffer_pin[offset];
+	int sent = 0;
 
-	int sent = UDT::send(_socket, (char*)buffer_pin_ptr, size, 0);
+	if (_blockingSend) {
+		// Socket is blocking, but may not send the entire buffer in one send call.
+		// Loop until the entire buffer is sent or an error occurs.
 
-	if (UDT::ERROR == sent)
-	{
-		throw Udt::SocketException::GetLastError("Error sending data.");
+		do {
+			int send_result = UDT::send(_socket, buffer_pin_ptr + sent, size - sent, 0);
+
+			if (UDT::ERROR == send_result)
+			{
+				throw Udt::SocketException::GetLastError("Error sending data.");
+			}
+
+			sent += send_result;
+		} while (sent < size);
+	} else {
+		sent = UDT::send(_socket, buffer_pin_ptr, size, 0);
+
+		if (UDT::ERROR == sent)
+		{
+			if (UDT::getlasterror().getErrorCode() == UDT::ERRORINFO::EASYNCSND)
+			{
+				// Socket is non-blocking and send queue is full
+				sent = 0;
+			}
+			else
+			{
+				throw Udt::SocketException::GetLastError("Error sending data.");
+			}
+		}
 	}
 
 	return sent;
@@ -859,6 +886,11 @@ void Udt::Socket::SetSocketOptionBoolean(Udt::SocketOptionName name, bool value)
 	if (UDT::ERROR == UDT::setsockopt(_socket, 0, (UDT::SOCKOPT)name, &value, sizeof(bool)))
 	{
 		throw Udt::SocketException::GetLastError(String::Concat("Error setting socket option ", name.ToString(), " to ", (Object^)value, "."));
+	}
+
+	if (name == Udt::SocketOptionName::BlockingSend)
+	{
+		_blockingSend = value;
 	}
 }
 

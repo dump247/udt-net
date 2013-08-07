@@ -54,6 +54,7 @@ namespace Udt
 		System::Net::Sockets::AddressFamily _addressFamily;
 		System::Net::Sockets::SocketType _socketType;
 		ICongestionControlFactory^ _congestionControl;
+		bool _blockingSend;
 
 		void AssertNotDisposed(void)
 		{
@@ -350,7 +351,39 @@ namespace Udt
 
 		int Receive(cli::array<System::Byte>^ buffer);
 		int Receive(cli::array<System::Byte>^ buffer, int offset, int size);
+
+		/// <summary>
+		/// Send the specified bytes.
+		/// </summary>
+		/// <remarks>
+		/// If the socket is in blocking mode, the call will block until the
+		/// entire buffer is sent. In non-blocking mode, the call may return
+		/// a value less than the length of the buffer (even zero) if the socket
+		/// send queue limit has been reached. See <see cref="BlockingSend"/>.
+		/// </remarks>
+		/// <param name="buffer">Bytes to send.</param>
+		/// <returns>The total number of bytes sent.</returns>
+		/// <exception cref="System::ArgumentNullException">If <paramref name="buffer"/> is null.</exception>
+		/// <exception cref="Udt::SocketException">If an error occurs.</exception>
 		int Send(cli::array<System::Byte>^ buffer);
+
+		/// <summary>
+		/// Send the specified bytes.
+		/// </summary>
+		/// <remarks>
+		/// If the socket is in blocking mode, the call will block until the
+		/// entire buffer is sent. In non-blocking mode, the call may return
+		/// a value less than the length of the buffer (even zero) if the socket
+		/// send queue limit has been reached. See <see cref="BlockingSend"/>.
+		/// </remarks>
+		/// <param name="buffer">Bytes to send.</param>
+		/// <param name="offset">Offset into <paramref name="buffer"/> to start sending.</param>
+		/// <param name="size">Number of bytes to send.</param>
+		/// <returns>The total number of bytes sent.</returns>
+		/// <exception cref="System::ArgumentNullException">If <paramref name="buffer"/> is null.</exception>
+		/// <exception cref="System::ArgumentOutOfRangeException">If <paramref name="offset"/> or <paramref name="size"/> is less than zero.</exception>
+		/// <exception cref="System::ArgumentException">If <paramref name="size"/> is greater than the length of the <paramref name="buffer"/> minus the <paramref name="offset"/>.</exception>
+		/// <exception cref="Udt::SocketException">If an error occurs.</exception>
 		int Send(cli::array<System::Byte>^ buffer, int offset, int size);
 
 		/// <summary>
@@ -506,7 +539,7 @@ namespace Udt
 
 		property bool BlockingSend
 		{
-			bool get(void) { return GetSocketOptionBoolean(Udt::SocketOptionName::BlockingSend); }
+			bool get(void) { return _blockingSend; }
 			void set(bool value) { SetSocketOptionBoolean(Udt::SocketOptionName::BlockingSend, value); }
 		}
 
