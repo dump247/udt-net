@@ -38,6 +38,17 @@ in a zip file named UdtProtocol-[Version].zip.
 			 ZipFileName="$(MSBuildProjectDirectory)\UdtProtocol-$(Version).zip"
 			 ZipLevel="9" />
 			 
+		<ItemGroup>
+			<SignedZipFiles Include="$(MSBuildProjectDirectory)\UdtProtocol\bin\Release - Signed\**\*.dll" />
+			<SignedZipFiles Include="$(MSBuildProjectDirectory)\UdtProtocol\bin\Release - Signed\**\*.pdb" />
+			<SignedZipFiles Include="$(MSBuildProjectDirectory)\UdtProtocol\bin\Release - Signed\**\*.xml" />
+		</ItemGroup>
+		
+		<Zip Files="@(SignedZipFiles)"
+			 WorkingDirectory="$(MSBuildProjectDirectory)\UdtProtocol\bin\Release - Signed"
+			 ZipFileName="$(MSBuildProjectDirectory)\UdtProtocol-Signed-$(Version).zip"
+			 ZipLevel="9" />
+			 
 	</Target>
 	
 	<Target Name="SetVersion">
@@ -72,15 +83,28 @@ in a zip file named UdtProtocol-[Version].zip.
 				 Targets="Clean;Build"
 				 Properties="Configuration=Release; Platform=Win32"
 				 ToolsVersion="4.0" />
-				 
+	
+		<!--
 		<Exec Command="&quot;$(NUnitHome)\bin\net-2.0\nunit-console-x86.exe&quot; &quot;$(MSBuildProjectDirectory)\UdtProtocol-Test\bin\x86\Release\UdtProtocol-Test.dll&quot;"/>
+		-->
 		
 		<MSBuild Projects="$(MSBuildProjectDirectory)\UdtProtocol.sln"
 				 Targets="Clean;Build"
 				 Properties="Configuration=Release; Platform=x64"
 				 ToolsVersion="4.0" />
-				 
+		<!--
 		<Exec Command="&quot;$(NUnitHome)\bin\net-2.0\nunit-console.exe&quot; &quot;$(MSBuildProjectDirectory)\UdtProtocol-Test\bin\x64\Release\UdtProtocol-Test.dll&quot;"/>
+		-->
+		
+		<MSBuild Projects="$(MSBuildProjectDirectory)\UdtProtocol.sln"
+				 Targets="Clean;Build"
+				 Properties="Configuration=Release - Signed; Platform=Win32"
+				 ToolsVersion="4.0" />
+				 
+		<MSBuild Projects="$(MSBuildProjectDirectory)\UdtProtocol.sln"
+				 Targets="Clean;Build"
+				 Properties="Configuration=Release - Signed; Platform=x64"
+				 ToolsVersion="4.0" />
 				 
 	</Target>
 	

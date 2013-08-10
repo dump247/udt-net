@@ -10,3 +10,4 @@ packages/*/**
 ipch/
 *.aps
 TestResult.xml
+UdtProtocol/UdtProtocol.snk
