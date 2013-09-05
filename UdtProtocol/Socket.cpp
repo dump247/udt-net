@@ -920,6 +920,10 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, int value)
 		SetSocketOptionInt64(name, (long)value);
 		break;
 
+	case Udt::SocketOptionName::SendData:
+	case Udt::SocketOptionName::ReceiveData:
+		throw gcnew ArgumentException(System::String::Concat("Socket option ", name, " is read only"), "name");
+
 	case Udt::SocketOptionName::Linger:
 	case Udt::SocketOptionName::CongestionControl:
 		throw gcnew ArgumentException(System::String::Concat("Socket option ", name, " can not be set to Int32 value"), "value");
@@ -955,6 +959,10 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, __int64 value)
 		SetSocketOptionInt64(name, value);
 		break;
 
+	case Udt::SocketOptionName::SendData:
+	case Udt::SocketOptionName::ReceiveData:
+		throw gcnew ArgumentException(System::String::Concat("Socket option ", name, " is read only"), "name");
+
 	case Udt::SocketOptionName::Linger:
 	case Udt::SocketOptionName::CongestionControl:
 		throw gcnew ArgumentException(System::String::Concat("Socket option ", name, " can not be set to Int64 value"), "value");
@@ -989,6 +997,10 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, bool value)
 	case Udt::SocketOptionName::MaxBandwidth:
 		SetSocketOptionInt64(name, value ? 1L : 0L);
 		break;
+
+	case Udt::SocketOptionName::SendData:
+	case Udt::SocketOptionName::ReceiveData:
+		throw gcnew ArgumentException(System::String::Concat("Socket option ", name, " is read only"), "name");
 
 	case Udt::SocketOptionName::Linger:
 	case Udt::SocketOptionName::CongestionControl:
@@ -1086,6 +1098,10 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, System::Object^ va
 			SetSocketOptionInt64(name, System::Convert::ToInt64(value, CultureInfo::InvariantCulture));
 			break;
 
+		case Udt::SocketOptionName::SendData:
+		case Udt::SocketOptionName::ReceiveData:
+			throw gcnew ArgumentException(System::String::Concat("Socket option ", name, " is read only"), "name");
+
 		default:
 			throw gcnew ArgumentException("Unhandled socket option name.", "name");
 		}
@@ -1110,6 +1126,8 @@ System::Object^ Udt::Socket::GetSocketOption(Udt::SocketOptionName name)
 	case Udt::SocketOptionName::UdpSendBuffer:
 	case Udt::SocketOptionName::SendTimeout:
 	case Udt::SocketOptionName::ReceiveTimeout:
+	case Udt::SocketOptionName::SendData:
+	case Udt::SocketOptionName::ReceiveData:
 		return GetSocketOptionInt32(name);
 
 	case Udt::SocketOptionName::MaxBandwidth:

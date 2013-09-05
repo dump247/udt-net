@@ -402,6 +402,57 @@ namespace UdtProtocol_Test
 			}
 		}
 
+    [Test]
+    public void Get_ReceiveDataSize()
+    {
+      using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+      {
+        Assert.AreEqual(0, socket.ReceiveDataSize);
+        Assert.AreEqual(0, socket.GetSocketOption(Udt.SocketOptionName.ReceiveData));
+
+        ArgumentException ex = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.ReceiveData, true));
+        Assert.AreEqual("name", ex.ParamName);
+        StringAssert.StartsWith("Socket option ReceiveData is read only", ex.Message);
+
+        ex = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.ReceiveData, 1));
+        Assert.AreEqual("name", ex.ParamName);
+        StringAssert.StartsWith("Socket option ReceiveData is read only", ex.Message);
+
+        ex = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.ReceiveData, 1L));
+        Assert.AreEqual("name", ex.ParamName);
+        StringAssert.StartsWith("Socket option ReceiveData is read only", ex.Message);
+
+        ex = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.ReceiveData, (Object)1));
+        Assert.AreEqual("name", ex.ParamName);
+        StringAssert.StartsWith("Socket option ReceiveData is read only", ex.Message);
+      }
+    }
+
+    [Test]
+    public void Get_SendDataSize()
+    {
+      using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream)) {
+        Assert.AreEqual(0, socket.SendDataSize);
+        Assert.AreEqual(0, socket.GetSocketOption(Udt.SocketOptionName.SendData));
+
+        ArgumentException ex = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.SendData, true));
+        Assert.AreEqual("name", ex.ParamName);
+        StringAssert.StartsWith("Socket option SendData is read only", ex.Message);
+
+        ex = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.SendData, 1));
+        Assert.AreEqual("name", ex.ParamName);
+        StringAssert.StartsWith("Socket option SendData is read only", ex.Message);
+
+        ex = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.SendData, 1L));
+        Assert.AreEqual("name", ex.ParamName);
+        StringAssert.StartsWith("Socket option SendData is read only", ex.Message);
+
+        ex = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.SendData, (Object)1));
+        Assert.AreEqual("name", ex.ParamName);
+        StringAssert.StartsWith("Socket option SendData is read only", ex.Message);
+      }
+    }
+
 		[Test]
 		public void Get_set_LingerState()
 		{

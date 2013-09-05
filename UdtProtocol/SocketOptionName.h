@@ -119,5 +119,15 @@ namespace Udt
 		/// Custom congestion control algorithm.
 		/// </summary>
 		CongestionControl = UDT_CC,
+
+		/// <summary>
+		/// Size of data in the sending buffer (read only).
+		/// </summary>
+		SendData = UDT_SNDDATA,
+
+		/// <summary>
+		/// Size of data available for receiving (read only).
+		/// </summary>
+		ReceiveData = UDT_RCVDATA,
 	};
 }

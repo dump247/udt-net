@@ -610,6 +610,16 @@ namespace Udt
 			void set(int value) { SetSocketOptionInt32(Udt::SocketOptionName::MaxWindowSize, value); }
 		}
 
+		property int SendDataSize
+		{
+			int get(void) { return GetSocketOptionInt32(Udt::SocketOptionName::SendData); }
+		}
+
+		property int ReceiveDataSize
+		{
+			int get(void) { return GetSocketOptionInt32(Udt::SocketOptionName::ReceiveData); }
+		}
+
 		/// <summary>
 		/// Get or set the custom congestion control algorithm for this socket
 		/// or null to use the default.
