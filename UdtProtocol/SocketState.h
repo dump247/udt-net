@@ -37,107 +37,53 @@
 namespace Udt
 {
 	/// <summary>
-	/// Socket configuration option names.
+	/// States the UDT socket can be in.
 	/// </summary>
-	[System::Diagnostics::CodeAnalysis::SuppressMessageAttribute(
-			"Microsoft.Design",
-			"CA1027:MarkEnumsWithFlags",
-			Justification = "This is a set of discrete values, not a set of flags.")]
-	public enum class SocketOptionName
+	public enum class SocketState
 	{
 		/// <summary>
-		/// The maximum transfer unit.
+		/// Invalid socket state. A socket will never be in this state.
 		/// </summary>
-		MaxPacketSize = UDT_MSS,
+		Invalid = 0,
 
 		/// <summary>
-		/// If sending is blocking.
+		/// Socket is in initialized state.
 		/// </summary>
-		BlockingSend = UDT_SNDSYN,
+		Initial = INIT,
 
 		/// <summary>
-		/// If receiving is blocking.
+		/// Socket is open.
 		/// </summary>
-		BlockingReceive = UDT_RCVSYN,
-
+		Open = OPENED,
+		
 		/// <summary>
-		/// Flight flag size (window size).
+		/// Socket is listening.
 		/// </summary>
-		MaxWindowSize = UDT_FC,
-
+		Listening = LISTENING,
+		
 		/// <summary>
-		/// Maximum buffer in sending queue.
+		/// Socket is establishing the connection.
 		/// </summary>
-		SendBuffer = UDT_SNDBUF,
-
+		Connecting = CONNECTING,
+		
 		/// <summary>
-		/// UDT receiving buffer size.
+		/// Socket is connected.
 		/// </summary>
-		ReceiveBuffer = UDT_RCVBUF,
-
+		Connected = CONNECTED,
+		
 		/// <summary>
-		/// UDP sending buffer size.
+		/// Socket is broken.
 		/// </summary>
-		UdpSendBuffer = UDP_SNDBUF,
-
+		Broken = BROKEN,
+		
 		/// <summary>
-		/// UDP receiving buffer size.
+		/// Socket is closing.
 		/// </summary>
-		UdpReceiveBuffer = UDP_RCVBUF,
-
+		Closing = CLOSING,
+		
 		/// <summary>
-		/// Rendezvous connection mode.
+		/// Socket is closed.
 		/// </summary>
-		Rendezvous = UDT_RENDEZVOUS,
-
-		/// <summary>
-		/// Send timeout.
-		/// </summary>
-		SendTimeout = UDT_SNDTIMEO,
-
-		/// <summary>
-		/// Receive timeout.
-		/// </summary>
-		ReceiveTimeout = UDT_RCVTIMEO,
-
-		/// <summary>
-		/// Reuse an existing port or create a new one.
-		/// </summary>
-		ReuseAddress = UDT_REUSEADDR,
-
-		/// <summary>
-		/// Maximum bandwidth (bytes per second) that the connection can use.
-		/// </summary>
-		MaxBandwidth = UDT_MAXBW,
-
-		/// <summary>
-		/// Waiting for unsent data when closing.
-		/// </summary>
-		Linger = UDT_LINGER,
-
-		/// <summary>
-		/// Custom congestion control algorithm.
-		/// </summary>
-		CongestionControl = UDT_CC,
-
-		/// <summary>
-		/// Size of data in the sending buffer (read only).
-		/// </summary>
-		SendData = UDT_SNDDATA,
-
-		/// <summary>
-		/// Size of data available for receiving (read only).
-		/// </summary>
-		ReceiveData = UDT_RCVDATA,
-
-		/// <summary>
-		/// Events available on the socket (read only).
-		/// </summary>
-		Events = UDT_EVENT,
-
-		/// <summary>
-		/// Socket state (read only).
-		/// </summary>
-		State = UDT_STATE,
+		Closed = CLOSED,
 	};
 }

@@ -409,48 +409,90 @@ namespace UdtProtocol_Test
       {
         Assert.AreEqual(0, socket.ReceiveDataSize);
         Assert.AreEqual(0, socket.GetSocketOption(Udt.SocketOptionName.ReceiveData));
-
-        ArgumentException ex = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.ReceiveData, true));
-        Assert.AreEqual("name", ex.ParamName);
-        StringAssert.StartsWith("Socket option ReceiveData is read only", ex.Message);
-
-        ex = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.ReceiveData, 1));
-        Assert.AreEqual("name", ex.ParamName);
-        StringAssert.StartsWith("Socket option ReceiveData is read only", ex.Message);
-
-        ex = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.ReceiveData, 1L));
-        Assert.AreEqual("name", ex.ParamName);
-        StringAssert.StartsWith("Socket option ReceiveData is read only", ex.Message);
-
-        ex = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.ReceiveData, (Object)1));
-        Assert.AreEqual("name", ex.ParamName);
-        StringAssert.StartsWith("Socket option ReceiveData is read only", ex.Message);
+        AssertReadOnly(socket, Udt.SocketOptionName.ReceiveData);
       }
     }
 
     [Test]
     public void Get_SendDataSize()
     {
-      using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream)) {
+      using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+      {
         Assert.AreEqual(0, socket.SendDataSize);
         Assert.AreEqual(0, socket.GetSocketOption(Udt.SocketOptionName.SendData));
-
-        ArgumentException ex = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.SendData, true));
-        Assert.AreEqual("name", ex.ParamName);
-        StringAssert.StartsWith("Socket option SendData is read only", ex.Message);
-
-        ex = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.SendData, 1));
-        Assert.AreEqual("name", ex.ParamName);
-        StringAssert.StartsWith("Socket option SendData is read only", ex.Message);
-
-        ex = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.SendData, 1L));
-        Assert.AreEqual("name", ex.ParamName);
-        StringAssert.StartsWith("Socket option SendData is read only", ex.Message);
-
-        ex = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(Udt.SocketOptionName.SendData, (Object)1));
-        Assert.AreEqual("name", ex.ParamName);
-        StringAssert.StartsWith("Socket option SendData is read only", ex.Message);
+        AssertReadOnly(socket, Udt.SocketOptionName.SendData);
       }
+    }
+
+    [Test]
+    public void Get_Events()
+    {
+      using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream)) {
+        Assert.AreEqual(Udt.SocketEvents.None, socket.Events);
+        Assert.AreEqual(Udt.SocketEvents.None, socket.GetSocketOption(Udt.SocketOptionName.Events));
+        AssertReadOnly(socket, Udt.SocketOptionName.Events);
+      }
+    }
+
+    [Test]
+    public void Get_State()
+    {
+      ManualResetEvent serverDoneEvent = new ManualResetEvent(false);
+      ManualResetEvent clientDoneEvent = new ManualResetEvent(false);
+      int port = _portNum++;
+
+      var serverTask = Task.Factory.StartNew(() => {
+        using (Udt.Socket server = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream)) {
+          server.Bind(IPAddress.Loopback, port);
+          Assert.AreEqual(Udt.SocketState.Open, server.State);
+          server.Listen(1);
+          Assert.AreEqual(Udt.SocketState.Listening, server.State);
+
+          using (Udt.Socket accept = server.Accept()) {
+            Assert.AreEqual(Udt.SocketState.Open, server.State);
+            serverDoneEvent.Set();
+            Assert.IsTrue(clientDoneEvent.WaitOne(1000));
+          }
+        }
+      });
+
+      using (Udt.Socket socket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream))
+      {
+        Assert.AreEqual(Udt.SocketState.Initial, socket.State);
+        Assert.AreEqual(Udt.SocketState.Initial, socket.GetSocketOption(Udt.SocketOptionName.State));
+        AssertReadOnly(socket, Udt.SocketOptionName.State);
+
+        socket.Connect(IPAddress.Loopback, port);
+        Assert.AreEqual(Udt.SocketState.Connected, socket.State);
+
+        serverDoneEvent.WaitOne(1000);
+        clientDoneEvent.Set();
+
+        socket.Close();
+        Assert.AreEqual(Udt.SocketState.Closed, socket.State);
+        Assert.AreEqual(Udt.SocketState.Closed, socket.GetSocketOption(Udt.SocketOptionName.State));
+      }
+    }
+
+    private void AssertReadOnly(Udt.Socket socket, Udt.SocketOptionName name)
+    {
+      String message = "Socket option " + name + " is read only";
+
+      ArgumentException ex = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(name, true));
+      Assert.AreEqual("name", ex.ParamName);
+      StringAssert.StartsWith(message, ex.Message);
+
+      ex = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(name, 1));
+      Assert.AreEqual("name", ex.ParamName);
+      StringAssert.StartsWith(message, ex.Message);
+
+      ex = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(name, 1L));
+      Assert.AreEqual("name", ex.ParamName);
+      StringAssert.StartsWith(message, ex.Message);
+
+      ex = Assert.Throws<ArgumentException>(() => socket.SetSocketOption(name, (Object)1));
+      Assert.AreEqual("name", ex.ParamName);
+      StringAssert.StartsWith(message, ex.Message);
     }
 
 		[Test]

@@ -922,6 +922,8 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, int value)
 
 	case Udt::SocketOptionName::SendData:
 	case Udt::SocketOptionName::ReceiveData:
+	case Udt::SocketOptionName::Events:
+	case Udt::SocketOptionName::State:
 		throw gcnew ArgumentException(System::String::Concat("Socket option ", name, " is read only"), "name");
 
 	case Udt::SocketOptionName::Linger:
@@ -961,6 +963,8 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, __int64 value)
 
 	case Udt::SocketOptionName::SendData:
 	case Udt::SocketOptionName::ReceiveData:
+	case Udt::SocketOptionName::Events:
+	case Udt::SocketOptionName::State:
 		throw gcnew ArgumentException(System::String::Concat("Socket option ", name, " is read only"), "name");
 
 	case Udt::SocketOptionName::Linger:
@@ -1000,6 +1004,8 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, bool value)
 
 	case Udt::SocketOptionName::SendData:
 	case Udt::SocketOptionName::ReceiveData:
+	case Udt::SocketOptionName::Events:
+	case Udt::SocketOptionName::State:
 		throw gcnew ArgumentException(System::String::Concat("Socket option ", name, " is read only"), "name");
 
 	case Udt::SocketOptionName::Linger:
@@ -1100,6 +1106,8 @@ void Udt::Socket::SetSocketOption(Udt::SocketOptionName name, System::Object^ va
 
 		case Udt::SocketOptionName::SendData:
 		case Udt::SocketOptionName::ReceiveData:
+		case Udt::SocketOptionName::Events:
+		case Udt::SocketOptionName::State:
 			throw gcnew ArgumentException(System::String::Concat("Socket option ", name, " is read only"), "name");
 
 		default:
@@ -1129,6 +1137,12 @@ System::Object^ Udt::Socket::GetSocketOption(Udt::SocketOptionName name)
 	case Udt::SocketOptionName::SendData:
 	case Udt::SocketOptionName::ReceiveData:
 		return GetSocketOptionInt32(name);
+		
+	case Udt::SocketOptionName::Events:
+		return this->Events;
+
+	case Udt::SocketOptionName::State:
+		return this->State;
 
 	case Udt::SocketOptionName::MaxBandwidth:
 		return GetSocketOptionInt64(name);

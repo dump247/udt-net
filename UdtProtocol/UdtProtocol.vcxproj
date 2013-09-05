@@ -291,6 +291,7 @@
     <ClInclude Include="CongestionPacket.h" />
     <ClInclude Include="ControlPacket.h" />
     <ClInclude Include="DataPacket.h" />
+    <ClInclude Include="SocketEvents.h" />
     <ClInclude Include="ErrorPacket.h" />
     <ClInclude Include="ICongestionControlFactory.h" />
     <ClInclude Include="KeepAlivePacket.h" />
@@ -308,6 +309,7 @@
     <ClInclude Include="SocketException.h" />
     <ClInclude Include="SocketOptionName.h" />
     <ClInclude Include="SocketPoller.h" />
+    <ClInclude Include="SocketState.h" />
     <ClInclude Include="Stdafx.h" />
     <ClInclude Include="StdFileStream.h" />
     <ClInclude Include="TotalTraceInfo.h" />

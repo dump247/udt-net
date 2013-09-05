@@ -35,6 +35,8 @@
 #include "Message.h"
 #include "TraceInfo.h"
 #include "SocketOptionName.h"
+#include "SocketEvents.h"
+#include "SocketState.h"
 #include "SocketException.h"
 #include "StdFileStream.h"
 #include <udt.h>
@@ -618,6 +620,31 @@ namespace Udt
 		property int ReceiveDataSize
 		{
 			int get(void) { return GetSocketOptionInt32(Udt::SocketOptionName::ReceiveData); }
+		}
+
+		property Udt::SocketEvents Events
+		{
+			Udt::SocketEvents get(void) { return (Udt::SocketEvents)GetSocketOptionInt32(Udt::SocketOptionName::Events); }
+		}
+
+		property Udt::SocketState State
+		{
+			Udt::SocketState get(void)
+			{
+				if (_isDisposed)
+				{
+					return Udt::SocketState::Closed;
+				}
+
+				Udt::SocketState state = (Udt::SocketState)GetSocketOptionInt32(Udt::SocketOptionName::State);
+
+				if ((int)state == NONEXIST)
+				{
+					state = Udt::SocketState::Closed;
+				}
+
+				return state;
+			}
 		}
 
 		/// <summary>
