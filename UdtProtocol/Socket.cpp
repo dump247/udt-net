@@ -209,7 +209,17 @@ void Udt::Socket::Close(void)
 
 		if (UDT::ERROR == UDT::close(_socket))
 		{
-			throw Udt::SocketException::GetLastError("Error closing socket");
+			Udt::SocketException^ ex = Udt::SocketException::GetLastError("Error closing socket");
+
+			switch (ex->SocketErrorCode)
+			{
+			case Udt::SocketError::InvalidSocket:
+				// Ignore
+				break;
+
+			default:
+				throw ex;
+			}
 		}
 	}
 }
