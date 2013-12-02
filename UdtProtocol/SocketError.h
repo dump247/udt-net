@@ -102,7 +102,7 @@ namespace Udt
 		/// <summary>
 		/// Connection does not exist.
 		/// </summary>
-		/// <value>2001</value>
+		/// <value>2002</value>
 		NoConnection = 2002,
 
 		/// <summary>
