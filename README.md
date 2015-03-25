@@ -21,6 +21,10 @@ UDT socket library. The Udt.Socket API matches closely with the
 [System.Net.Sockets.Socket](http://msdn.microsoft.com/en-us/library/system.net.sockets.socket.aspx)
 API.
 
+[Example: Send Receive File](https://github.com/dump247/udt-net/wiki/Example:-Send-Receive-File)
+
+[Socket Performance Info](https://github.com/dump247/udt-net/wiki/Socket-Performance-Info)
+
 # TODO
 
 * Missing some properties in Packet (from CPacket)
