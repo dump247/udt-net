@@ -1,5 +1,3 @@
-.Net wrapper around the native [UDT](http://udt.sourceforge.net) protocol library.
-
 # Overview
 
 UDT is a reliable UDP based application level data transport protocol for
