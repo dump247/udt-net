@@ -45,3 +45,5 @@ API.
 
 This project is implemented in Managed C++ and requires Microsoft Visual C++
 2010. Building the demo apps and unit tests requires C# compiler.
+
+[Build Project](//github.com/dump247/udt-net/wiki/Setup-Development-Environment)
