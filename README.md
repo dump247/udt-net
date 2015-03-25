@@ -7,6 +7,8 @@ congestion control mechanisms. The new protocol can transfer data at a much
 higher speed than TCP does. UDT is also a highly configurable framework that
 can accommodate various congestion control algorithms.
 
+[Release Notes](/dump247/udt-net/wiki/Release-Notes)
+
 # Features
 
 * .Net API on top of the native UDT API
