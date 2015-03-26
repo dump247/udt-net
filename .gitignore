@@ -2,8 +2,8 @@
 *.ncb
 *.sdf
 *.suo
-obj/*
-bin/*
+obj/
+bin/
 *.opensdf
 packages/*/**
 ipch/
