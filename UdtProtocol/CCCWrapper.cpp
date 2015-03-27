@@ -93,7 +93,7 @@ void CCCWrapper::processCustomMsg(const CPacket* packet)
 	}
 }
 
-void CCCWrapper::onLoss(const int* losslist, const int& size)
+void CCCWrapper::onLoss(const int32_t* losslist, int size)
 {
 	NativeIntArray^ list = gcnew NativeIntArray(losslist, size);
 

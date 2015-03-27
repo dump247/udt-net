@@ -55,8 +55,8 @@ namespace Udt
 		virtual void init() { _wrapped->Initialize(); }
 		virtual void close() { _wrapped->Close(); }
 		virtual void onTimeout() { _wrapped->OnTimeout(); }
-		virtual void onACK(const int& ack) { _wrapped->OnAck(ack); }
-		virtual void onLoss(const int* losslist, const int& size);
+		virtual void onACK(int32_t ack) { _wrapped->OnAck(ack); }
+		virtual void onLoss(const int32_t* losslist, int size);
 		virtual void onPktReceived(const CPacket* packet);
 		virtual void onPktSent(const CPacket*);
 		virtual void processCustomMsg(const CPacket*);
