@@ -144,7 +144,7 @@ void CCCWrapper::setPacketSendPeriod(System::TimeSpan value)
 	if (value.CompareTo(TimeSpan::Zero) < 0)
 		throw gcnew System::ArgumentOutOfRangeException("value", value, "Value must be greater than or equal to 0.");
 
-	m_dPktSndPeriod = (double)(value.Ticks / 10);
+	m_dPktSndPeriod = value.Ticks / 10.0;
 }
 
 System::TimeSpan CCCWrapper::getPacketSendPeriod(void) const
