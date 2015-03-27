@@ -99,7 +99,7 @@ IPEndPoint^ ToEndPoint(sockaddr_storage* addr)
 		cli::pin_ptr<unsigned char> address_bytes_pin = &address_bytes[0];
 		unsigned char* address_bytes_ptr = address_bytes_pin;
 		memcpy(address_bytes_ptr, addr_in6->sin6_addr.s6_addr, 16);
-		
+
 		address = gcnew System::Net::IPAddress(address_bytes, addr_in6->sin6_scope_id);
 	}
 
@@ -185,7 +185,7 @@ Udt::Socket::Socket(System::Net::Sockets::AddressFamily family, System::Net::Soc
 
 	if (_socket == UDT::INVALID_SOCK)
 		throw Udt::SocketException::GetLastError(String::Concat("Error creating ", family.ToString(), "/", type.ToString(), " UDT socket"));
-	
+
 	// Windows UDP issue
 	// For better performance, modify HKLM\System\CurrentControlSet\Services\Afd\Parameters\FastSendDatagramThreshold
 	int mss = 1052;
@@ -204,7 +204,6 @@ void Udt::Socket::Close(void)
 {
 	if (!_isDisposed)
 	{
-		CongestionControl = nullptr;
 		_isDisposed = true;
 
 		if (UDT::ERROR == UDT::close(_socket))
@@ -268,7 +267,7 @@ void Udt::Socket::Bind(System::Net::Sockets::Socket^ udpSocket)
 
 	if (udpSocket == nullptr)
 		throw gcnew ArgumentNullException("udpSocket");
-	
+
 	if (udpSocket->ProtocolType != ProtocolType::Udp)
 		throw gcnew ArgumentException(String::Concat("Socket must be a UDP Socket. Socket is ", udpSocket->ProtocolType), "udpSocket");
 
@@ -427,7 +426,7 @@ void Udt::Socket::Select(
 	{
 		if (socket == nullptr)
 			throw gcnew ArgumentException("Value can not contain null reference.", "checkSockets");
-		
+
 		UDTSOCKET socketHandle = socket->_socket;
 
 		if (!socketMap->ContainsKey(socketHandle))
@@ -494,7 +493,7 @@ void Udt::Socket::Select(
 	std::auto_ptr<UDT::UDSET> readFds(CreateUDSet("checkRead", checkRead));
 	std::auto_ptr<UDT::UDSET> writeFds(CreateUDSet("checkWrite", checkWrite));
 	std::auto_ptr<UDT::UDSET> exceptFds(CreateUDSet("checkError", checkError));
-	
+
 	if (UDT::ERROR == UDT::select(0, readFds.get(), writeFds.get(), exceptFds.get(), &tv))
 	{
 		throw Udt::SocketException::GetLastError("Error in socket select.");
@@ -646,7 +645,7 @@ __int64 Udt::Socket::SendFile(System::String^ fileName, __int64 offset, __int64 
 	FILE* streamPtr = _wfsopen(file_name_ptr, L"rbN", _SH_DENYRW); // ifs will close handle
 	if (streamPtr == NULL) StdFileStream::CheckLastError(file_name_ptr);
 	std::fstream ifs(streamPtr);
-	
+
 	if (count < 0)
 	{
 		_fseeki64(streamPtr, 0, SEEK_END);
@@ -1147,7 +1146,7 @@ System::Object^ Udt::Socket::GetSocketOption(Udt::SocketOptionName name)
 	case Udt::SocketOptionName::SendData:
 	case Udt::SocketOptionName::ReceiveData:
 		return GetSocketOptionInt32(name);
-		
+
 	case Udt::SocketOptionName::Events:
 		return this->Events;
 
