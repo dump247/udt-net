@@ -1,3 +1,5 @@
+**Notice** It appears the underlying native udt library is no longer being maintained. There have been no new releases since Feb 2013. This library is simply a wrapper around the native library. This library has very little functionality on it's own. While I can make minor fixes to this wrapper library, I can not fix any issues discovered in the underlying native udt library, where most of the functionality resides.
+
 # Overview
 
 UDT is a reliable UDP based application level data transport protocol for
